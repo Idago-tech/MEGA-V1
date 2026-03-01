@@ -4,11 +4,12 @@ WORKDIR /app
 
 COPY package.json ./
 
-RUN npm install --legacy-peer-deps
+ARG PKG_MANAGER=npm
+RUN $PKG_MANAGER install --legacy-peer-deps
 
 COPY . .
 
-RUN npm run build
+RUN $PKG_MANAGER run build
 
 EXPOSE 5000
 
