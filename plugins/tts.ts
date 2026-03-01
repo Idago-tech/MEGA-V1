@@ -1,45 +1,66 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-import gTTS from 'gtts';
+import { gSpeak } from 'gspeak';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default {
-  command: 'tts',
-  aliases: ['texttospeech'],
-  category: 'tools',
-  description: 'Convert text to speech and send as an audio message.',
-  usage: '.tts <text> or reply to a message with .tts',
+    command: 'tts',
+    aliases: ['texttospeech', 'speak'],
+    category: 'tools',
+    description: 'Convert text to speech and send as an audio message.',
+    usage: '.tts <text> [language code]',
 
-  async handler(sock: any, message: any, args: any, context: any = {}) {
-    const chatId = context.chatId || message.key.remoteJid;
-    const text = args.join(' ').trim();
+    async handler(sock: any, message: any, args: string[], context: any = {}) {
+        const chatId = context.chatId || message.key.remoteJid;
 
-    if (!text) {
-      await sock.sendMessage(chatId, { text: '*Please provide the text for TTS conversion.*' }, { quoted: message });
-      return;
+        if (!args.length) {
+            return sock.sendMessage(
+                chatId,
+                { text: '*Please provide text for TTS.*\nExample: `.tts Hello world`\nWith language: `.tts Hola mundo es`' },
+                { quoted: message }
+            );
+        }
+
+        let language = 'en';
+        if (args.length > 1 && /^[a-z]{2}$/.test(args[args.length - 1])) {
+            language = args.pop()!;
+        }
+
+        const text = args.join(' ').trim();
+        const filePath = path.join(__dirname, '..', 'temp', `tts-${Date.now()}.mp3`);
+
+        const tempDir = path.dirname(filePath);
+        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+        try {
+            await new Promise<void>((resolve, reject) => {
+                const tts = new gSpeak(text, language);
+                tts.save(filePath, (err: Error | null) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
+            });
+
+            await sock.sendMessage(chatId, {
+                audio: { url: filePath },
+                mimetype: 'audio/mpeg',
+                fileName: 'tts.mp3'
+            }, { quoted: message });
+
+        } catch (err: any) {
+            console.error('TTS error:', err.message);
+            await sock.sendMessage(
+                chatId,
+                { text: `❌ Failed to generate TTS audio.\nReason: ${err.message}` },
+                { quoted: message }
+            );
+        } finally {
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
     }
-
-    const language = args[args.length - 1] && args[args.length - 1].match(/^[a-z]{2}$/) ? args.pop() : 'en';
-    const fileName = `tts-${Date.now()}.mp3`;
-    const filePath = path.join(__dirname, '..', 'assets', fileName);
-
-    const gtts = new gTTS(text, language);
-    gtts.save(filePath, async function (err) {
-      if (err) {
-        await sock.sendMessage(chatId, { text: '❌ Error generating TTS audio.' }, { quoted: message });
-        return;
-      }
-
-      await sock.sendMessage(chatId, {
-        audio: { url: filePath },
-        mimetype: 'audio/mpeg'
-      }, { quoted: message });
-
-      fs.unlinkSync(filePath);
-    });
-  }
 };
+              
