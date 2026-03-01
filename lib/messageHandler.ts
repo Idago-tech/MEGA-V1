@@ -6,6 +6,7 @@ const __dirname = dirname(__filename);
 
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from './paths.js';
 import settings from '../settings.js';
 import store from './lightweight_store.js';
 import commandHandler from './commandHandler.js';
@@ -42,7 +43,7 @@ const POSTGRES_URL = process.env.POSTGRES_URL;
 const MYSQL_URL = process.env.MYSQL_URL;
 const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
-const STICKER_FILE = path.join(__dirname, '../data/sticker_commands.json');
+const STICKER_FILE = dataFile('sticker_commands.json');
 
 async function getStickerCommands() {
     if (HAS_DB) {
@@ -92,7 +93,39 @@ async function handleMessages(sock, messageUpdate) {
 
         await storeMessage(sock, message);
 
-        const senderId = message.key.participant || message.key.remoteJid;
+        // Store pushName in contacts for name resolution (store under both lid and real JID)
+        if (message.pushName && (sock as any).store?.contacts) {
+            const pid = message.key.participant || message.key.remoteJid;
+            if (pid) {
+                (sock as any).store.contacts[pid] = {
+                    ...(sock as any).store.contacts[pid],
+                    id: pid,
+                    notify: message.pushName,
+                    name: message.pushName
+                };
+                // Also store under decoded JID
+                const decoded = (sock as any).decodeJid?.(pid);
+                if (decoded && decoded !== pid) {
+                    (sock as any).store.contacts[decoded] = {
+                        ...(sock as any).store.contacts[decoded],
+                        id: decoded,
+                        notify: message.pushName,
+                        name: message.pushName
+                    };
+                }
+            }
+        }
+
+        const rawSenderId = message.key.participant || message.key.remoteJid;
+        // Resolve @lid to real JID if possible
+        let senderId = rawSenderId;
+        if (rawSenderId?.includes('@lid') && (sock as any).store?.contacts) {
+            const contacts = (sock as any).store.contacts;
+            const resolved = Object.keys(contacts).find(k =>
+                contacts[k]?.lid === rawSenderId || contacts[k]?.lid?.split(':')[0] === rawSenderId.split('@')[0]
+            );
+            if (resolved?.includes('@s.whatsapp.net')) senderId = resolved;
+        }
 
         if (message.message?.stickerMessage) {
             const fileSha256 = message.message.stickerMessage.fileSha256;
@@ -301,7 +334,12 @@ async function handleMessages(sock, messageUpdate) {
         }
 
         if (!message.key.fromMe) {
-            await store.incrementMessageCount(chatId, senderId);
+            await store.incrementMessageCount(chatId, senderId, message.pushName);
+        } else {
+            // Count bot owner's own messages too
+            const ownJid = (sock as any).user?.id || senderId;
+            const ownName = (sock as any).user?.name || (sock as any).user?.notify || 'Me';
+            await store.incrementMessageCount(chatId, ownJid, ownName);
         }
 
         if (isGroup) {

@@ -17,7 +17,7 @@ export default {
       const contentType = res.headers.get('content-type');
 
       if (contentType && contentType.includes('image')) {
-        const imageBuffer = await res.buffer();
+        const imageBuffer = Buffer.from(await res.arrayBuffer());
 
         const buttons = [
           { buttonId: '.meme', buttonText: { displayText: '🎭 Another Meme' }, type: 1 },

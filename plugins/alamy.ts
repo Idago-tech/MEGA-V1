@@ -39,13 +39,20 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ Failed to fetch media from the provided Alamy URL.' }, { quoted: message });
       }
 
+      const isValidUrl = (u: string) => u && u.startsWith('http');
+      let sent = false;
       for (const item of data.result) {
-        if (item.video) {
+        if (isValidUrl(item.video)) {
           await sock.sendMessage(chatId, { video: { url: item.video }, caption: '🎬 *Alamy Video*' }, { quoted: message });
+          sent = true;
         }
-        if (item.image) {
+        if (isValidUrl(item.image)) {
           await sock.sendMessage(chatId, { image: { url: item.image }, caption: '🖼️ *Alamy Image*' }, { quoted: message });
+          sent = true;
         }
+      }
+      if (!sent) {
+        await sock.sendMessage(chatId, { text: '❌ No valid media found in the Alamy URL.' }, { quoted: message });
       }
 
     } catch(error: any) {

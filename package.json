@@ -11,9 +11,9 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc && cp package.json dist/ && cp -r assets dist/ && cp -r data dist/",
+    "build": "tsc && cp package.json dist/ && cp -r assets dist/",
     "dev": "tsc --watch & nodemon --watch dist dist/index.js",
-    "setup": "npm install && npm run build",
+    "setup": "npm install && node reset-data.js && npm run build",
     "start:optimized": "node --max-old-space-size=512 --optimize-for-size --gc-interval=100 dist/index.js",
     "reset-session": "node -e \"require('fs').rmSync('./session', {recursive:true, force:true}); console.log('Session cleared!')\"",
     "clean": "rm -rf dist/",
@@ -22,7 +22,9 @@
     "typecheck": "tsc --noEmit",
     "test": "mocha",
     "test:unit": "mocha test/unit/**/*.test.ts",
-    "test:integration": "mocha test/integration/**/*.test.ts"
+    "test:integration": "mocha test/integration/**/*.test.ts",
+    "reset-data": "node reset-data.js",
+    "start:fresh": "node reset-data.js && npm start"
   },
   "keywords": [
     "termux-whatsapp-bot",
@@ -74,7 +76,7 @@
     "pg": "^8.16.3",
     "qrcode": "^1.5.4",
     "ruhend-scraper": "^9.0.8",
-    "sharp": "^0.32.6",
+    "sharp": "^0.34.0",
     "simple-git": "^3.30.0",
     "stickers-formatter": "^0.0.1",
     "syntax-error": "^1.4.0",

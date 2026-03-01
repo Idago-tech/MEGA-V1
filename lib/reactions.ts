@@ -6,6 +6,7 @@ const __dirname = dirname(__filename);
 
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from './paths.js';
 import store from './lightweight_store.js';
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -14,7 +15,7 @@ const MYSQL_URL = process.env.MYSQL_URL;
 const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
-const USER_GROUP_DATA = path.join(__dirname, '../data/userGroupData.json');
+const USER_GROUP_DATA = dataFile('userGroupData.json');
 
 async function loadCommandReactState() {
   try {

@@ -9,7 +9,7 @@ async function fetchPiesImageBuffer(country) {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('image')) throw new Error('API did not return an image');
-  return res.buffer();
+  return res.arrayBuffer().then(b => Buffer.from(b));
 }
 
 export default {

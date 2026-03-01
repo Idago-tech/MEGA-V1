@@ -40,3 +40,6 @@ temp/
 *.db
 *.db-wal
 *.db-shm
+data/*.json
+!data/.gitkeep
+baileys_store.json

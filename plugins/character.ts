@@ -76,8 +76,14 @@ export default {
                 profilePic = 'https://i.imgur.com/2wzGhpF.jpeg';
             }
 
-            const pushName = ctx?.pushName;
-            const displayName = await getDisplayName(userJid, sock, pushName);
+            let displayName: string;
+        if (userJid.includes('@lid')) {
+            // lid JID - can't resolve to real number unless in contacts
+            const fromContacts = sock.store?.contacts?.[userJid];
+            displayName = fromContacts?.name || fromContacts?.notify || 'Unknown User';
+        } else {
+            displayName = await sock.getName(userJid) || '+' + userJid.replace('@s.whatsapp.net', '');
+        }
 
             // Pick random traits
             const numTraits = Math.floor(Math.random() * 3) + 3;

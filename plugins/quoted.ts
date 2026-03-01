@@ -42,7 +42,12 @@ export default {
             : 'https://i.ibb.co/9HY4wjz/a4c0b1af253197d4837ff6760d5b81c0.jpg';
 
         const contactValue = contactInfo.status === 'fulfilled' ? contactInfo.value : null;
-        const userName = (contactValue as any)?.[0]?.notify || who.split('@')[0];
+        // Try multiple sources for name
+        const storeContact = (sock as any).store?.contacts?.[who];
+        const userName = storeContact?.name
+            || storeContact?.notify
+            || (contactValue as any)?.[0]?.notify
+            || (who.includes('@s.whatsapp.net') ? '+' + who.replace('@s.whatsapp.net', '') : 'User');
 
         try {
             const res = await axios.post('https://bot.lyo.su/quote/generate', {

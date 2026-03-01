@@ -5,12 +5,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import { writeFile } from 'fs/promises';
 import store from '../lib/lightweight_store.js';
 
 const messageStore = new Map();
-const CONFIG_PATH = path.join(__dirname, '../data/antidelete.json');
+const CONFIG_PATH = dataFile('antidelete.json');
 const TEMP_MEDIA_DIR = path.join(__dirname, '../tmp');
 
 const MONGO_URL = process.env.MONGO_URL;

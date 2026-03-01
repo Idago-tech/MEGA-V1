@@ -5,6 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import store from '../lib/lightweight_store.js';
 
@@ -14,7 +15,7 @@ const MYSQL_URL = process.env.MYSQL_URL;
 const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
-const mentionFilePath = path.join(__dirname, '..', 'data', 'mention.json');
+const mentionFilePath = dataFile('mention.json');
 
 async function loadState() {
     try {
@@ -41,7 +42,7 @@ async function saveState(state) {
     if (HAS_DB) {
         await store.saveSetting('global', 'mention', state);
     } else {
-        const dataDir = path.join(__dirname, '..', 'data');
+        const dataDir = path.join(process.cwd(), 'data');
         if (!fs.existsSync(dataDir)) {
             fs.mkdirSync(dataDir, { recursive: true });
         }

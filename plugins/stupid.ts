@@ -30,12 +30,12 @@ export default {
                 avatarUrl = 'https://telegra.ph/file/24fa902ead26340f3df2c.png'; // Default avatar
             }
 
-            const apiUrl = `https://some-random-api.com/canvas/misc/its-so-stupid?avatar=${encodeURIComponent(avatarUrl)}&dog=${encodeURIComponent(text)}`;
+            const apiUrl = `https://api.popcat.xyz/its-so-stupid?image=${encodeURIComponent(avatarUrl)}&text=${encodeURIComponent(text)}`;
             const response = await fetch(apiUrl);
 
             if (!response.ok) throw new Error(`API responded with status: ${response.status}`);
 
-            const imageBuffer = await response.buffer();
+            const imageBuffer = Buffer.from(await response.arrayBuffer());
 
             await sock.sendMessage(chatId, {
                 image: imageBuffer,

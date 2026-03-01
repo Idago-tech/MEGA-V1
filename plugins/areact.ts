@@ -1,3 +1,4 @@
+import store from '../lib/lightweight_store.js';
 const autoEmojis = [
   '💘','💝','💖','💗','💓','💞','💕','💟','❣️','❤️',
   '🧡','💛','💚','💙','💜','🤎','🖤','🤍','♥️',
@@ -8,6 +9,10 @@ const autoEmojis = [
 ];
 
 let AUTO_REACT_MESSAGES = false;
+// Load persisted state
+store.getSetting('global', 'autoReaction').then((v: any) => {
+    if (v?.enabled !== undefined) AUTO_REACT_MESSAGES = v.enabled;
+}).catch(() => {});
 let lastReactedTime = 0;
 
 function random(arr) {
@@ -34,6 +39,7 @@ export default {
     }
 
     AUTO_REACT_MESSAGES = args[0] === 'on';
+    await store.saveSetting('global', 'autoReaction', { enabled: AUTO_REACT_MESSAGES });
 
     await sock.sendMessage(chatId, {
       text: AUTO_REACT_MESSAGES ? '*✅ Auto-react enabled*' : '*❌ Auto-react disabled*',

@@ -24,13 +24,16 @@ export default {
       const input = args[0].replace(/[^0-9]/g, '');
       if (input.length >= 10) {
         target = input + '@s.whatsapp.net';
+        displayName = '';  // Will be resolved later, don't show Unknown
       } else {
         return await sock.sendMessage(chatId, { 
           text: '❌ Invalid number. Use format: 923051234567 or +923051234567' 
         }, { quoted: message });
       }
     } else {
-      target = message.key.participant || message.key.remoteJid;
+      return await sock.sendMessage(chatId, {
+        text: '📸 *Get Profile Picture*\n\nUsage:\n• Reply to a message\n• Mention someone: `.getpp @user`\n• Provide a number: `.getpp 923001234567`'
+      }, { quoted: message });
     }
 
     try {
@@ -45,7 +48,8 @@ export default {
       }
 
       const cleanNumber = realJid.replace(/@s\.whatsapp\.net|@lid/g, '').split(':')[0];
-      displayNumber = `+${cleanNumber}`;
+      // Only show number if it looks like a real phone number (10+ digits)
+      displayNumber = cleanNumber.length >= 10 ? `+${cleanNumber}` : '';
 
       if (displayName === 'Unknown') {
         try {
@@ -66,7 +70,7 @@ export default {
       if (ppUrl) {
         await sock.sendMessage(chatId, { 
           image: { url: ppUrl },
-          caption: `📸 *Profile Picture*\n\n👤 *Name:* ${displayName}\n📱 *Number:* ${displayNumber}`
+          caption: `📸 *Profile Picture*${displayName && displayName !== 'Unknown' ? '\n\n👤 *Name:* ' + displayName : ''}${displayNumber ? '\n📱 *Number:* ' + displayNumber : ''}`
         }, { quoted: message });
       }
 

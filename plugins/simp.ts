@@ -34,7 +34,7 @@ export default {
                 throw new Error(`API responded with status: ${response.status}`);
             }
 
-            const imageBuffer = await response.buffer();
+            const imageBuffer = Buffer.from(await response.arrayBuffer());
 
             await sock.sendMessage(chatId, {
                 image: imageBuffer,

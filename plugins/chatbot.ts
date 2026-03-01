@@ -5,6 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 import fetch from 'node-fetch';
 import store from '../lib/lightweight_store.js';
 
@@ -15,7 +16,7 @@ const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
 
-const USER_GROUP_DATA = path.join(__dirname, '../data/userGroupData.json');
+const USER_GROUP_DATA = dataFile('userGroupData.json');
 const chatMemory = {
     messages: new Map(),
     userInfo: new Map()

@@ -98,7 +98,7 @@ async function handleJoinEvent(sock, id, participants) {
         
         const response = await fetch(apiUrl);
         if (response.ok) {
-          const imageBuffer = await response.buffer();
+          const imageBuffer = Buffer.from(await response.arrayBuffer());
           
           await sock.sendMessage(id, {
             image: imageBuffer,

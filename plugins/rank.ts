@@ -54,7 +54,25 @@ export default {
             const messageCounts = await loadMessageCounts()
             const groupCounts = messageCounts[chatId] || {}
 
-            const sortedMembers = Object.entries(groupCounts)
+            // Build lid -> real JID map from group participants
+            const lidMap: Record<string, string> = {};
+            let meta: any = null;
+            try {
+                meta = await sock.groupMetadata(chatId);
+                for (const p of meta.participants) {
+                    if (p.lid) lidMap[p.lid] = p.id;
+                    if (p.id) lidMap[p.id] = p.id;
+                }
+            } catch {}
+
+            // Resolve lid JIDs in groupCounts
+            const resolvedCounts: Record<string, number> = {};
+            for (const [uid, count] of Object.entries(groupCounts)) {
+                const resolved = lidMap[uid] || uid;
+                resolvedCounts[resolved] = (resolvedCounts[resolved] || 0) + (count as number);
+            }
+
+            const sortedMembers = Object.entries(resolvedCounts)
                 .sort(([, a], [, b]) => (b as number) - (a as number))
                 .slice(0, 5)
 
@@ -68,10 +86,18 @@ export default {
             const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣']
             let messageText = '🏆 *TOP MEMBERS LEADERBOARD*\n\n'
             
-            sortedMembers.forEach(([userId, count], index) => {
-                const username = userId.split('@')[0]
-                messageText += `${medals[index]} @${username}\n💬 ${count} messages\n\n`
-            })
+            for (let index = 0; index < sortedMembers.length; index++) {
+                const [userId, count] = sortedMembers[index];
+                let username: string;
+                // Try all sources for name
+                const c = sock.store?.contacts?.[userId];
+                const participant = meta?.participants?.find((p: any) => p.id === userId || p.lid === userId);
+                username = c?.name || c?.notify
+                    || participant?.notify || participant?.name
+                    || await sock.getName(userId)
+                    || (userId.includes('@s.whatsapp.net') ? '+' + userId.replace('@s.whatsapp.net', '') : 'Unknown');
+                messageText += `${medals[index]} @${username}\n💬 ${count} messages\n\n`;
+            }
 
             messageText += '_Keep chatting to climb the ranks!_'
 
@@ -97,8 +123,9 @@ export default {
 /*
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 
-const dataFilePath = path.join(__dirname, '..', 'data', 'messageCount.json');
+const dataFilePath = dataFile('messageCount.json');
 
 function loadMessageCounts() {
     if (fs.existsSync(dataFilePath)) {
@@ -156,10 +183,20 @@ export default {
         const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
         let messageText = '🏆 *TOP MEMBERS LEADERBOARD*\n\n';
         
-        sortedMembers.forEach(([userId, count], index) => {
-            const username = userId.split('@')[0];
-            messageText += `${medals[index]} @${username}\n💬 ${count} messages\n\n`;
-        });
+        for (let index = 0; index < sortedMembers.length; index++) {
+            const [userId, count] = sortedMembers[index];
+            let username: string;
+            if (userId.includes('@lid')) {
+                const c = sock.store?.contacts?.[userId];
+                username = c?.name || c?.notify || 'Unknown User';
+            } else {
+                username = await sock.getName(userId) || '+' + userId.replace('@s.whatsapp.net', '');
+            }
+            messageText += `${medals[index]} @${username}
+💬 ${count} messages
+
+`;
+        }
 
         messageText += '_Keep chatting to climb the ranks!_';
 

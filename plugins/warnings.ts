@@ -5,6 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 import store from '../lib/lightweight_store.js';
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -13,7 +14,7 @@ const MYSQL_URL = process.env.MYSQL_URL;
 const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
-const warningsFilePath = path.join(__dirname, '../data/warnings.json');
+const warningsFilePath = dataFile('warnings.json');
 
 async function loadWarnings() {
   if (HAS_DB) {

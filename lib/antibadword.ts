@@ -6,6 +6,7 @@ const __dirname = dirname(__filename);
 import store from './lightweight_store.js';
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from './paths.js';
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
@@ -18,7 +19,7 @@ async function loadAntibadwordConfig(groupId) {
             const config = await store.getSetting(groupId, 'antibadword');
             return config || {};
         } else {
-            const configPath = path.join(__dirname, '../data/userGroupData.json');
+            const configPath = dataFile('userGroupData.json');
             if (!fs.existsSync(configPath)) {
                 return {};
             }

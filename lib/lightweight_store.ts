@@ -1885,15 +1885,8 @@ const store = {
       
       const filePath = path.join(dataDir, `${key}.json`)
       try {
-        let data = {}
-        if (fs.existsSync(filePath)) {
-          data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-        }
-        
-        if (!data[chatId]) data[chatId] = {}
-        data[chatId] = value
-        
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+        // Always save as flat format
+        fs.writeFileSync(filePath, JSON.stringify(value, null, 2))
       } catch (e) {
         console.error(`[STORE] Failed to save setting ${key}:`, e.message)
       }
@@ -1914,7 +1907,10 @@ const store = {
       try {
         if (fs.existsSync(filePath)) {
           const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-          return data[chatId] || null
+          // Flat format {enabled: ...} takes priority over {chatId: {enabled: ...}}
+          if (data.enabled !== undefined) return data;
+          if (data[chatId] !== undefined) return data[chatId];
+          return null
         }
         return null
       } catch (e) {
@@ -2003,7 +1999,7 @@ const store = {
     }
   },
   
-  async incrementMessageCount(chatId, userId) {
+  async incrementMessageCount(chatId: any, userId: any, pushName?: string) {
     if (backend === 'memory') {
       if (!this.messageCount[chatId]) {
         this.messageCount[chatId] = {}

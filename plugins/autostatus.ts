@@ -5,6 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
+import { dataFile } from '../lib/paths.js';
 import store from '../lib/lightweight_store.js';
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -14,7 +15,7 @@ const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
 
-const configPath = path.join(__dirname, '../data/autoStatus.json');
+const configPath = dataFile('autoStatus.json');
 
 if (!HAS_DB && !fs.existsSync(configPath)) {
     if (!fs.existsSync(path.dirname(configPath))) {

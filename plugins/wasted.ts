@@ -36,7 +36,7 @@ export default {
       );
       await sock.sendMessage(chatId, {
         image: Buffer.from(wastedResponse.data),
-        caption: `⚰️ *Wasted* : ${userToWaste.split('@')[0]} 💀\n\nRest in pieces!`,
+        caption: `⚰️ *Wasted* : ${(sock as any).store?.contacts?.[userToWaste]?.name || (sock as any).store?.contacts?.[userToWaste]?.notify || (userToWaste.includes('@s.whatsapp.net') ? '+' + userToWaste.replace('@s.whatsapp.net', '') : 'User')} 💀\n\nRest in pieces!`,
         mentions: [userToWaste],
         ...channelInfo
       }, { quoted: message });

@@ -1,4 +1,5 @@
 import isOwnerOrSudo from '../lib/isOwner.js';
+import { getChatbot, getWelcome, getGoodbye, getAntitag } from '../lib/index.js';
 import store from '../lib/lightweight_store.js';
 import { cleanJid } from '../lib/isOwner.js';
 
@@ -26,13 +27,22 @@ export default {
 
             const botMode = await store.getBotMode();
             
-            const allSettings = await store.getAllSettings('global');
-            const autoStatus = allSettings.autoStatus || { enabled: false };
-            const autoread = allSettings.autoread || { enabled: false };
-            const autotyping = allSettings.autotyping || { enabled: false };
-            const pmblocker = allSettings.pmblocker || { enabled: false };
-            const anticall = allSettings.anticall || { enabled: false };
-            const autoReaction = allSettings.autoReaction || false;
+            const autoStatus = await store.getSetting('global', 'autoStatus') as any || { enabled: false };
+            const autoread = await store.getSetting('global', 'autoread') as any || { enabled: false };
+            const autotyping = await store.getSetting('global', 'autotyping') as any || { enabled: false };
+            const pmblocker = await store.getSetting('global', 'pmblocker') as any || { enabled: false };
+            const anticall = await store.getSetting('global', 'anticall') as any || { enabled: false };
+            const autoReactionData = await store.getSetting('global', 'autoReaction') as any;
+            const autoReaction = autoReactionData?.enabled || false;
+            const stealthMode = await store.getSetting('global', 'stealthMode') as any || { enabled: false };
+            const autoBio = await store.getSetting('global', 'autoBio') as any || { enabled: false };
+            // cmdreact saves to userGroupData.json as data.autoReaction
+            const fs = (await import('fs')).default;
+            let cmdReactEnabled = true;
+            try {
+                const ugd = JSON.parse(fs.readFileSync('./data/userGroupData.json', 'utf-8'));
+                cmdReactEnabled = ugd.autoReaction ?? true;
+            } catch { cmdReactEnabled = true; }
 
             const getSt = (val) => val ? '✅' : '❌';
 
@@ -46,6 +56,9 @@ export default {
             menuText += `┃ ${getSt(pmblocker?.enabled)} *PM Blocker*\n`;
             menuText += `┃ ${getSt(anticall?.enabled)} *Anti Call*\n`;
             menuText += `┃ ${getSt(autoReaction)} *Auto Reaction*\n`;
+            menuText += `┃ ${getSt(cmdReactEnabled)} *Cmd Reactions*\n`;
+            menuText += `┃ ${getSt(stealthMode?.enabled)} *Stealth Mode*\n`;
+            menuText += `┃ ${getSt(autoBio?.enabled)} *Auto Bio*\n`;
             menuText += `┃\n`;
 
             if (isGroup) {
@@ -53,10 +66,17 @@ export default {
                 
                 const groupAntilink = groupSettings.antilink || { enabled: false };
                 const groupBadword = groupSettings.antibadword || { enabled: false };
-                const groupAntitag = groupSettings.antitag || { enabled: false };
-                const groupChatbot = groupSettings.chatbot || false;
-                const groupWelcome = groupSettings.welcome || false;
-                const groupGoodbye = groupSettings.goodbye || false;
+                const antitag = await getAntitag(chatId, 'on');
+                const groupAntitag = { enabled: !!antitag };
+                const chatbotData = await getChatbot(chatId);
+                const welcomeData = await getWelcome(chatId);
+                const goodbyeData = await getGoodbye(chatId);
+                // getChatbot returns true/false or {enabled}
+                const groupChatbot = chatbotData === true || chatbotData?.enabled || false;
+                // getWelcome returns null or message string or {enabled}
+                const groupWelcome = welcomeData !== null && welcomeData !== undefined && welcomeData !== false;
+                // getGoodbye returns null or message string or {enabled}
+                const groupGoodbye = goodbyeData !== null && goodbyeData !== undefined && goodbyeData !== false;
 
                 menuText += `┣━〔 *GROUP CONFIG* 〕━┈\n`;
                 menuText += `┃ ${getSt(groupAntilink.enabled)} *Antilink*\n`;

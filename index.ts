@@ -232,6 +232,7 @@ async function startQasimDev() {
             connectTimeoutMs: 60000,
             keepAliveIntervalMs: 10000,
         }) as any;
+        QasimDev.store = store;
 
         const originalSendPresenceUpdate = QasimDev.sendPresenceUpdate;
         const originalReadMessages = QasimDev.readMessages;

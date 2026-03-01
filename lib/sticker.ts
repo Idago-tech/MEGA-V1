@@ -23,7 +23,7 @@ export async function sticker(
 ): Promise<Buffer | null> {
     try {
         const response = await fetch(url);
-        const buffer = await response.buffer();
+        const buffer = Buffer.from(await response.arrayBuffer());
         return await new Sticker(buffer, {
             pack: settings.packname || 'MEGA-MD',
             author: settings.author || 'GlobalTechInfo',
