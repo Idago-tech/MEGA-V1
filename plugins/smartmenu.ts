@@ -4,7 +4,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import CommandHandler from '../lib/commandHandler.js';
-import settings from '../settings.js';
+import settings from '../config.js';
 import fs from 'fs';
 import path from 'path';
 

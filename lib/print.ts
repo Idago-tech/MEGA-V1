@@ -1,7 +1,7 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import chalk from 'chalk';
 import PhoneNumber, { parsePhoneNumber } from 'awesome-phonenumber';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 /**
  * Extract real phone number from various JID formats

@@ -3,7 +3,7 @@ import { getAntilink, incrementWarningCount, resetWarningCount, isSudo } from '.
 import isAdmin from '../lib/isAdmin.js';
 import config from '../config.js';
 
-const WARN_COUNT = config.WARN_COUNT || 3;
+const WARN_COUNT = config.warnCount || 3;
 
 /**
  * Checks if a string contains a URL.

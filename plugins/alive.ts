@@ -1,6 +1,6 @@
 import os from 'os';
 import process from 'process';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 export default {
   command: 'alive',

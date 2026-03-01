@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
  *****************************************************************************/
 
 
-import settings from '../settings.js';
+import settings from '../config.js';
 import commandHandler from '../lib/commandHandler.js';
 import path from 'path';
 import fs from 'fs';

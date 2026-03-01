@@ -15,7 +15,7 @@
 
 
 import CommandHandler from '../lib/commandHandler.js';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 export default {
   command: 'perf',

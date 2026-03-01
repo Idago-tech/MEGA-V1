@@ -15,7 +15,7 @@
 
 
 import yts from 'yt-search';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 export default {
   command: 'ytsearch',

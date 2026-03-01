@@ -1,4 +1,4 @@
-import settings from '../settings.js';
+import settings from '../config.js';
 import { isSudo } from './index.js';
 
 

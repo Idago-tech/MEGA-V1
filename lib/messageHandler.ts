@@ -7,7 +7,7 @@ const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import { dataFile } from './paths.js';
-import settings from '../settings.js';
+import settings from '../config.js';
 import store from './lightweight_store.js';
 import commandHandler from './commandHandler.js';
 import { printMessage, printLog } from './print.js';

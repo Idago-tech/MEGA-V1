@@ -4,7 +4,7 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
@@ -144,14 +144,14 @@ async function updateViaZip(sock, chatId, message, zipOverride) {
   let preservedOwner = null;
   let preservedBotOwner = null;
   try {
-    const currentSettings = (await import('../settings.js')).default;
+    const currentSettings = (await import('../config.js')).default;
     preservedOwner = currentSettings && currentSettings.ownerNumber ? String(currentSettings.ownerNumber) : null;
     preservedBotOwner = currentSettings && currentSettings.botOwner ? String(currentSettings.botOwner) : null;
   } catch {}
   copyRecursive(srcRoot, process.cwd(), ignore, '', copied);
   if (preservedOwner) {
     try {
-      const settingsPath = path.join(process.cwd(), 'settings.js');
+      const settingsPath = path.join(process.cwd(), 'config.js');
       if (fs.existsSync(settingsPath)) {
         let text = fs.readFileSync(settingsPath, 'utf8');
         text = text.replace(/ownerNumber:\s*'[^']*'/, `ownerNumber: '${preservedOwner}'`);
@@ -239,7 +239,7 @@ export default {
       
       try {
         delete require.cache[require.resolve('../settings')];
-        const newSettings = (await import('../settings.js')).default;
+        const newSettings = (await import('../config.js')).default;
         const v = newSettings.version || 'unknown';
         changesSummary += `\n\n🔖 Version: ${v}`;
       } catch {}

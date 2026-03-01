@@ -7,7 +7,7 @@ import sharp from 'sharp';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
 import { exec } from 'child_process';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 export default {
   command: 'tgstk',

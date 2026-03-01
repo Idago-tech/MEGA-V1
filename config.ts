@@ -1,33 +1,63 @@
 import 'dotenv/config';
 
-global.SESSION_ID = process.env.SESSION_ID || "" // put your session id here
-global.PAIRING_NUMBER = process.env.PAIRING_NUMBER || "" // In Case if you don't have session id get pairing code by putting your number here
+const config = {
+    // Bot Identity
+    botName:     process.env.BOT_NAME      || 'MEGA-MD',
+    botOwner:    process.env.BOT_OWNER     || 'Qasim Ali',
+    ownerNumber: process.env.OWNER_NUMBER  || '923051391007',
+    author:      process.env.AUTHOR        || 'GlobalTechInfo',
+    packname:    process.env.PACKNAME      || 'MEGA-MD',
+    description: process.env.DESCRIPTION  || 'High performance multi-device WhatsApp bot',
+    version:     '5.2.0',
 
-global.APIs = {
-    xteam: 'https://api.xteam.xyz',
-    dzx: 'https://api.dhamzxploit.my.id',
-    lol: 'https://api.lolhuman.xyz',
-    violetics: 'https://violetics.pw',
-    neoxr: 'https://api.neoxr.my.id',
-    zenzapis: 'https://zenzapis.xyz',
-    akuari: 'https://api.akuari.my.id',
-    akuari2: 'https://apimu.my.id',
-    nrtm: 'https://fg-nrtm.ddns.net',
-    bg: 'http://bochil.ddns.net',
-    fgmods: 'https://api-fgmods.ddns.net'
+    // Bot Config
+    prefixes:    process.env.PREFIXES ? process.env.PREFIXES.split(',') : ['.', '!', '/', '#'],
+    commandMode: process.env.COMMAND_MODE  || 'public',
+    timeZone:    process.env.TIMEZONE      || 'Asia/Karachi',
+
+    // Links
+    channelLink:   process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07',
+    updateZipUrl:  process.env.UPDATE_URL   || 'https://github.com/GlobalTechInfo/MEGA-MD/archive/refs/heads/main.zip',
+    ytChannel:     process.env.YT_CHANNEL   || 'GlobalTechInfo',
+
+    // Session
+    sessionId:    process.env.SESSION_ID    || '',
+    pairingNumber: process.env.PAIRING_NUMBER || '',
+
+    // Performance
+    maxStoreMessages:    Number(process.env.MAX_STORE_MESSAGES)   || 20,
+    tempCleanupInterval: Number(process.env.CLEANUP_INTERVAL)     || 1 * 60 * 60 * 1000,
+    storeWriteInterval:  Number(process.env.STORE_WRITE_INTERVAL) || 10000,
+
+    // API Keys
+    giphyApiKey: process.env.GIPHY_API_KEY || 'qnl7ssQChTdPjsKta2Ax2LMaGXz303tq',
+    removeBgKey: process.env.REMOVEBG_KEY  || '',
+
+    // Warn system
+    warnCount: 3,
+
+    // External APIs
+    APIs: {
+        xteam:    'https://api.xteam.xyz',
+        dzx:      'https://api.dhamzxploit.my.id',
+        lol:      'https://api.lolhuman.xyz',
+        violetics:'https://violetics.pw',
+        neoxr:    'https://api.neoxr.my.id',
+        zenzapis: 'https://zenzapis.xyz',
+        akuari:   'https://api.akuari.my.id',
+        akuari2:  'https://apimu.my.id',
+        nrtm:     'https://fg-nrtm.ddns.net',
+        fgmods:   'https://api-fgmods.ddns.net'
+    },
+
+    APIKeys: {
+        'https://api.xteam.xyz':       'd90a9e986e18778b',
+        'https://api.lolhuman.xyz':    '85faf717d0545d14074659ad',
+        'https://api.neoxr.my.id':     process.env.NEOXR_KEY    || 'yourkey',
+        'https://violetics.pw':        'beta',
+        'https://zenzapis.xyz':        process.env.ZENZAPIS_KEY  || 'yourkey',
+        'https://api-fgmods.ddns.net': 'fg-dylux'
+    }
 };
 
-global.APIKeys = {
-    'https://api.xteam.xyz': 'd90a9e986e18778b',
-    'https://api.lolhuman.xyz': '85faf717d0545d14074659ad',
-    'https://api.neoxr.my.id': 'yourkey',
-    'https://violetics.pw': 'beta',
-    'https://zenzapis.xyz': 'yourkey',
-    'https://api-fgmods.ddns.net': 'fg-dylux'
-};
-
-export default {
-    WARN_COUNT: 3,
-    APIs: global.APIs,
-    APIKeys: global.APIKeys
-};
+export default config;

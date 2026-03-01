@@ -52,7 +52,7 @@ import {
     handleCall
 } from './lib/messageHandler.js';
 
-import settings from './settings.js';
+import settings from './config.js';
 import commandHandler from './lib/commandHandler.js';
 
 store.readFromFile();

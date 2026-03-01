@@ -1,5 +1,5 @@
 import axios from 'axios';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 export default {
   command: 'gif',

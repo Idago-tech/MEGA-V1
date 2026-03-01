@@ -5,7 +5,7 @@ import path from 'path';
 import crypto from 'crypto';
 import webp from 'node-webpmux';
 import { fileURLToPath } from 'url';
-import settings from '../settings.js';
+import settings from '../config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

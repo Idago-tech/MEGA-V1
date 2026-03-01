@@ -1,4 +1,4 @@
-import settings from '../settings.js';
+import settings from '../config.js';
 import { addSudo, removeSudo, getSudoList } from '../lib/index.js';
 import isOwnerOrSudo from '../lib/isOwner.js';
 import { cleanJid } from '../lib/isOwner.js';

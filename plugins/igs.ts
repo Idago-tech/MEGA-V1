@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
-import settings from '../settings.js';
+import settings from '../config.js';
 import { stickercropFromBuffer } from './stickercrop.js';
 
 async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
