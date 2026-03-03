@@ -8,7 +8,7 @@ import settings from '../config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const _tmp = path.join(__dirname, '../tmp');
+const _tmp = path.join(process.cwd(), 'tmp');
 
 interface StickerExtra {
     [key: string]: any;

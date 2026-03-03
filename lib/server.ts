@@ -1,8 +1,12 @@
 import express from 'express';
 import { createServer } from 'http';
-import { createRequire } from 'module';
-const _req = createRequire(import.meta.url);
-const packageInfo = _req('../package.json');
+import config from '../config.js';
+const packageInfo = {
+    name: config.botName || 'MEGA-MD',
+    version: config.version || '1.0.0',
+    description: config.description || 'WhatsApp Bot',
+    author: config.author || 'GlobalTechInfo'
+};
 
 const app = express();
 const server = createServer(app);

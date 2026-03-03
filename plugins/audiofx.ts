@@ -74,7 +74,7 @@ export default {
     }
 
     try {
-      const tmp = path.join(__dirname, '../temp');
+      const tmp = path.join(process.cwd(), 'tmp');
       if (!fs.existsSync(tmp)) fs.mkdirSync(tmp, { recursive: true });
 
       const input = path.join(tmp, `in_${Date.now()}.ogg`);

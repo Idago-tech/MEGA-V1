@@ -18,7 +18,7 @@ export default {
         }, { quoted: message });
       }
 
-      const pluginDir = join(__dirname, '..', 'plugins');
+      const pluginDir = join(process.cwd(), 'plugins');
       const pluginFiles = readdirSync(pluginDir).filter(f => f.endsWith('.js'));
       const pluginNames = pluginFiles.map(f => f.replace('.js', ''));
 

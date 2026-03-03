@@ -27,7 +27,7 @@ export default {
         }
 
         const text = args.join(' ').trim();
-        const filePath = path.join(__dirname, '..', 'temp', `tts-${Date.now()}.mp3`);
+        const filePath = path.join(process.cwd(), 'tmp', `tts-${Date.now()}.mp3`);
 
         const tempDir = path.dirname(filePath);
         if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });

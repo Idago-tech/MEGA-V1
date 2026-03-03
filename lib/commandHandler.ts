@@ -26,7 +26,7 @@ class CommandHandler {
   }
 
   async watchPlugins() {
-    const pluginsPath = path.join(__dirname, '../plugins');
+    const pluginsPath = path.join(process.cwd(), 'plugins');
     if (!fs.existsSync(pluginsPath)) return;
 
     fs.watch(pluginsPath, async (eventType, filename) => {
@@ -58,7 +58,7 @@ class CommandHandler {
   }
 
   async loadCommands() {
-    const pluginsPath = path.join(__dirname, '../plugins');
+    const pluginsPath = path.join(process.cwd(), 'plugins');
     const files = fs.readdirSync(pluginsPath).filter(f => f.endsWith('.js'));
 
     for (const file of files) {

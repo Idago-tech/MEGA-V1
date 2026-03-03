@@ -40,7 +40,7 @@ export default {
         buffer = Buffer.concat([buffer, chunk]);
       }
 
-      const tempFile = path.join(__dirname, `qr_${Date.now()}.png`);
+      const tempFile = path.join(process.cwd(), `qr_${Date.now()}.png`);
       fs.writeFileSync(tempFile, buffer);
 
       const form = new FormData();

@@ -83,7 +83,7 @@ export default {
       const buffer = await getMediaBuffer(targetMsg, sock)
       if (!buffer) throw new Error('Failed to download media')
 
-      const tempDir = path.join(__dirname, '../temp')
+      const tempDir = path.join(process.cwd(), 'tmp')
       if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true })
 
       const tempPath = path.join(tempDir, `${Date.now()}${ext}`)

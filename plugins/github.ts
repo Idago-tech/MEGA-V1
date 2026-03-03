@@ -27,7 +27,7 @@ export default {
       txt += `✩  *Stars* : ${json.stargazers_count}\n\n`;
       txt += `💥 *MEGA MD*`;
 
-      const imgPath = path.join(__dirname, '../assets/bot_image.jpg');
+      const imgPath = path.join(process.cwd(), 'assets/bot_image.jpg');
       const imgBuffer = fs.readFileSync(imgPath);
 
       await sock.sendMessage(chatId, { image: imgBuffer, caption: txt }, { quoted: message });

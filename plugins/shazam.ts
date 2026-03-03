@@ -57,7 +57,7 @@ export default {
 
             const buffer = await downloadMedia(media.msg, media.type);
 
-            const tmpDir = path.join(__dirname, '../tmp');
+            const tmpDir = path.join(process.cwd(), 'tmp');
             if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
             const tmpPath = path.join(tmpDir, `${Date.now()}${media.ext}`);

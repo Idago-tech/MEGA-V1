@@ -139,7 +139,7 @@ export default {
       );
 
       // Create temp directory
-      const tempDir = path.join(__dirname, '../temp');
+      const tempDir = path.join(process.cwd(), 'tmp');
       if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
       }

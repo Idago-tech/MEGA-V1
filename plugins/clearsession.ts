@@ -31,7 +31,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '*This command can only be used by the owner!*', ...channelInfo });
       }
 
-      const sessionDir = path.join(__dirname, '../session');
+      const sessionDir = path.join(process.cwd(), 'session');
       if (!fs.existsSync(sessionDir)) {
         return await sock.sendMessage(chatId, { text: '*Session directory not found!*', ...channelInfo });
       }

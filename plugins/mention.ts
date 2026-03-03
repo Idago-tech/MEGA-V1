@@ -234,7 +234,7 @@ async function setMentionCommand(sock, chatId, message, isOwner) {
         console.warn('cleanup previous assets failed:', e?.message || e);
     }
     const outName = `mention_custom.${ext}`;
-    const assetsDir = path.join(__dirname, '..', 'assets');
+    const assetsDir = path.join(process.cwd(), 'assets');
     if (!fs.existsSync(assetsDir)) {
         fs.mkdirSync(assetsDir, { recursive: true });
     }

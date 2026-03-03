@@ -7,7 +7,7 @@ import store from '../lib/lightweight_store.js';
 
 const messageStore = new Map();
 const CONFIG_PATH = dataFile('antidelete.json');
-const TEMP_MEDIA_DIR = path.join(__dirname, '../tmp');
+const TEMP_MEDIA_DIR = path.join(process.cwd(), 'tmp');
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;

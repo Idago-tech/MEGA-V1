@@ -159,8 +159,8 @@ function hasValidSession() {
                 return false;
             }
             if (creds.registered === false) {
-                printLog('warning', 'Session credentials exist but are not registered yet');
-                // Don't delete - pairing may be in progress
+                printLog('warning', 'Session not registered. Clearing for fresh pairing...');
+                try { rmSync(path.join(__dirname, 'session'), { recursive: true, force: true }); } catch (_e) {}
                 return false;
             }
             printLog('success', 'Valid and registered session credentials found');
@@ -404,7 +404,10 @@ async function startQasimDev() {
             printLog('warning', 'Session not registered. Pairing code required');
 
             let phoneNumberInput;
-            if (!!global.phoneNumber) {
+            if (global._pairingNumber) {
+                phoneNumberInput = global._pairingNumber;
+                printLog('info', `Using stored number for retry: ${phoneNumberInput}`);
+            } else if (!!global.phoneNumber) {
                 phoneNumberInput = global.phoneNumber;
             } else if (process.env.PAIRING_NUMBER) {
                 phoneNumberInput = process.env.PAIRING_NUMBER;
@@ -426,20 +429,27 @@ async function startQasimDev() {
                 process.exit(1);
             }
 
-            setTimeout(async () => {
+            global._pairingNumber = phoneNumberInput;
+            const doPairing = async (num: string, attempt: number = 1): Promise<void> => {
                 try {
-                    let code = await QasimDev.requestPairingCode(phoneNumberInput);
+                    let code = await QasimDev.requestPairingCode(num);
                     code = code?.match(/.{1,4}/g)?.join("-") || code;
                     console.log(chalk.black(chalk.bgGreen(`Your Pairing Code : `)), chalk.black(chalk.white(code)));
                     printLog('success', `Pairing code generated: ${code}`);
-                    if (rl && !rl.closed) {
-                        rl.close();
-                        rl = null;
-                    }
+                    if (rl && !rl.closed) { rl.close(); rl = null; }
                 } catch (error) {
-                    printLog('error', `Failed to get pairing code: ${error.message}`);
+                    printLog('error', `Pairing attempt ${attempt} failed: ${error.message}`);
+                    if (attempt < 3) {
+                        printLog('warning', `Clearing session, retry ${attempt + 1}/3 in 3s...`);
+                        try { rmSync('./session', { recursive: true, force: true }); } catch (_e) {}
+                        await delay(3000);
+                        startQasimDev();
+                    } else {
+                        printLog('error', 'All 3 pairing attempts failed. Please restart manually.');
+                    }
                 }
-            }, 3000);
+            };
+            setTimeout(() => doPairing(phoneNumberInput), 3000);
         } else if (isRegistered) {
             if (rl && !rl.closed) {
                 rl.close();
@@ -456,7 +466,15 @@ async function startQasimDev() {
         QasimDev.ev.on('connection.update', async (s) => {
             const { connection, lastDisconnect, qr } = s;
 
-            if (qr) printLog('info', 'QR Code generated. Please scan with WhatsApp');
+            if (qr) {
+                printLog('info', 'QR Code generated. Please scan with WhatsApp');
+                if (!pairingCode) {
+                    try {
+                        const qrcode = (await import('qrcode-terminal' as any)).default;
+                        qrcode.generate(qr, { small: true });
+                    } catch (_e) { console.log('QR:', qr); }
+                }
+            }
             if (connection === 'connecting') printLog('connection', 'Connecting to WhatsApp...');
 
             if (connection === "open") {

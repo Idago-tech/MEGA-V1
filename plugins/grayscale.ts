@@ -34,7 +34,7 @@ export default {
         buffer = Buffer.concat([buffer, chunk]);
       }
 
-      const tempFile = path.join(__dirname, `grayscale_${Date.now()}.jpg`);
+      const tempFile = path.join(process.cwd(), `grayscale_${Date.now()}.jpg`);
       fs.writeFileSync(tempFile, buffer);
 
       const form = new FormData();
@@ -50,7 +50,7 @@ export default {
 
       if (!res?.data) throw new Error('Grayscale conversion failed');
 
-      const grayFile = path.join(__dirname, `grayscale_result_${Date.now()}.jpg`);
+      const grayFile = path.join(process.cwd(), `grayscale_result_${Date.now()}.jpg`);
       fs.writeFileSync(grayFile, res.data);
 
       await sock.sendMessage(

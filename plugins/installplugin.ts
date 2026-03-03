@@ -41,7 +41,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ No valid files found in the Gist.' }, { quoted: message });
       }
 
-      const pluginDir = path.join(__dirname, '..', 'plugins');
+      const pluginDir = path.join(process.cwd(), 'plugins');
 
       for (const file of Object.values(gistData.files)) {
         const pluginName = (file as any).filename;

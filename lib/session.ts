@@ -22,7 +22,7 @@ async function SaveCreds(txt) {
         const response = await axios.get(gistUrl);
         const data = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
 
-        const sessionDir = path.join(__dirname, '..', 'session');
+        const sessionDir = path.join(process.cwd(), 'session');
         if (!fs.existsSync(sessionDir)) {
             fs.mkdirSync(sessionDir, { recursive: true });
         }
