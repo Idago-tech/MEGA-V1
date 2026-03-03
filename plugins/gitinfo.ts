@@ -28,7 +28,7 @@ export default {
       const behind = status.behind;
 
       const modifiedCount = status.files.length;
-      
+
       const remotes = await git.getRemotes(true);
       const remoteText = remotes.length
         ? remotes.map(r => `• ${r.name}: ${r.refs.fetch}`).join('\n')

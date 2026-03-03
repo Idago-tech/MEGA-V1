@@ -4,7 +4,7 @@ import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 
 async function getImageBuffer(message) {
   const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-  let imageMessage = quoted?.imageMessage || message.message?.imageMessage;
+  const imageMessage = quoted?.imageMessage || message.message?.imageMessage;
   if (!imageMessage) return null;
 
   const stream = await downloadContentFromMessage(imageMessage, 'image');

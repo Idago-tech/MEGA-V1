@@ -49,7 +49,7 @@ async function saveCloneSession(authId, data) {
     }
 }
 
-async function getCloneSession(authId) {
+async function _getCloneSession(authId) {
     if (HAS_DB) {
         return await store.getSetting('clones', authId);
     } else {
@@ -72,7 +72,7 @@ async function deleteCloneSession(authId) {
     }
 }
 
-async function getAllCloneSessions() {
+async function _getAllCloneSessions() {
     if (HAS_DB) {
         const settings = await store.getSetting('clones', 'all') || {};
         return Object.keys(settings);
@@ -93,14 +93,14 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const { chatId } = context;
-        
+
         if (!args[0]) {
-            return await sock.sendMessage(chatId, { 
-                text: `*Usage:* \`.rentbot 923051391xxx\`` 
+            return await sock.sendMessage(chatId, {
+                text: `*Usage:* \`.rentbot 923051391xxx\``
             }, { quoted: message });
         }
 
-        let userNumber = args[0].replace(/[^0-9]/g, '');
+        const userNumber = args[0].replace(/[^0-9]/g, '');
         const authId = crypto.randomBytes(4).toString('hex');
         const sessionPath = path.join(process.cwd(), 'session', 'clones', authId);
 
@@ -117,7 +117,7 @@ export default {
                 version,
                 logger: pino({ level: 'silent' }),
                 printQRInTerminal: false,
-                browser: Browsers.macOS("Chrome"), 
+                browser: Browsers.macOS("Chrome"),
                 auth: {
                     creds: state.creds,
                     keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" })),
@@ -136,7 +136,7 @@ export default {
                 try {
                     let code = await conn.requestPairingCode(userNumber);
                     code = code?.match(/.{1,4}/g)?.join("-") || code;
-                    
+
                     const pairingText = `*MEGA-MD CLONE SYSTEM*\n\n` +
                                        `Code: *${code}*\n` +
                                        `Storage: *${HAS_DB ? 'Database' : 'File System'}*\n\n` +
@@ -144,7 +144,7 @@ export default {
                                        `2. Tap Linked Devices > Link with Phone Number\n` +
                                        `3. Enter the code above.\n\n` +
                                        `*Tip:* If no popup appears, go to 'Link with phone number' on your phone and enter the code manually.`;
-                    
+
                     await sock.sendMessage(chatId, { text: pairingText }, { quoted: message });
                 } catch(err: any) {
                     console.error("Pairing Error:", err);
@@ -154,7 +154,7 @@ export default {
 
             conn.ev.on('creds.update', async () => {
                 await saveCreds();
-                
+
                 if (HAS_DB) {
                     try {
                         await saveCloneSession(authId, {
@@ -173,7 +173,7 @@ export default {
 
                 if (connection === 'open') {
                     global.conns.push(conn);
-                    
+
                     if (HAS_DB) {
                         await saveCloneSession(authId, {
                             userNumber,
@@ -182,18 +182,18 @@ export default {
                             connectedAt: Date.now()
                         });
                     }
-                    
-                    await sock.sendMessage(chatId, { 
+
+                    await sock.sendMessage(chatId, {
                         text: `✅ Clone is now Online!\n\n` +
                               `ID: ${authId}\n` +
-                              `Storage: ${HAS_DB ? 'Database' : 'File System'}` 
+                              `Storage: ${HAS_DB ? 'Database' : 'File System'}`
                     }, { quoted: message });
                 }
 
                 if (connection === 'close') {
                     const code = (lastDisconnect?.error as any)?.output?.statusCode;
                     if (code !== DisconnectReason.loggedOut) {
-                        startClone(); 
+                        startClone();
                     } else {
                         await deleteCloneSession(authId);
                         const index = global.conns.indexOf(conn);

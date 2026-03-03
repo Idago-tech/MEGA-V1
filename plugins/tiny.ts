@@ -23,7 +23,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ Error: Could not generate a short URL.' }, { quoted: message });
       }
 
-      const output = 
+      const output =
         `✨ *YOUR SHORT URL*\n\n` +
         `🔗 *Original Link:*\n${query}\n\n` +
         `✂️ *Shortened URL:*\n${shortUrl}`;

@@ -1,39 +1,30 @@
 import './config.js';
 
 
-import { Boom } from '@hapi/boom';
 import fs from 'fs';
 import { existsSync, mkdirSync, rmSync } from 'fs';
-import { join } from 'path';
 import path from 'path';
 import chalk from 'chalk';
 import syntaxerror from 'syntax-error';
-import axios from 'axios';
 import { parsePhoneNumber as PhoneNumber } from 'awesome-phonenumber';
 import readline from 'readline';
-import { parsePhoneNumber } from 'libphonenumber-js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { createRequire } from 'module';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const require = createRequire(import.meta.url);
 
-import { imageToWebp, videoToWebp, writeExifImg, writeExifVid } from './lib/exif.js';
-import { smsg, isUrl, generateMessageTag, getBuffer, getSizeMedia, sleep, reSize } from './lib/myfunc.js';
+
+import { smsg} from './lib/myfunc.js';
 import makeWASocket, {
     useMultiFileAuthState,
     DisconnectReason,
     fetchLatestBaileysVersion,
-    generateForwardMessageContent,
-    prepareWAMessageMedia,
-    generateWAMessageFromContent,
-    generateMessageID,
-    downloadContentFromMessage,
+
+
     Browsers,
     jidDecode,
-    proto,
+
     jidNormalizedUser,
     makeCacheableSignalKeyStore,
     delay
@@ -43,7 +34,7 @@ import pino from 'pino';
 
 import store from './lib/lightweight_store.js';
 import SaveCreds from './lib/session.js';
-import { app, server, PORT } from './lib/server.js';
+import { server, PORT } from './lib/server.js';
 import { printLog } from './lib/print.js';
 import {
     handleMessages,
@@ -75,7 +66,7 @@ setInterval(() => {
     }
 }, 30_000);
 
-let phoneNumber = global.PAIRING_NUMBER || process.env.PAIRING_NUMBER || "923051391005";
+const phoneNumber = global.PAIRING_NUMBER || process.env.PAIRING_NUMBER || "923051391005";
 
 // Auto-create data directory and default files on startup
 const DATA_DEFAULTS: Record<string, any> = {
@@ -225,7 +216,7 @@ server.listen(PORT, () => {
 
 async function startQasimDev() {
     try {
-        let { version, isLatest } = await fetchLatestBaileysVersion();
+        const { version } = await fetchLatestBaileysVersion();
 
         ensureSessionDirectory();
         await delay(1000);
@@ -255,8 +246,8 @@ async function startQasimDev() {
             generateHighQualityLinkPreview: true,
             syncFullHistory: false,
             getMessage: async (key) => {
-                let jid = jidNormalizedUser(key.remoteJid);
-                let msg = await store.loadMessage(jid, key.id);
+                const jid = jidNormalizedUser(key.remoteJid);
+                const msg = await store.loadMessage(jid, key.id);
                 return msg?.message || "";
             },
             msgRetryCounterCache,
@@ -372,20 +363,20 @@ async function startQasimDev() {
         QasimDev.decodeJid = (jid) => {
             if (!jid) return jid;
             if (/:\d+@/gi.test(jid)) {
-                let decode = jidDecode(jid) || {};
+                const decode = jidDecode(jid) || {};
                 return (decode as any).user && (decode as any).server && (decode as any).user + '@' + (decode as any).server || jid;
             } else return jid;
         };
 
         QasimDev.ev.on('contacts.update', update => {
-            for (let contact of update) {
-                let id = QasimDev.decodeJid(contact.id);
+            for (const contact of update) {
+                const id = QasimDev.decodeJid(contact.id);
                 if (store && store.contacts) store.contacts[id] = { id, name: contact.notify };
             }
         });
 
         QasimDev.getName = (jid, withoutContact = false) => {
-            let id = QasimDev.decodeJid(jid);
+            const id = QasimDev.decodeJid(jid);
             withoutContact = QasimDev.withoutContact || withoutContact;
             let v;
             if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
@@ -468,7 +459,7 @@ async function startQasimDev() {
             if (qr) printLog('info', 'QR Code generated. Please scan with WhatsApp');
             if (connection === 'connecting') printLog('connection', 'Connecting to WhatsApp...');
 
-            if (connection == "open") {
+            if (connection === "open") {
                 printLog('success', 'Bot connected successfully!');
 
                 // Dynamic import for setbio (avoids circular dependency issues)

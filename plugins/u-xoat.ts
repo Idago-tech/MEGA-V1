@@ -13,11 +13,11 @@ export default {
         const chatId = context.chatId || message.key.remoteJid;
 
         try {
-            const hasMedia = message.message?.imageMessage || 
-                           message.message?.videoMessage || 
-                           message.message?.stickerMessage || 
+            const hasMedia = message.message?.imageMessage ||
+                           message.message?.videoMessage ||
+                           message.message?.stickerMessage ||
                            message.message?.documentMessage;
-            
+
             const quotedMsg = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
             if (!hasMedia && !quotedMsg) {
@@ -26,7 +26,7 @@ export default {
             }
 
             const mediaSource = hasMedia ? message.message : quotedMsg;
-            const type = Object.keys(mediaSource).find(key => 
+            const type = Object.keys(mediaSource).find(key =>
                 ['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'].includes(key)
             );
 
@@ -60,7 +60,7 @@ export default {
 
             const result = await uploadToX0(tempPath);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `✅ *X0at Upload Success!*\n\n🔗 ${result.url}`
             }, { quoted: message });
 

@@ -207,33 +207,33 @@ export default {
   description: 'Update bot from git or zip without stopping',
   usage: '.update [zip_url]',
   ownerOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     try {
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: '🔄 Updating the bot, please wait…',
         ...channelInfo
       }, { quoted: message });
-      
+
       let changesSummary = '';
-      
+
       if (await hasGitRepo()) {
         const { oldRev, newRev, alreadyUpToDate, commits, files } = await updateViaGit();
-        
+
         if (alreadyUpToDate) {
           changesSummary = `✅ Already up to date\nCurrent: ${newRev.substring(0, 7)}`;
         } else {
           changesSummary = `✅ Updated successfully!\n\n`;
           changesSummary += `📌 Old: ${oldRev.substring(0, 7)}\n`;
           changesSummary += `📌 New: ${newRev.substring(0, 7)}\n\n`;
-          
+
           if (commits) {
             const commitLines = String(commits).split('\n').slice(0, 5);
             changesSummary += `📝 Recent commits:\n${commitLines.map(c => `• ${c}`).join('\n')}\n\n`;
           }
-          
+
           if (files) {
             const fileLines = String(files).split('\n').slice(0, 10);
             changesSummary += `📁 Changed files:\n${fileLines.map(f => `• ${f}`).join('\n')}`;
@@ -242,15 +242,15 @@ export default {
             }
           }
         }
-        
+
         await run('npm install --no-audit --no-fund');
       } else {
         const zipOverride = args[0] || null;
         const { copiedFiles } = await updateViaZip(sock, chatId, message, zipOverride);
-        
+
         changesSummary = `✅ Updated from ZIP!\n\n`;
         changesSummary += `📁 Files updated: ${copiedFiles.length}\n\n`;
-        
+
         if (copiedFiles.length > 0) {
           const shown = copiedFiles.slice(0, 10);
           changesSummary += `Recent changes:\n${shown.map(f => `• ${f}`).join('\n')}`;
@@ -259,25 +259,25 @@ export default {
           }
         }
       }
-      
+
       try {
         delete require.cache[require.resolve('../settings')];
         const newSettings = (await import('../config.js')).default;
         const v = newSettings.version || 'unknown';
         changesSummary += `\n\n🔖 Version: ${v}`;
       } catch {}
-      
-      await sock.sendMessage(chatId, { 
+
+      await sock.sendMessage(chatId, {
         text: changesSummary + '\n\n♻️ Restarting bot...',
         ...channelInfo
       }, { quoted: message });
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000));
       await restartProcess();
-      
+
     } catch(err: any) {
       console.error('Update failed:', err);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `❌ Update failed:\n${String(err.message || err)}`,
         ...channelInfo
       }, { quoted: message });

@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -23,16 +18,16 @@ export default {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
           await wait(1000);
-          const response = await axios.get(url, { 
+          const response = await axios.get(url, {
             timeout: 60000,
             headers: { 'User-Agent': 'Mozilla/5.0' }
           });
           return response;
         } catch(error: any) {
-          const isRateLimited = error.response?.status === 429 || 
+          const isRateLimited = error.response?.status === 429 ||
                                error.code === 'ECONNABORTED' ||
                                error.code === 'ETIMEDOUT';
-          
+
           if (attempt === maxRetries) throw error;
 
           if (isRateLimited) {
@@ -56,7 +51,7 @@ export default {
             timeout: 600000, // 10 minutes
             maxContentLength: Infinity,
             maxBodyLength: Infinity,
-            headers: { 
+            headers: {
               'User-Agent': 'Mozilla/5.0',
               'Referer': 'https://1024terabox.com/',
               'Accept': '*/*',
@@ -68,11 +63,11 @@ export default {
           return true;
         } catch(error: any) {
           console.error(`Download attempt ${attempt} failed:`, error.message);
-          
+
           if (attempt === maxRetries) {
             throw error;
           }
-          
+
           // Wait before retry
           const delay = 2000 * attempt;
           console.log(`Retrying download in ${delay}ms...`);
@@ -82,8 +77,8 @@ export default {
     };
 
     const isValidTeraBoxUrl = (url) => {
-      return url.includes('terabox.com') || 
-             url.includes('1024terabox.com') || 
+      return url.includes('terabox.com') ||
+             url.includes('1024terabox.com') ||
              url.includes('teraboxapp.com') ||
              url.includes('terabox.app');
     };
@@ -159,7 +154,7 @@ export default {
       // Check file size
       const stats = fs.statSync(filePath);
       const fileSizeInMB = stats.size / (1024 * 1024);
-      
+
       // WhatsApp has file size limits
       if (fileSizeInMB > 100) {
         fs.unlinkSync(filePath);
@@ -202,7 +197,7 @@ export default {
           },
           { quoted: message }
         );
-        
+
         await sock.sendMessage(
           chatId,
           { text: `✅ *Download Complete!*\n\n📄 *File:* ${title}\n📊 *Size:* ${size}` },
@@ -246,9 +241,9 @@ export default {
 
     } catch(error: any) {
       console.error('[TERABOX] Command Error:', error);
-      
+
       let errorMsg = "❌ *Download failed!*\n\n";
-      
+
       if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
         errorMsg += "*Reason:* Timeout - File might be too large or connection is slow";
       } else if (error.code === 'ECONNRESET' || error.message?.includes('aborted')) {
@@ -262,7 +257,7 @@ export default {
       } else {
         errorMsg += `*Error:* ${error.message || 'Unknown error'}`;
       }
-      
+
       errorMsg += "\n\n💡 *Tips:*\n- Make sure the link is public\n- Check if the link hasn't expired\n- Try with smaller files first\n- Wait 10-15 seconds between requests";
 
       await sock.sendMessage(

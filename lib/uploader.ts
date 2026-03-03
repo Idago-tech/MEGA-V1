@@ -7,7 +7,6 @@ import fs from 'fs'
 import * as cheerio from 'cheerio'
 
 
-
 function TelegraPh (Path) {
 	return new Promise (async (resolve, reject) => {
 		if (!fs.existsSync(Path)) return reject(new Error("File not Found"))
@@ -87,9 +86,9 @@ function webp2mp4File(path) {
 
 async function floNime(medianya, options = {}) {
 const { ext } = await fileTypeFromBuffer(medianya) || (options as any).ext
-        var form = new BodyForm()
+        const form = new BodyForm()
         form.append('file', medianya, 'tmp.'+ext)
-        let jsonnya = await fetch('https://flonime.my.id/upload', {
+        const jsonnya = await fetch('https://flonime.my.id/upload', {
                 method: 'POST',
                 body: form
         })

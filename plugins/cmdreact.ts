@@ -1,6 +1,5 @@
 
 import { setCommandReactState } from '../lib/reactions.js';
-import store from '../lib/lightweight_store.js';
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
@@ -16,12 +15,12 @@ export default {
   description: 'Toggle command reactions',
   usage: '.creact on/off',
   ownerOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     if (!args[0] || !['on', 'off'].includes(args[0])) {
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `*Usage:*\n.creact on/off\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}`,
         ...channelInfo
       }, { quoted: message });
@@ -30,13 +29,13 @@ export default {
 
     if (args[0] === 'on') {
       await setCommandReactState(true);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `*✅ Command reactions enabled*\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}`,
         ...channelInfo
       }, { quoted: message });
     } else if (args[0] === 'off') {
       await setCommandReactState(false);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `*❌ Command reactions disabled*\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}`,
         ...channelInfo
       }, { quoted: message });
@@ -44,4 +43,4 @@ export default {
   }
 };
 
-  
+

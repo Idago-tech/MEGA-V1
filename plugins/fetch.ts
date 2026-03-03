@@ -18,7 +18,7 @@ export default {
 
     try {
       await sock.sendMessage(chatId, { text: '📡 *Fetching data...*' });
-      
+
       const res = await axios.get(url, { responseType: 'arraybuffer' });
       const buffer = Buffer.from(res.data, 'binary');
       const type = await fileTypeFromBuffer(buffer);

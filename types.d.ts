@@ -1,4 +1,4 @@
-import type { WASocket, proto, WAMessage } from '@whiskeysockets/baileys';
+import type { WASocket, WAMessage } from '@whiskeysockets/baileys';
 
 export interface BotContext {
     chatId: string;

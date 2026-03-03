@@ -21,7 +21,7 @@ export default {
 
             const type = Object.keys(quotedMsg)[0];
             const supportedTypes = ['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'];
-            
+
             if (!supportedTypes.includes(type)) {
                 await sock.sendMessage(chatId, { text: '⚠️ Unsupported file type! Reply to image/video/gif/sticker/document' }, { quoted: message });
                 return;
@@ -56,7 +56,7 @@ export default {
 
             const result = await uploadFile(tempPath);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `✅ *Upload Successful!*\n\n` +
                       `📊 *Service:* ${result.service}\n` +
                       `📦 *Size:* ${fileSizeMB} MB\n` +
@@ -68,8 +68,8 @@ export default {
 
         } catch(error: any) {
             console.error('Upload Error:', error);
-            await sock.sendMessage(chatId, { 
-                text: `❌ Upload failed!\n\nError: ${error.message}` 
+            await sock.sendMessage(chatId, {
+                text: `❌ Upload failed!\n\nError: ${error.message}`
             }, { quoted: message });
         }
     }

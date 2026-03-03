@@ -26,7 +26,7 @@ async function fetchQuotes() {
           .split('\n')
           .map(line => line.trim())
           .filter(line => line.length > 10);
-        
+
         allQuotes.push(...lines);
       } catch(error: any) {
       }
@@ -48,7 +48,7 @@ async function fetchQuotes() {
 
     cachedQuotes = allQuotes;
     lastFetchTime = Date.now();
-    
+
     return allQuotes;
   } catch(error: any) {
     return cachedQuotes.length > 0 ? cachedQuotes : ['💎 By MEGA-MD - Your WhatsApp Bot'];
@@ -67,7 +67,7 @@ async function updateAutoBio(sock) {
 
     const quotes = await fetchQuotes();
     const randomQuote = getRandomQuote(quotes);
-    
+
     let bio;
     if (autoBioSettings.customBio) {
       bio = autoBioSettings.customBio.replace('{quote}', randomQuote);
@@ -179,11 +179,11 @@ export default {
 
       if (action === 'set') {
         let customBio = null;
-        
+
         const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         if (quoted) {
-          customBio = quoted.conversation || 
-                     quoted.extendedTextMessage?.text || 
+          customBio = quoted.conversation ||
+                     quoted.extendedTextMessage?.text ||
                      null;
         } else {
           customBio = args.slice(1).join(' ').trim();

@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import { dataFile } from '../lib/paths.js';
@@ -46,7 +41,7 @@ const getFolderSizeInMB = (folderPath) => {
 const cleanTempFolderIfLarge = () => {
     try {
         const sizeMB = getFolderSizeInMB(TEMP_MEDIA_DIR);
-        
+
         if (sizeMB > 200) {
             const files = fs.readdirSync(TEMP_MEDIA_DIR);
             for (const file of files) {

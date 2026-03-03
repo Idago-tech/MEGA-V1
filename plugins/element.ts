@@ -22,7 +22,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ Element not found.' }, { quoted: message });
       }
 
-      const text = 
+      const text =
         `🧪 *Element Info*\n` +
         `• Name: ${json.name}\n` +
         `• Symbol: ${json.symbol}\n` +

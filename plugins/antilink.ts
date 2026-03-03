@@ -16,7 +16,7 @@ async function setAntilink(chatId, type, action) {
     }
 }
 
-async function getAntilink(chatId, type) {
+async function getAntilink(chatId, _type) {
     try {
         const settings = await store.getSetting(chatId, 'antilink');
         return settings || null;
@@ -26,7 +26,7 @@ async function getAntilink(chatId, type) {
     }
 }
 
-async function removeAntilink(chatId, type) {
+async function removeAntilink(chatId, _type) {
     try {
         await store.saveSetting(chatId, 'antilink', {
             enabled: false,
@@ -88,11 +88,11 @@ export async function handleLinkDetection(sock, chatId, message, userMessage, se
         if (action === 'delete' || action === 'kick') {
             try {
                 await sock.sendMessage(chatId, {
-                    delete: { 
-                        remoteJid: chatId, 
-                        fromMe: false, 
-                        id: messageId, 
-                        participant: participant 
+                    delete: {
+                        remoteJid: chatId,
+                        fromMe: false,
+                        id: messageId,
+                        participant: participant
                     }
                 });
             } catch(error: any) {
@@ -199,15 +199,15 @@ export default {
                     return;
                 }
                 const setResult = await setAntilink(chatId, 'on', setAction);
-                
+
                 const actionDescriptions = {
                     delete: 'Delete link messages and warn users',
                     kick: 'Delete messages and remove users',
                     warn: 'Only send warning messages'
                 };
-                
+
                 await sock.sendMessage(chatId, {
-                    text: setResult 
+                    text: setResult
                         ? `✅ *Antilink action set to: ${setAction}*\n\n${actionDescriptions[setAction]}\n\n*Exempt:* Admins, Owner, Sudo users`
                         : '❌ *Failed to set antilink action*'
                 }, { quoted: message });

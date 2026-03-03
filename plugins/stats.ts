@@ -15,7 +15,6 @@
 
 
 import CommandHandler from '../lib/commandHandler.js';
-import settings from '../config.js';
 
 export default {
   command: 'perf',
@@ -30,13 +29,13 @@ export default {
 
     try {
       const report = CommandHandler.getDiagnostics();
-      
+
       if (!report || report.length === 0) {
         return await sock.sendMessage(chatId, { text: '_No performance data collected yet._' }, { quoted: message });
       }
 
       let text = `📊 *PLUGINS PERFORMANCE*\n\n`;
-      
+
       report.forEach((cmd, index) => {
         const errorText = cmd.errors > 0 ? `❗ Errors: ${cmd.errors}` : `✅ Smooth`;
         text += `${index + 1}. *${cmd.command.toUpperCase()}*\n`;
@@ -79,4 +78,4 @@ export default {
  *                 Unauthorized copying or distribution is prohibited.       *
  *                                                                           *
  *****************************************************************************/
-    
+

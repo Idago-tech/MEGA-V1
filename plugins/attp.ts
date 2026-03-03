@@ -1,7 +1,6 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
-import path from 'path';
-import { writeExifImg, writeExifVid } from '../lib/exif.js';
+import { writeExifVid } from '../lib/exif.js';
 
 export default {
   command: 'attp',
@@ -30,7 +29,7 @@ export default {
   }
 };
 
-function renderTextToPngWithFfmpeg(text) {
+function _renderTextToPngWithFfmpeg(text) {
     return new Promise((resolve, reject) => {
         const fontPath = process.platform === 'win32'
             ? 'C:/Windows/Fonts/arialbd.ttf'

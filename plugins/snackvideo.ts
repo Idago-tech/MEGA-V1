@@ -23,7 +23,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ No media found for this SnackVideo URL.' }, { quoted: message });
       }
 
-      for (let mediaItem of data.result) {
+      for (const mediaItem of data.result) {
         if (mediaItem.video) {
           await sock.sendMessage(chatId, { video: { url: mediaItem.video }, caption: '📹 SnackVideo Video' }, { quoted: message });
         }

@@ -21,7 +21,7 @@ export default {
 
             const type = Object.keys(quotedMsg)[0];
             const supportedTypes = ['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'];
-            
+
             if (!supportedTypes.includes(type)) {
                 await sock.sendMessage(chatId, { text: '⚠️ Unsupported type!' }, { quoted: message });
                 return;
@@ -56,7 +56,7 @@ export default {
 
             const result = await uploadToLitterbox(tempPath, uploadTime);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `✅ *Litterbox Upload Success!*\n\n` +
                       `⏰ *Expires:* ${result.expires}\n` +
                       `🔗 *URL:* ${result.url}\n\n` +

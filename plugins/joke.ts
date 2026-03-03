@@ -16,9 +16,9 @@ export default {
       await sock.sendMessage(chatId, { text: `😂 ${joke}` }, { quoted: message });
     } catch(error: any) {
       console.error('Error fetching dad joke:', error);
-      await sock.sendMessage(chatId, { 
-        text: 'Sorry, I could not fetch a joke right now. Please try again later.', 
-        quoted: message 
+      await sock.sendMessage(chatId, {
+        text: 'Sorry, I could not fetch a joke right now. Please try again later.',
+        quoted: message
       });
     }
   }

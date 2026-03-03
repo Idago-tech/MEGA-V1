@@ -33,14 +33,14 @@ export default {
 
     try {
       await sock.sendMessage(chatId, { text: '🌐 *Fetching source code...*' });
-      
+
       const res = await axios.get(url);
       const html = res.data;
       const buffer = Buffer.from(html, 'utf-8');
 
-      await sock.sendMessage(chatId, { 
-        document: buffer, 
-        mimetype: 'text/html', 
+      await sock.sendMessage(chatId, {
+        document: buffer,
+        mimetype: 'text/html',
         fileName: 'source.html',
         caption: `*Source code for:* ${url}`
       }, { quoted: message });

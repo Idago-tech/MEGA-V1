@@ -37,7 +37,7 @@ export default {
           { quoted: message }
         );
       }
-        
+
       const igRegex =
         /https?:\/\/(www\.)?(instagram\.com|instagr\.am)\/(p|reel|tv)\//i;
 

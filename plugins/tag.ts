@@ -1,9 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-import isAdmin from '../lib/isAdmin.js';
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import fs from 'fs';
 import path from 'path';
@@ -27,10 +21,10 @@ export default {
   usage: '.tag [message] or reply to a message',
   groupOnly: true,
   adminOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
-    const { chatId, senderId, channelInfo, messageText } = context;
-    
+    const { chatId, _senderId, channelInfo, _messageText } = context;
+
     const groupMetadata = await sock.groupMetadata(chatId);
     const participants = groupMetadata.participants;
     const mentionedJidList = participants.map(p => p.id);

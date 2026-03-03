@@ -6,7 +6,7 @@ export async function handleTagDetection(sock, chatId, message, senderId) {
         if (!antitagSetting || !antitagSetting.enabled) return;
 
         const mentionedJids = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-        
+
         const messageText = (
             message.message?.conversation ||
             message.message?.extendedTextMessage?.text ||
@@ -17,14 +17,14 @@ export async function handleTagDetection(sock, chatId, message, senderId) {
 
         const textMentions = messageText.match(/@[\d+\s\-()~.]+/g) || [];
         const numericMentions = messageText.match(/@\d{10,}/g) || [];
-        const allMentions = [...new Set([...mentionedJids, ...textMentions, ...numericMentions])];
-        
+        const _allMentions = [...new Set([...mentionedJids, ...textMentions, ...numericMentions])];
+
         const uniqueNumericMentions = new Set();
         numericMentions.forEach(mention => {
             const numMatch = mention.match(/@(\d+)/);
             if (numMatch) uniqueNumericMentions.add(numMatch[1]);
         });
-        
+
         const mentionedJidCount = mentionedJids.length;
         const numericMentionCount = uniqueNumericMentions.size;
         const totalMentions = Math.max(mentionedJidCount, numericMentionCount);
@@ -33,13 +33,13 @@ export async function handleTagDetection(sock, chatId, message, senderId) {
             const groupMetadata = await sock.groupMetadata(chatId);
             const participants = groupMetadata.participants || [];
             const mentionThreshold = Math.ceil(participants.length * 0.5);
-            
-            const hasManyNumericMentions = numericMentionCount >= 10 || 
+
+            const hasManyNumericMentions = numericMentionCount >= 10 ||
                                           (numericMentionCount >= 5 && numericMentionCount >= mentionThreshold);
-            
+
             if (totalMentions >= mentionThreshold || hasManyNumericMentions) {
                 const action = antitagSetting.action || 'delete';
-                
+
                 if (action === 'delete') {
                     await sock.sendMessage(chatId, {
                         delete: {
@@ -49,12 +49,12 @@ export async function handleTagDetection(sock, chatId, message, senderId) {
                             participant: senderId
                         }
                     });
-                    
+
                     await sock.sendMessage(chatId, {
                         text: `⚠️ *Tagall Detected!*\n\n@${senderId.split('@')[0]}, tagging all members is not allowed.`,
                         mentions: [senderId]
                     });
-                    
+
                 } else if (action === 'kick') {
                     await sock.sendMessage(chatId, {
                         delete: {
@@ -127,8 +127,8 @@ export default {
                 }
                 const result = await setAntitag(chatId, 'on', 'delete');
                 await sock.sendMessage(chatId, {
-                    text: result 
-                        ? '✅ *Antitag enabled successfully!*\n\nDefault action: Delete tagall messages' 
+                    text: result
+                        ? '✅ *Antitag enabled successfully!*\n\nDefault action: Delete tagall messages'
                         : '❌ *Failed to enable antitag*'
                 }, { quoted: message });
                 break;
@@ -155,14 +155,14 @@ export default {
                     return;
                 }
                 const setResult = await setAntitag(chatId, 'on', setAction);
-                
+
                 const actionDescriptions = {
                     delete: 'Delete tagall messages and warn users',
                     kick: 'Delete messages and remove users from group'
                 };
-                
+
                 await sock.sendMessage(chatId, {
-                    text: setResult 
+                    text: setResult
                         ? `✅ *Antitag action set to: ${setAction}*\n\n${actionDescriptions[setAction]}`
                         : '❌ *Failed to set antitag action*'
                 }, { quoted: message });

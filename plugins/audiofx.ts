@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import fs from 'fs';

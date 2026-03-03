@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 /*****************************************************************************
  *                                                                           *
  *                     Developed By Qasim Ali                                *
@@ -25,8 +20,8 @@ import path from 'path';
 import fs from 'fs';
 function formatTime() {
     const now = new Date();
-    const options = { 
-        hour: '2-digit', 
+    const options = {
+        hour: '2-digit',
         minute: '2-digit',
         hour12: false,
         timeZone: settings.timeZone || 'UTC'
@@ -36,7 +31,7 @@ function formatTime() {
 
 const menuStyles = [
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `╭━━『 *MEGA MENU* 』━⬣\n`;
       t += `┃ ✨ *Bot: ${info.bot}*\n`;
       t += `┃ 🔧 *Prefix: ${info.prefix}*\n`;
@@ -55,7 +50,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `◈╭─❍「 *MEGA MENU* 」❍\n`;
       t += `◈├• 🌟 *Bot: ${info.bot}*\n`;
       t += `◈├• ⚙️ *Prefix: ${info.prefix}*\n`;
@@ -74,7 +69,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `┏━━━━ *MEGA MENU* ━━━┓\n`;
       t += `┃• *Bot : ${info.bot}*\n`;
       t += `┃• *Prefixes : ${info.prefix}*\n`;
@@ -93,7 +88,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `✦═══ *MEGA MENU* ═══✦\n`;
       t += `║➩ *Bot: ${info.bot}*\n`;
       t += `║➩ *Prefixes: ${info.prefix}*\n`;
@@ -112,7 +107,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `❀━━━ *MEGA MENU* ━━━❀\n`;
       t += `┃☞ *Bot: ${info.bot}*\n`;
       t += `┃☞ *Prefixes: ${info.prefix}*\n`;
@@ -131,7 +126,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `◆━━━ *MEGA MENU* ━━━◆\n`;
       t += `┃ ¤ *Bot: ${info.bot}*\n`;
       t += `┃ ¤ *Prefixes: ${info.prefix}*\n`;
@@ -149,7 +144,7 @@ const menuStyles = [
   },
 
   {
-    render({ title, info, categories, prefix }) {
+    render({ _title, info, categories, prefix }) {
       let t = `╭───⬣ *MEGA MENU* ──⬣\n`;
       t += ` | ● *Bot: ${info.bot}*\n`;
       t += ` | ● *Prefixes: ${info.prefix}*\n`;
@@ -183,22 +178,22 @@ export default {
 
     if (args.length) {
       const searchTerm = args[0].toLowerCase();
-      
+
       let cmd = commandHandler.commands.get(searchTerm);
-      
+
       if (!cmd && commandHandler.aliases.has(searchTerm)) {
         const mainCommand = commandHandler.aliases.get(searchTerm);
         cmd = commandHandler.commands.get(mainCommand);
       }
-      
+
       if (!cmd) {
-        return (sock as any).sendMessage(chatId, { 
+        return (sock as any).sendMessage(chatId, {
           text: `❌ Command "${args[0]}" not found.\n\nUse ${prefix}menu to see all commands.`,
           ...channelInfo
         }, { quoted: message });
       }
 
-      const text = 
+      const text =
 `╭━━━━━━━━━━━━━━⬣
 ┃ 📌 *COMMAND INFO*
 ┃

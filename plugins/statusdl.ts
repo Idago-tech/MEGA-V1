@@ -16,8 +16,8 @@ export default {
     const contextInfo = m[type]?.contextInfo;
 
     if (!contextInfo || contextInfo.remoteJid !== 'status@broadcast') {
-      return await sock.sendMessage(chatId, { 
-        text: "Please reply/quote a Status update to download it." 
+      return await sock.sendMessage(chatId, {
+        text: "Please reply/quote a Status update to download it."
       }, { quoted: message });
     }
 

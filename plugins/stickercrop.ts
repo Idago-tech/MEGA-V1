@@ -49,9 +49,8 @@ export async function stickercropFromBuffer(inputBuffer, isAnimated) {
   const exif = Buffer.concat([exifAttr, jsonBuffer]);
   exif.writeUIntLE(jsonBuffer.length, 14, 4);
   img.exif = exif;
-  let finalBuffer = await img.save(null);
+  const finalBuffer = await img.save(null);
   console.log('[STICKER DEBUG] final size:', finalBuffer.length, 'bytes', (finalBuffer.length/1024).toFixed(1), 'KB');
-
 
 
   try {
@@ -68,7 +67,7 @@ export default {
   category: 'stickers',
   description: 'Crop image/video/sticker to circle sticker',
   usage: '.crop (reply to image/video/sticker)',
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
     const messageToQuote = message;
@@ -89,7 +88,7 @@ export default {
     const mediaMessage = targetMessage.message?.imageMessage || targetMessage.message?.videoMessage || targetMessage.message?.documentMessage || targetMessage.message?.stickerMessage;
 
     if (!mediaMessage) {
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Please reply to an image/video/sticker with .crop, or send an image/video/sticker with .crop as the caption.',
         ...channelInfo
       }, { quoted: messageToQuote });
@@ -97,38 +96,38 @@ export default {
     }
 
     try {
-      const mediaBuffer = await downloadMediaMessage(targetMessage, 'buffer', {}, { 
-        logger: undefined, 
-        reuploadRequest: sock.updateMediaMessage 
+      const mediaBuffer = await downloadMediaMessage(targetMessage, 'buffer', {}, {
+        logger: undefined,
+        reuploadRequest: sock.updateMediaMessage
       });
 
       if (!mediaBuffer) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: 'Failed to download media. Please try again.',
           ...channelInfo
         }, { quoted: messageToQuote });
         return;
       }
-      
+
       const tmpDir = path.join(process.cwd(), 'tmp');
       if (!fs.existsSync(tmpDir)) {
         fs.mkdirSync(tmpDir, { recursive: true });
       }
-      
+
       const tempInput = path.join(tmpDir, `temp_${Date.now()}`);
       const tempOutput = path.join(tmpDir, `crop_${Date.now()}.webp`);
 
       fs.writeFileSync(tempInput, mediaBuffer);
-      
-      const isAnimated = mediaMessage.mimetype?.includes('gif') || 
-                        mediaMessage.mimetype?.includes('video') || 
+
+      const isAnimated = mediaMessage.mimetype?.includes('gif') ||
+                        mediaMessage.mimetype?.includes('video') ||
                         mediaMessage.seconds > 0;
 
       const fileSizeKB = mediaBuffer.length / 1024;
       const isLargeFile = fileSizeKB > 5000;
 
       let ffmpegCommand;
-      
+
       if (isAnimated) {
         if (isLargeFile) {
           ffmpegCommand = `ffmpeg -i "${tempInput}" -t 2 -vf "crop=min(iw\\,ih):min(iw\\,ih),scale=512:512,fps=8" -c:v libwebp -preset default -loop 0 -vsync 0 -pix_fmt yuva420p -quality 30 -compression_level 6 -b:v 100k -max_muxing_queue_size 1024 "${tempOutput}"`;
@@ -160,15 +159,15 @@ export default {
       if (outputStats.size === 0) {
         throw new Error('FFmpeg created empty output file');
       }
-      
-      let webpBuffer = fs.readFileSync(tempOutput);
+
+      const webpBuffer = fs.readFileSync(tempOutput);
       const finalSizeKB = webpBuffer.length / 1024;
       console.log(`Final sticker size: ${Math.round(finalSizeKB)} KB`);
-      
+
       if (finalSizeKB > 1000) {
         console.log(`⚠️ Warning: Sticker size (${Math.round(finalSizeKB)} KB) exceeds recommended limit but will be sent anyway`);
       }
-      
+
       const img = new webp.Image();
       await img.load(webpBuffer);
 
@@ -184,12 +183,11 @@ export default {
       exif.writeUIntLE(jsonBuffer.length, 14, 4);
 
       img.exif = exif;
-      let finalBuffer = await img.save(null);
+      const finalBuffer = await img.save(null);
   console.log('[STICKER DEBUG] final size:', finalBuffer.length, 'bytes', (finalBuffer.length/1024).toFixed(1), 'KB');
 
 
-
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         sticker: finalBuffer,
         ...channelInfo
       }, { quoted: messageToQuote });
@@ -203,12 +201,12 @@ export default {
 
     } catch(error: any) {
       console.error('Error in stickercrop command:', error);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Failed to crop sticker! Try with an image.',
         ...channelInfo
       }, { quoted: messageToQuote });
     }
   },
-  
+
   stickercropFromBuffer
 };

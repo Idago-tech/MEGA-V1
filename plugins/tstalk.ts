@@ -20,7 +20,7 @@ export default {
 
     try {
       const apiUrl = `https://discardapi.onrender.com/api/stalk/threads?apikey=guru&url=${username}`;
-      const { data } = await axios.get(apiUrl, { 
+      const { data } = await axios.get(apiUrl, {
         timeout: 45000,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'

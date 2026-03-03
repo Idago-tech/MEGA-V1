@@ -11,10 +11,10 @@ async function mediafireDl(url) {
         const $ = cheerio.load(data);
         const link = $('#downloadButton').attr('href');
         const name = $('div.dl-info > div.promo-text').text().trim() || $('.dl-btn-label').attr('title');
-        
+
         const size = $('#downloadButton').text().replace(/Download|[\(\)]|\s/g, '').trim() || 'Unknown';
         const ext = name.split('.').pop();
-        
+
         return { name, size, link, ext };
     } catch(e: any) {
         return null;
@@ -66,10 +66,10 @@ export default {
       }
 
       let mimeType = 'application/octet-stream';
-      const mimes = { 
-        'zip': 'application/zip', 
-        'pdf': 'application/pdf', 
-        'apk': 'application/vnd.android.package-archive', 
+      const mimes = {
+        'zip': 'application/zip',
+        'pdf': 'application/pdf',
+        'apk': 'application/vnd.android.package-archive',
         'mp4': 'video/mp4',
         'mp3': 'audio/mpeg',
         'jpg': 'image/jpeg',

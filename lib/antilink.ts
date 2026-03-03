@@ -26,13 +26,13 @@ async function Antilink(msg, sock) {
 	const jid = msg.key.remoteJid;
 	if (!isJidGroup(jid)) return;
 
-	const SenderMessage = msg.message?.conversation || 
+	const SenderMessage = msg.message?.conversation ||
 						 msg.message?.extendedTextMessage?.text || '';
 	if (!SenderMessage || typeof SenderMessage !== 'string') return;
 
 	const sender = msg.key.participant;
 	if (!sender) return;
-	
+
 	try {
 		const { isSenderAdmin } = await isAdmin(sock, jid, sender);
 		if (isSenderAdmin) return;
@@ -41,20 +41,20 @@ async function Antilink(msg, sock) {
 	if (senderIsSudo) return;
 
 	if (!containsURL(SenderMessage.trim())) return;
-	
+
 	const antilinkConfig = await getAntilink(jid, 'on');
 	if (!antilinkConfig) return;
 
 	const action = antilinkConfig.action;
-	
+
 	try {
 		await sock.sendMessage(jid, { delete: msg.key });
 
 		switch (action) {
 			case 'delete':
-				await sock.sendMessage(jid, { 
+				await sock.sendMessage(jid, {
 					text: `\`\`\`@${sender.split('@')[0]} link are not allowed here\`\`\``,
-					mentions: [sender] 
+					mentions: [sender]
 				});
 				break;
 

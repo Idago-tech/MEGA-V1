@@ -8,25 +8,25 @@ export default {
   usage: '.npmstalk <package-name>',
 
   async handler(sock: any, message: any, args: any, context: any = {}) {
-    const { chatId, usedPrefix, command } = context;
+    const { chatId, _usedPrefix, _command } = context;
 
     if (!args[0]) {
-      return await sock.sendMessage(chatId, { 
-        text: `✳️ Please provide an NPM package name.\n\nExample:\n.npmstalk axios` 
+      return await sock.sendMessage(chatId, {
+        text: `✳️ Please provide an NPM package name.\n\nExample:\n.npmstalk axios`
       }, { quoted: message });
     }
 
     try {
 
-      let res = await QasimAny.npmStalk(args[0]);
+      const res = await QasimAny.npmStalk(args[0]);
 
       if (!res || !res.result) {
-        throw 'Package not found or API error.';
+        throw new Error('Package not found or API error.');
       }
 
       const data = res.result;
       const authorName = (typeof data.author === 'object') ? data.author.name : (data.author || 'Unknown');
-      
+
       const versionCount = data.versions ? Object.keys(data.versions).length : 0;
 
       let te = `┌──「 *NPM PACKAGE INFO* 」\n`;
@@ -48,4 +48,4 @@ export default {
     }
   }
 };
-        
+

@@ -6,7 +6,7 @@ export default {
   category: 'tools',
   description: 'Translate text to the specified language.',
   usage: '.translate <text> <lang> or reply to a message with .translate <lang>',
-  
+
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
 
@@ -19,10 +19,10 @@ export default {
 
       const quotedMessage = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
       if (quotedMessage) {
-        textToTranslate = quotedMessage.conversation || 
-                          quotedMessage.extendedTextMessage?.text || 
-                          quotedMessage.imageMessage?.caption || 
-                          quotedMessage.videoMessage?.caption || 
+        textToTranslate = quotedMessage.conversation ||
+                          quotedMessage.extendedTextMessage?.text ||
+                          quotedMessage.imageMessage?.caption ||
+                          quotedMessage.videoMessage?.caption ||
                           '';
 
         lang = args[0]?.trim();
@@ -46,7 +46,6 @@ export default {
       }
 
       let translatedText = null;
-      let error = null;
       try {
         const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${lang}&dt=t&q=${encodeURIComponent(textToTranslate)}`);
         if (response.ok) {
@@ -56,7 +55,6 @@ export default {
           }
         }
       } catch(e: any) {
-        error = e;
       }
       if (!translatedText) {
         try {
@@ -68,7 +66,6 @@ export default {
             }
           }
         } catch(e: any) {
-          error = e;
         }
       }
       if (!translatedText) {
@@ -81,7 +78,6 @@ export default {
             }
           }
         } catch(e: any) {
-          error = e;
         }
       }
       if (!translatedText) {

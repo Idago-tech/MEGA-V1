@@ -6,7 +6,7 @@ const MYSQL_URL = process.env.MYSQL_URL;
 const SQLITE_URL = process.env.DB_URL;
 const HAS_DB = !!(MONGO_URL || POSTGRES_URL || MYSQL_URL || SQLITE_URL);
 
-let notesDB = {};
+const notesDB = {};
 
 async function getUserNotes(userId) {
   if (HAS_DB) {
@@ -65,7 +65,7 @@ export default {
             text: "*Please write a note to save.*\nExample: .notes add buy milk"
           }, { quoted: message });
         }
-        
+
         const userNotes = await getUserNotes(sender);
         const newID = userNotes.length + 1;
         userNotes.push({ id: newID, text: content, createdAt: Date.now() });
@@ -82,23 +82,23 @@ export default {
         }
 
         const list = userNotes.map(n => `${n.id}. ${n.text}`).join("\n");
-        return await sock.sendMessage(chatId, { 
-          text: `*📝 Your Notes:*\n\n${list}\n\n_Total: ${userNotes.length} notes_` 
+        return await sock.sendMessage(chatId, {
+          text: `*📝 Your Notes:*\n\n${list}\n\n_Total: ${userNotes.length} notes_`
         }, { quoted: message });
       }
       if (action === 'del') {
         const id = parseInt(args[1]);
         const userNotes = await getUserNotes(sender);
-        
+
         if (!id || !userNotes.find(n => n.id === id)) {
           return await sock.sendMessage(chatId, {
             text: "Invalid note ID.\nExample: .notes del 1"
           }, { quoted: message });
         }
-        
+
         const filteredNotes = userNotes.filter(n => n.id !== id);
         await saveUserNotes(sender, filteredNotes);
-        
+
         return await sock.sendMessage(chatId, { text: `*✅ Note ID ${id} deleted.*` }, { quoted: message });
       }
       if (action === 'delall') {
@@ -106,7 +106,7 @@ export default {
         if (userNotes.length === 0) {
           return await sock.sendMessage(chatId, { text: "*You have no notes to delete.*" }, { quoted: message });
         }
-        
+
         await saveUserNotes(sender, []);
         return await sock.sendMessage(chatId, { text: "*✅ All notes deleted successfully.*" }, { quoted: message });
       }

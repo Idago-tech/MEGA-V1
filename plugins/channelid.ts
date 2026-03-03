@@ -8,7 +8,7 @@ export default {
 
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
-    
+
     let url = args[0] || "";
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     if (quoted) {
@@ -16,8 +16,8 @@ export default {
     }
 
     if (!url || !url.includes('whatsapp.com/channel/')) {
-      return await sock.sendMessage(chatId, { 
-        text: 'Please provide a valid WhatsApp Channel URL.\n\n*Example:* .channelid https://whatsapp.com/channel/xxxxx' 
+      return await sock.sendMessage(chatId, {
+        text: 'Please provide a valid WhatsApp Channel URL.\n\n*Example:* .channelid https://whatsapp.com/channel/xxxxx'
       }, { quoted: message });
     }
 
@@ -35,8 +35,8 @@ export default {
 
     } catch(err: any) {
       console.error('Channel ID Error:', err);
-      await sock.sendMessage(chatId, { 
-        text: '❌ *Failed to resolve:* This channel might be private, deleted, or the link is invalid.' 
+      await sock.sendMessage(chatId, {
+        text: '❌ *Failed to resolve:* This channel might be private, deleted, or the link is invalid.'
       }, { quoted: message });
     }
   }

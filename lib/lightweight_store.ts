@@ -92,7 +92,7 @@ function slimMessage(msg) {
 }
 
 let backend = 'memory'
-let adapters = {}
+const adapters = {}
 let cleanupTimer = null
 let messageLimit = MESSAGE_LIMITS.memory
 
@@ -103,21 +103,21 @@ let messageLimit = MESSAGE_LIMITS.memory
 if (MONGO_URL) {
   try {
     const mongoose = require('mongoose')
-    
+
     const msgSchema = new mongoose.Schema({
       jid: { type: String, index: true },
       id: { type: String, unique: true },
       data: Buffer,
       ts: { type: Number, index: true }
     })
-    
+
     const countSchema = new mongoose.Schema({
       chatId: { type: String, required: true },
       userId: { type: String, required: true },
       count: { type: Number, default: 0 }
     })
     countSchema.index({ chatId: 1, userId: 1 }, { unique: true })
-    
+
     const metaSchema = new mongoose.Schema({
       key: { type: String, unique: true, required: true },
       value: { type: String, required: true }
@@ -146,16 +146,16 @@ if (MONGO_URL) {
       ts: { type: Number, default: Date.now }
     })
     settingSchema.index({ chatId: 1, key: 1 }, { unique: true })
-    
+
     mongoose.connect(MONGO_URL).catch(err => console.error('[MONGO] Connection error:', err))
-    
+
     const Msg = mongoose.model('Message', msgSchema)
     const MsgCount = mongoose.model('MessageCount', countSchema)
     const Meta = mongoose.model('Metadata', metaSchema)
     const Contact = mongoose.model('Contact', contactSchema)
     const Chat = mongoose.model('Chat', chatSchema)
     const Setting = mongoose.model('Setting', settingSchema)
-    
+
     adapters.mongo = {
       async save(jid, id, msg) {
         try {
@@ -168,7 +168,7 @@ if (MONGO_URL) {
           console.error(`[MONGO] Save error:`, e.message)
         }
       },
-      
+
       async load(jid, id) {
         try {
           const row = await Msg.findOne({ jid, id })
@@ -178,7 +178,7 @@ if (MONGO_URL) {
           return null
         }
       },
-      
+
       async incrementCount(chatId, userId) {
         try {
           await MsgCount.updateOne(
@@ -190,7 +190,7 @@ if (MONGO_URL) {
           console.error('[MONGO] Increment count error:', e.message)
         }
       },
-      
+
       async getCount(chatId, userId) {
         try {
           const doc = await MsgCount.findOne({ chatId, userId })
@@ -200,7 +200,7 @@ if (MONGO_URL) {
           return 0
         }
       },
-      
+
       async getAllCounts() {
         try {
           const docs = await MsgCount.find({})
@@ -219,7 +219,7 @@ if (MONGO_URL) {
           return { isPublic: true, messageCount: {} }
         }
       },
-      
+
       async setPublicMode(isPublic) {
         try {
           await Meta.updateOne(
@@ -372,7 +372,7 @@ if (MONGO_URL) {
           return {}
         }
       },
-      
+
       async cleanup() {
         try {
           const result = await Msg.deleteMany({ ts: { $lt: Date.now() - TTL_MS } })
@@ -383,7 +383,7 @@ if (MONGO_URL) {
           console.error('[MONGO] Cleanup error:', e.message)
         }
       },
-      
+
       async close() {
         try {
           await mongoose.connection.close()
@@ -393,7 +393,7 @@ if (MONGO_URL) {
         }
       }
     }
-    
+
     backend = 'mongo'
     messageLimit = MESSAGE_LIMITS.mongo
     printLog('store', 'MongoDB enabled - Unlimited message storage with full data persistence')
@@ -409,7 +409,7 @@ if (MONGO_URL) {
 if (backend === 'memory' && POSTGRES_URL) {
   try {
     const { Pool } = require('pg')
-    const pool = new Pool({ 
+    const pool = new Pool({
       connectionString: POSTGRES_URL,
       ssl: { rejectUnauthorized: false },
       max: 20,
@@ -419,19 +419,19 @@ if (backend === 'memory' && POSTGRES_URL) {
       keepAlive: true,
       keepAliveInitialDelayMillis: 10000
     })
-    
+
     pool.on('error', (err) => {
       printLog('error', `PostgreSQL pool error: ${err.message}`)
     })
-    
+
     adapters.postgres = {
       initialized: false,
       initPromise: null,
-      
+
       async init() {
         if (this.initialized) return
         if (this.initPromise) return this.initPromise
-        
+
         this.initPromise = (async () => {
           try {
             const client = await pool.connect()
@@ -446,7 +446,7 @@ if (backend === 'memory' && POSTGRES_URL) {
               `)
               await client.query(`CREATE INDEX IF NOT EXISTS idx_messages_jid ON messages(jid)`)
               await client.query(`CREATE INDEX IF NOT EXISTS idx_messages_ts ON messages(ts)`)
-              
+
               await client.query(`
                 CREATE TABLE IF NOT EXISTS message_counts (
                   chat_id TEXT NOT NULL,
@@ -455,7 +455,7 @@ if (backend === 'memory' && POSTGRES_URL) {
                   PRIMARY KEY (chat_id, user_id)
                 )
               `)
-              
+
               await client.query(`
                 CREATE TABLE IF NOT EXISTS metadata (
                   key TEXT PRIMARY KEY,
@@ -492,7 +492,7 @@ if (backend === 'memory' && POSTGRES_URL) {
                   PRIMARY KEY (chat_id, key)
                 )
               `)
-              
+
               this.initialized = true
               printLog('store', 'PostgreSQL connected and tables ready')
             } finally {
@@ -504,10 +504,10 @@ if (backend === 'memory' && POSTGRES_URL) {
             throw e
           }
         })()
-        
+
         return this.initPromise
       },
-      
+
       async save(jid, id, msg) {
         try {
           await this.init()
@@ -525,7 +525,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           console.error(`[POSTGRES] Save error:`, e.message)
         }
       },
-      
+
       async load(jid, id) {
         try {
           await this.init()
@@ -544,7 +544,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           return null
         }
       },
-      
+
       async incrementCount(chatId, userId) {
         try {
           await this.init()
@@ -562,7 +562,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           console.error('[POSTGRES] Increment count error:', e.message)
         }
       },
-      
+
       async getCount(chatId, userId) {
         try {
           await this.init()
@@ -581,7 +581,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           return 0
         }
       },
-      
+
       async getAllCounts() {
         try {
           await this.init()
@@ -606,7 +606,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           return { isPublic: true, messageCount: {} }
         }
       },
-      
+
       async setPublicMode(isPublic) {
         try {
           await this.init()
@@ -842,7 +842,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           return {}
         }
       },
-      
+
       async cleanup() {
         try {
           await this.init()
@@ -862,7 +862,7 @@ if (backend === 'memory' && POSTGRES_URL) {
           console.error('[POSTGRES] Cleanup error:', e.message)
         }
       },
-      
+
       async close() {
         try {
           await pool.end()
@@ -872,7 +872,7 @@ if (backend === 'memory' && POSTGRES_URL) {
         }
       }
     }
-    
+
     backend = 'postgres'
     messageLimit = MESSAGE_LIMITS.postgres
     printLog('store', 'PostgreSQL enabled - Unlimited message storage with full data persistence')
@@ -893,16 +893,16 @@ if (backend === 'memory' && MYSQL_URL) {
     let connectionAttempts = 0
     let connectionFailed = false
     const MAX_RETRIES = 3
-    
+
     adapters.mysql = {
       async getConn() {
         if (connectionFailed) {
           throw new Error('MySQL connection permanently failed after multiple attempts')
         }
-        
+
         if (mysqlConn) return mysqlConn
         if (connectPromise) return connectPromise
-        
+
         if (connectionAttempts >= MAX_RETRIES) {
           connectionFailed = true
           printLog('error', 'MySQL: Max connection attempts reached, disabling MySQL adapter')
@@ -913,7 +913,7 @@ if (backend === 'memory' && MYSQL_URL) {
           try {
             connectionAttempts++
             mysqlConn = await mysql.createConnection(MYSQL_URL)
-            
+
             // Create all tables
             await mysqlConn.execute(`
               CREATE TABLE IF NOT EXISTS messages (
@@ -925,7 +925,7 @@ if (backend === 'memory' && MYSQL_URL) {
                 INDEX idx_ts (ts)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             `)
-            
+
             await mysqlConn.execute(`
               CREATE TABLE IF NOT EXISTS message_counts (
                 chat_id VARCHAR(255) NOT NULL,
@@ -934,7 +934,7 @@ if (backend === 'memory' && MYSQL_URL) {
                 PRIMARY KEY (chat_id, user_id)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             `)
-            
+
             await mysqlConn.execute(`
               CREATE TABLE IF NOT EXISTS metadata (
                 \`key\` VARCHAR(255) PRIMARY KEY,
@@ -971,7 +971,7 @@ if (backend === 'memory' && MYSQL_URL) {
                 PRIMARY KEY (chat_id, \`key\`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             `)
-            
+
             printLog('store', 'MySQL connection established and tables ready')
             return mysqlConn
           } catch (e) {
@@ -981,10 +981,10 @@ if (backend === 'memory' && MYSQL_URL) {
             throw e
           }
         })()
-        
+
         return connectPromise
       },
-      
+
       async save(jid, id, msg) {
         try {
           const conn = await this.getConn()
@@ -997,7 +997,7 @@ if (backend === 'memory' && MYSQL_URL) {
           console.error(`[MYSQL] Save error:`, e.message)
         }
       },
-      
+
       async load(jid, id) {
         try {
           const conn = await this.getConn()
@@ -1011,7 +1011,7 @@ if (backend === 'memory' && MYSQL_URL) {
           return null
         }
       },
-      
+
       async incrementCount(chatId, userId) {
         try {
           const conn = await this.getConn()
@@ -1024,7 +1024,7 @@ if (backend === 'memory' && MYSQL_URL) {
           console.error('[MYSQL] Increment count error:', e.message)
         }
       },
-      
+
       async getCount(chatId, userId) {
         try {
           const conn = await this.getConn()
@@ -1038,7 +1038,7 @@ if (backend === 'memory' && MYSQL_URL) {
           return 0
         }
       },
-      
+
       async getAllCounts() {
         try {
           const conn = await this.getConn()
@@ -1058,7 +1058,7 @@ if (backend === 'memory' && MYSQL_URL) {
           return { isPublic: true, messageCount: {} }
         }
       },
-      
+
       async setPublicMode(isPublic) {
         try {
           const conn = await this.getConn()
@@ -1229,7 +1229,7 @@ if (backend === 'memory' && MYSQL_URL) {
           return {}
         }
       },
-      
+
       async cleanup() {
         try {
           const conn = await this.getConn()
@@ -1244,7 +1244,7 @@ if (backend === 'memory' && MYSQL_URL) {
           console.error('[MYSQL] Cleanup error:', e.message)
         }
       },
-      
+
       async close() {
         try {
           if (mysqlConn) {
@@ -1257,7 +1257,7 @@ if (backend === 'memory' && MYSQL_URL) {
         }
       }
     }
-    
+
     backend = 'mysql'
     messageLimit = MESSAGE_LIMITS.mysql
     printLog('store', 'MySQL enabled - Unlimited message storage with full data persistence')
@@ -1276,13 +1276,13 @@ if (backend === 'memory' && SQLITE_URL) {
     const Database = require('better-sqlite3');
     const dir = path.dirname(SQLITE_URL);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    
+
     const sqlite = new Database(SQLITE_URL);
     sqlite.pragma('journal_mode = WAL');
     sqlite.pragma('synchronous = NORMAL');
     sqlite.pragma('cache_size = -64000');
     sqlite.pragma('temp_store = MEMORY');
-    
+
     // Create all tables
     sqlite.prepare(`
       CREATE TABLE IF NOT EXISTS messages (
@@ -1292,10 +1292,10 @@ if (backend === 'memory' && SQLITE_URL) {
         data BLOB NOT NULL
       )
     `).run();
-    
+
     sqlite.prepare(`CREATE INDEX IF NOT EXISTS idx_messages_jid ON messages(jid)`).run();
     sqlite.prepare(`CREATE INDEX IF NOT EXISTS idx_messages_ts ON messages(ts)`).run();
-    
+
     sqlite.prepare(`
       CREATE TABLE IF NOT EXISTS message_counts (
         chat_id TEXT NOT NULL,
@@ -1304,7 +1304,7 @@ if (backend === 'memory' && SQLITE_URL) {
         PRIMARY KEY (chat_id, user_id)
       )
     `).run();
-    
+
     sqlite.prepare(`
       CREATE TABLE IF NOT EXISTS metadata (
         key TEXT PRIMARY KEY,
@@ -1341,7 +1341,7 @@ if (backend === 'memory' && SQLITE_URL) {
         PRIMARY KEY (chat_id, key)
       )
     `).run();
-    
+
     const saveStmt = sqlite.prepare(`INSERT OR REPLACE INTO messages VALUES (?,?,?,?)`);
     const loadStmt = sqlite.prepare(`SELECT data FROM messages WHERE jid=? AND id=?`);
     const cleanupStmt = sqlite.prepare(`DELETE FROM messages WHERE ts < ?`);
@@ -1351,7 +1351,7 @@ if (backend === 'memory' && SQLITE_URL) {
         SELECT id FROM messages WHERE jid=? ORDER BY ts ASC LIMIT ?
       )
     `);
-    
+
     const incrementCountStmt = sqlite.prepare(`
       INSERT INTO message_counts(chat_id, user_id, count) VALUES(?,?,1)
       ON CONFLICT(chat_id, user_id) DO UPDATE SET count = count + 1
@@ -1375,12 +1375,12 @@ if (backend === 'memory' && SQLITE_URL) {
     const saveSettingStmt = sqlite.prepare(`INSERT OR REPLACE INTO settings(chat_id, key, value, ts) VALUES(?, ?, ?, ?)`);
     const getSettingStmt = sqlite.prepare(`SELECT value FROM settings WHERE chat_id=? AND key=?`);
     const getAllSettingsStmt = sqlite.prepare(`SELECT key, value FROM settings WHERE chat_id=?`);
-    
+
     adapters.sqlite = {
       save(jid, id, msg) {
         try {
           saveStmt.run(jid, id, Date.now(), compress(msg));
-          
+
           const { count } = countStmt.get(jid);
           if (count > MESSAGE_LIMITS.sqlite) {
             const toDelete = count - MESSAGE_LIMITS.sqlite;
@@ -1390,7 +1390,7 @@ if (backend === 'memory' && SQLITE_URL) {
           console.error(`[SQLITE] Save error:`, e.message);
         }
       },
-      
+
       load(jid, id) {
         try {
           const row = loadStmt.get(jid, id);
@@ -1400,7 +1400,7 @@ if (backend === 'memory' && SQLITE_URL) {
           return null;
         }
       },
-      
+
       incrementCount(chatId, userId) {
         try {
           incrementCountStmt.run(chatId, userId);
@@ -1408,7 +1408,7 @@ if (backend === 'memory' && SQLITE_URL) {
           console.error('[SQLITE] Increment count error:', e.message);
         }
       },
-      
+
       getCount(chatId, userId) {
         try {
           const row = getCountStmt.get(chatId, userId);
@@ -1418,7 +1418,7 @@ if (backend === 'memory' && SQLITE_URL) {
           return 0;
         }
       },
-      
+
       getAllCounts() {
         try {
           const rows = getAllCountsStmt.all();
@@ -1437,7 +1437,7 @@ if (backend === 'memory' && SQLITE_URL) {
           return { isPublic: true, messageCount: {} };
         }
       },
-      
+
       setPublicMode(isPublic) {
         try {
           setMetaStmt.run(isPublic.toString());
@@ -1570,7 +1570,7 @@ if (backend === 'memory' && SQLITE_URL) {
           return {};
         }
       },
-      
+
       cleanup() {
         try {
           const result = cleanupStmt.run(Date.now() - TTL_MS);
@@ -1581,7 +1581,7 @@ if (backend === 'memory' && SQLITE_URL) {
           console.error('[SQLITE] Cleanup error:', e.message);
         }
       },
-      
+
       close() {
         try {
           sqlite.close();
@@ -1591,7 +1591,7 @@ if (backend === 'memory' && SQLITE_URL) {
         }
       }
     };
-    
+
     backend = 'sqlite';
     messageLimit = MESSAGE_LIMITS.sqlite;
     printLog('store', `SQLite enabled - Max ${MESSAGE_LIMITS.sqlite} messages per chat with full data persistence`);
@@ -1605,7 +1605,7 @@ if (backend === 'memory' && SQLITE_URL) {
 if (backend === 'memory') {
   printLog('store', `Using memory + JSON file storage - Max ${MESSAGE_LIMITS.memory} messages per chat`);
 }
-      
+
 
 /**
 * STORE OBJECT (MAIN)
@@ -1625,11 +1625,11 @@ const store = {
         const contacts = await adapters[backend].getAllContacts()
         const chats = await adapters[backend].getAllChats()
         const mode = await this.getBotMode()
-        
+
         this.contacts = contacts
         this.chats = chats
         this.botMode = mode
-        
+
         console.log('[STORE] Loaded data from database')
       } else {
         if (fs.existsSync(filePath)) {
@@ -1645,7 +1645,7 @@ const store = {
     } catch (e) {
       console.warn('[STORE] Failed to read store file:', e.message)
     }
-    
+
     await this.loadMessageCounts()
   },
 
@@ -1654,19 +1654,19 @@ const store = {
       if (backend !== 'memory') {
         return
       }
-      
+
       const data = {
         contacts: this.contacts,
         chats: this.chats,
         botMode: this.botMode || 'public',
         messages: this.messages
       }
-      
+
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
     } catch (e) {
       console.warn('[STORE] Failed to write store file:', e.message)
     }
-    
+
     await this.saveMessageCounts()
   },
 
@@ -1690,7 +1690,7 @@ const store = {
       try {
         const dir = path.dirname(MESSAGE_COUNT_FILE)
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-        
+
         const data = {
           isPublic: this.isPublic,
           messageCount: this.messageCount
@@ -1729,14 +1729,14 @@ const store = {
     ev.on('messages.upsert', async ({ messages }) => {
       for (const msg of messages) {
         if (!msg.key?.remoteJid) continue
-        
+
         const jid = msg.key.remoteJid
         const slim = slimMessage(msg)
-        
+
         if (backend === 'memory') {
           this.messages[jid] = this.messages[jid] || []
           this.messages[jid].push(slim)
-          
+
           if (this.messages[jid].length > MAX_MESSAGES) {
             this.messages[jid] = this.messages[jid].slice(-MAX_MESSAGES)
           }
@@ -1759,7 +1759,7 @@ const store = {
             notify: contact.notify,
             verifiedName: contact.verifiedName
           }
-          
+
           if (backend === 'memory') {
             this.contacts[contact.id] = contactData
           } else {
@@ -1782,7 +1782,7 @@ const store = {
             notify: contact.notify,
             verifiedName: contact.verifiedName
           }
-          
+
           if (backend === 'memory') {
             this.contacts[contact.id] = contactData
           } else {
@@ -1805,7 +1805,7 @@ const store = {
             conversationTimestamp: chat.conversationTimestamp,
             unreadCount: chat.unreadCount || 0
           }
-          
+
           if (backend === 'memory') {
             this.chats[chat.id] = chatData
           } else {
@@ -1882,7 +1882,7 @@ const store = {
     if (backend === 'memory') {
       const dataDir = './data'
       if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
-      
+
       const filePath = path.join(dataDir, `${key}.json`)
       try {
         // Always save as flat format
@@ -1903,7 +1903,7 @@ const store = {
     if (backend === 'memory') {
       const dataDir = './data'
       const filePath = path.join(dataDir, `${key}.json`)
-      
+
       try {
         if (fs.existsSync(filePath)) {
           const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
@@ -1931,18 +1931,18 @@ const store = {
     if (backend === 'memory') {
       const dataDir = './data'
       const result = {}
-      
+
       try {
         if (fs.existsSync(dataDir)) {
           const files = fs.readdirSync(dataDir).filter(f => f.endsWith('.json'))
-          
+
           for (const file of files) {
             const key = path.basename(file, '.json')
             if (key === 'messageCount' || key === 'owner') continue
-            
+
             const filePath = path.join(dataDir, file)
             const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
-            
+
             if (data[chatId]) {
               result[key] = data[chatId]
             }
@@ -1966,7 +1966,7 @@ const store = {
   /**
   * BOT MODE METHODS (Advanced)
   */
-  
+
   async setBotMode(mode) {
     const validModes = ['public', 'private', 'groups', 'inbox', 'self']
     if (!validModes.includes(mode)) {
@@ -1998,8 +1998,8 @@ const store = {
       }
     }
   },
-  
-  async incrementMessageCount(chatId: any, userId: any, pushName?: string) {
+
+  async incrementMessageCount(chatId: any, userId: any, _pushName?: string) {
     if (backend === 'memory') {
       if (!this.messageCount[chatId]) {
         this.messageCount[chatId] = {}
@@ -2075,27 +2075,27 @@ const store = {
   /**
   * Get store statistics
   */
-  
+
   getStats() {
     let totalMessages = 0
-    let totalContacts = Object.keys(this.contacts).length
-    let totalChats = Object.keys(this.chats).length
+    const totalContacts = Object.keys(this.contacts).length
+    const totalChats = Object.keys(this.chats).length
     let totalMessageCounts = 0
-    
+
     if (backend === 'memory') {
       Object.values(this.messages).forEach(chatMessages => {
         if (Array.isArray(chatMessages)) {
           totalMessages += chatMessages.length
         }
       })
-      
+
       Object.values(this.messageCount).forEach(chatCounts => {
         if (typeof chatCounts === 'object') {
           totalMessageCounts += Object.keys(chatCounts).length
         }
       })
     }
-    
+
     return {
       backend,
       messages: backend === 'memory' ? totalMessages : 'stored in database',
@@ -2116,15 +2116,15 @@ const store = {
 if (backend !== 'memory') {
   setTimeout(() => {
     if (adapters[backend].cleanup) {
-      Promise.resolve(adapters[backend].cleanup()).catch(err => 
+      Promise.resolve(adapters[backend].cleanup()).catch(err =>
         console.error('[STORE] Initial cleanup error:', err)
       )
     }
   }, 5 * 60 * 1000)
-  
+
   cleanupTimer = setInterval(() => {
     if (adapters[backend].cleanup) {
-      Promise.resolve(adapters[backend].cleanup()).catch(err => 
+      Promise.resolve(adapters[backend].cleanup()).catch(err =>
         console.error('[STORE] Periodic cleanup error:', err)
       )
     }
@@ -2154,16 +2154,16 @@ setInterval(() => {
 
 const gracefulShutdown = async (signal) => {
   console.log(`[STORE] Received ${signal}, shutting down gracefully...`)
-  
+
   if (cleanupTimer) {
     clearInterval(cleanupTimer)
     cleanupTimer = null
   }
-  
+
   if (backend === 'memory') {
     store.writeToFile()
   }
-  
+
   if (backend !== 'memory' && adapters[backend].close) {
     try {
       await adapters[backend].close()
@@ -2171,7 +2171,7 @@ const gracefulShutdown = async (signal) => {
       console.error('[STORE] Error during shutdown:', e.message)
     }
   }
-  
+
   console.log('[STORE] Shutdown complete')
 }
 
@@ -2221,4 +2221,4 @@ export default store;
  *                 Unauthorized copying or distribution is prohibited.       *
  *                                                                           *
  *****************************************************************************/
-    
+

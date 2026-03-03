@@ -20,8 +20,8 @@ async function readState() {
             }
             return {
                 enabled: !!data.enabled,
-                message: typeof data.message === 'string' && data.message.trim() 
-                    ? data.message 
+                message: typeof data.message === 'string' && data.message.trim()
+                    ? data.message
                     : DEFAULT_MESSAGE
             };
         } else {
@@ -32,8 +32,8 @@ async function readState() {
             const data = JSON.parse(raw || '{}');
             return {
                 enabled: !!data.enabled,
-                message: typeof data.message === 'string' && data.message.trim() 
-                    ? data.message 
+                message: typeof data.message === 'string' && data.message.trim()
+                    ? data.message
                     : DEFAULT_MESSAGE
             };
         }
@@ -49,7 +49,7 @@ async function writeState(enabled, message) {
             enabled: !!enabled,
             message: typeof message === 'string' && message.trim() ? message : current.message
         };
-        
+
         if (HAS_DB) {
             await store.saveSetting('global', 'pmblocker', payload);
         } else {
@@ -74,7 +74,7 @@ export default {
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
         const state = await readState();
-        
+
         const sub = args[0]?.toLowerCase();
         const rest = args.slice(1);
 
@@ -119,7 +119,7 @@ export default {
 
         const enable = sub === 'on';
         await writeState(enable, undefined);
-        
+
         await sock.sendMessage(chatId, {
             text: `📵 *PM Blocker ${enable ? 'ENABLED' : 'DISABLED'}*\n\n` +
                   `${enable ? '✅ Users who DM the bot will be warned and blocked.' : '❌ Private messages are now allowed.'}`

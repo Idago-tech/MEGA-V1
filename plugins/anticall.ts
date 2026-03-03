@@ -45,7 +45,7 @@ export default {
   description: 'Enable or disable auto-blocking of incoming calls',
   usage: '.anticall <on|off|status>',
   ownerOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
     const state = await readState();
@@ -70,7 +70,7 @@ export default {
     if (sub === 'status') {
       return await sock.sendMessage(
         chatId,
-        { 
+        {
           text: `📵 *Anticall Status*\n\n` +
                 `Current: ${state.enabled ? '✅ *ENABLED*' : '❌ *DISABLED*'}\n` +
                 `Storage: ${HAS_DB ? 'Database' : 'File System'}\n\n` +
@@ -85,14 +85,14 @@ export default {
 
     await sock.sendMessage(
       chatId,
-      { 
+      {
         text: `📵 *Anticall ${enable ? 'ENABLED' : 'DISABLED'}*\n\n` +
               `${enable ? '✅ Incoming calls will now be rejected and blocked automatically.' : '❌ Incoming calls are now allowed.'}`
       },
       { quoted: message }
     );
   },
-  
+
   readState,
   writeState
 };

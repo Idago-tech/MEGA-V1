@@ -76,8 +76,8 @@ export default {
             }, { quoted: message });
         }
 
-        if (!targetNumber.startsWith('1') && !targetNumber.startsWith('2') && !targetNumber.startsWith('3') && 
-            !targetNumber.startsWith('4') && !targetNumber.startsWith('5') && !targetNumber.startsWith('6') && 
+        if (!targetNumber.startsWith('1') && !targetNumber.startsWith('2') && !targetNumber.startsWith('3') &&
+            !targetNumber.startsWith('4') && !targetNumber.startsWith('5') && !targetNumber.startsWith('6') &&
             !targetNumber.startsWith('7') && !targetNumber.startsWith('8') && !targetNumber.startsWith('9')) {
             return await sock.sendMessage(chatId, {
                 text: '❌ *Invalid number format!*\n\nPlease include the country code.\nExample: 923051234567',
@@ -90,7 +90,7 @@ export default {
         try {
             const groupMetadata = await sock.groupMetadata(chatId);
             const participants = groupMetadata.participants.map(p => p.id);
-            
+
             if (participants.includes(targetJid)) {
                 return await sock.sendMessage(chatId, {
                     text: `⚠️ *User is already in the group!*\n\n${targetNumber}`,

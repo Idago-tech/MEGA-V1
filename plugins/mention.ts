@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import { dataFile } from '../lib/paths.js';
@@ -128,7 +123,7 @@ export async function handleMentionDetection(sock: any, chatId: any, message: an
         }
         const isBotMentioned = mentioned.some(j => botJids.includes(j));
         if (!isBotMentioned) return;
-        
+
         if (!state.assetPath) {
             await sock.sendMessage(chatId, { text: 'Hi' }, { quoted: message });
             return;
@@ -202,8 +197,8 @@ async function setMentionCommand(sock, chatId, message, isOwner) {
         return sock.sendMessage(chatId, { text: '❌ *File too large*\n\nMaximum size: 1 MB' }, { quoted: message });
     }
     let mimetype = qMsg[dataType]?.mimetype || '';
-    let ptt = !!qMsg.audioMessage?.ptt;
-    let gifPlayback = !!qMsg.videoMessage?.gifPlayback;
+    const ptt = !!qMsg.audioMessage?.ptt;
+    const gifPlayback = !!qMsg.videoMessage?.gifPlayback;
     let ext = 'bin';
     if (type === 'sticker') ext = 'webp';
     else if (type === 'image') ext = mimetype.includes('png') ? 'png' : 'jpg';
@@ -256,8 +251,8 @@ async function setMentionCommand(sock, chatId, message, isOwner) {
     if (type === 'audio') state.ptt = ptt;
     if (type === 'video') state.gifPlayback = gifPlayback;
     await saveState(state);
-    return sock.sendMessage(chatId, { 
-        text: `✅ *Mention reply updated!*\n\nType: ${type}\nStorage: ${HAS_DB ? 'Database' : 'File System'}` 
+    return sock.sendMessage(chatId, {
+        text: `✅ *Mention reply updated!*\n\nType: ${type}\nStorage: ${HAS_DB ? 'Database' : 'File System'}`
     }, { quoted: message });
 }
 
@@ -272,17 +267,17 @@ export default {
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
         const onoff = args[0]?.toLowerCase();
-        
+
         if (!onoff || !['on','off'].includes(onoff)) {
-            return sock.sendMessage(chatId, { 
-                text: '❌ *Invalid usage*\n\nUsage: `.mention on|off`' 
+            return sock.sendMessage(chatId, {
+                text: '❌ *Invalid usage*\n\nUsage: `.mention on|off`'
             }, { quoted: message });
         }
         const state = await loadState();
         state.enabled = onoff === 'on';
         await saveState(state);
-        return sock.sendMessage(chatId, { 
-            text: `✅ *Mention reply ${state.enabled ? 'enabled' : 'disabled'}*\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}` 
+        return sock.sendMessage(chatId, {
+            text: `✅ *Mention reply ${state.enabled ? 'enabled' : 'disabled'}*\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}`
         }, { quoted: message });
     },
 

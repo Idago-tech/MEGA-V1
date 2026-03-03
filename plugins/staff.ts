@@ -5,20 +5,20 @@ export default {
   description: 'Display list of group admins',
   usage: '.staff',
   groupOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     try {
       const groupMetadata = await sock.groupMetadata(chatId);
-      
+
       let pp;
       try {
         pp = await sock.profilePictureUrl(chatId, 'image');
       } catch {
         pp = 'https://i.imgur.com/2wzGhpF.jpeg';
       }
-      
+
       const participants = groupMetadata.participants;
       const groupAdmins = participants.filter(p => p.admin);
       const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).join('\n▢ ');
@@ -42,7 +42,7 @@ export default {
 
     } catch(error: any) {
       console.error('Error in staff command:', error);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Failed to get admin list!',
         ...channelInfo
       }, { quoted: message });

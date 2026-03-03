@@ -1,9 +1,7 @@
 import fetch from 'node-fetch';
-import { writeExifImg } from '../lib/exif.js';
 const delay = time => new Promise(res => setTimeout(res, time));
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
 import { exec } from 'child_process';
@@ -15,34 +13,34 @@ export default {
   category: 'stickers',
   description: 'Download stickers from Telegram',
   usage: '.tgstk <telegram sticker URL>',
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     try {
       if (!args[0]) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '⚠️ Please enter the Telegram sticker URL!\n\nExample: .tgstk https://t.me/addstickers/Porcientoreal',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       if (!args[0].match(/(https:\/\/t.me\/addstickers\/)/gi)) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ Invalid URL! Make sure it\'s a Telegram sticker URL.',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       const packName = args[0].replace("https://t.me/addstickers/", "");
       const botToken = '7801479976:AAGuPL0a7kXXBYz6XUSR_ll2SR5V_W6oHl4';
-      
+
       try {
         const response = await fetch(
           `https://api.telegram.org/bot${botToken}/getStickerSet?name=${encodeURIComponent(packName)}`,
-          { 
+          {
             method: "GET",
             headers: {
               "Accept": "application/json",
@@ -56,33 +54,33 @@ export default {
         }
 
         const stickerSet = await response.json() as any as any;
-        
+
         if (!stickerSet.ok || !stickerSet.result) {
           throw new Error('Invalid sticker pack or API response');
         }
-        
-        await sock.sendMessage(chatId, { 
+
+        await sock.sendMessage(chatId, {
           text: `📦 Found ${stickerSet.result.stickers.length} stickers\n⏳ Starting download...`,
           ...channelInfo
         }, { quoted: message });
-        
+
         const tmpDir = path.join(process.cwd(), 'tmp');
         if (!fs.existsSync(tmpDir)) {
           fs.mkdirSync(tmpDir, { recursive: true });
         }
-        
+
         let successCount = 0;
         for (let i = 0; i < stickerSet.result.stickers.length; i++) {
           try {
             const sticker = stickerSet.result.stickers[i];
             const fileId = sticker.file_id;
-            
+
             const fileInfo = await fetch(
               `https://api.telegram.org/bot${botToken}/getFile?file_id=${fileId}`
             );
-            
+
             if (!fileInfo.ok) continue;
-            
+
             const fileData = await fileInfo.json() as any;
             if (!fileData.ok || !fileData.result.file_path) continue;
 
@@ -94,7 +92,7 @@ export default {
             fs.writeFileSync(tempInput, imageBuffer);
 
             const isAnimated = sticker.is_animated || sticker.is_video;
-            
+
             const ffmpegCommand = isAnimated
               ? `ffmpeg -i "${tempInput}" -vf "scale=512:512:force_original_aspect_ratio=decrease,fps=15,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000" -c:v libwebp -preset default -loop 0 -vsync 0 -pix_fmt yuva420p -quality 75 -compression_level 6 "${tempOutput}"`
               : `ffmpeg -i "${tempInput}" -vf "scale=512:512:force_original_aspect_ratio=decrease,format=rgba,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000" -c:v libwebp -preset default -loop 0 -vsync 0 -pix_fmt yuva420p -quality 75 -compression_level 6 "${tempOutput}"`;
@@ -128,14 +126,14 @@ export default {
 
             const finalBuffer = await img.save(null);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
               sticker: finalBuffer,
               ...channelInfo
             });
 
             successCount++;
             await delay(1000);
-            
+
             try {
               fs.unlinkSync(tempInput);
               fs.unlinkSync(tempOutput);
@@ -148,8 +146,8 @@ export default {
             continue;
           }
         }
-        
-        await sock.sendMessage(chatId, { 
+
+        await sock.sendMessage(chatId, {
           text: `✅ Successfully downloaded ${successCount}/${stickerSet.result.stickers.length} stickers!`,
           ...channelInfo
         }, { quoted: message });
@@ -160,7 +158,7 @@ export default {
 
     } catch(error: any) {
       console.error('Error in stickertelegram command:', error);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: '❌ Failed to process Telegram stickers!\nMake sure:\n1. The URL is correct\n2. The sticker pack exists\n3. The sticker pack is public',
         ...channelInfo
       }, { quoted: message });

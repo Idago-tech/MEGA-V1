@@ -10,10 +10,10 @@ export default {
   usage: '.welcome [on/off/message]',
   groupOnly: true,
   adminOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
-    const { chatId, channelInfo } = context;
-    
+    const { chatId, _channelInfo } = context;
+
     const matchText = args.join(' ');
     await handleWelcome(sock, chatId, message, matchText);
   }
@@ -45,7 +45,7 @@ async function handleJoinEvent(sock, id, participants) {
     try {
       const participantString = typeof participant === 'string' ? participant : (participant.id || participant.toString());
       const user = participantString.split('@')[0];
-      
+
       let displayName = user;
       try {
         const contact = await sock.getBusinessProfile(participantString);
@@ -61,7 +61,7 @@ async function handleJoinEvent(sock, id, participants) {
       } catch(nameError: any) {
         console.log('Could not fetch display name, using phone number');
       }
-      
+
       let finalMessage;
       if (customMessage) {
         finalMessage = customMessage
@@ -72,17 +72,17 @@ async function handleJoinEvent(sock, id, participants) {
         const now = new Date();
         const timeString = now.toLocaleString('en-US', {
           month: '2-digit',
-          day: '2-digit', 
+          day: '2-digit',
           year: 'numeric',
           hour: '2-digit',
           minute: '2-digit',
           second: '2-digit',
           hour12: true
         });
-        
+
         finalMessage = `╭╼━≪•𝙽𝙴𝚆 𝙼𝙴𝙼𝙱𝙴𝚁•≫━╾╮\n┃𝚆𝙴𝙻𝙲𝙾𝙼𝙴: @${displayName} 👋\n┃Member count: #${groupMetadata.participants.length}\n┃𝚃𝙸𝙼𝙴: ${timeString}⏰\n╰━━━━━━━━━━━━━━━╯\n\n*@${displayName}* Welcome to *${groupName}*! 🎉\n*Group 𝙳𝙴𝚂𝙲𝚁𝙸𝙿𝚃𝙸𝙾𝙽*\n${groupDesc}\n\n> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ MEGA-MD*`;
       }
-      
+
       try {
         let profilePicUrl = `https://img.pyrocdn.com/dbKUgahg.png`;
         try {
@@ -93,13 +93,13 @@ async function handleJoinEvent(sock, id, participants) {
         } catch(profileError: any) {
           console.log('Could not fetch profile picture, using default');
         }
-        
+
         const apiUrl = `https://api.some-random-api.com/welcome/img/2/gaming3?type=join&textcolor=green&username=${encodeURIComponent(displayName)}&guildName=${encodeURIComponent(groupName)}&memberCount=${groupMetadata.participants.length}&avatar=${encodeURIComponent(profilePicUrl)}`;
-        
+
         const response = await fetch(apiUrl);
         if (response.ok) {
           const imageBuffer = Buffer.from(await response.arrayBuffer());
-          
+
           await sock.sendMessage(id, {
             image: imageBuffer,
             caption: finalMessage,
@@ -111,7 +111,7 @@ async function handleJoinEvent(sock, id, participants) {
       } catch(imageError: any) {
         console.log('Image generation failed, falling back to text');
       }
-      
+
       await sock.sendMessage(id, {
         text: finalMessage,
         mentions: [participantString],
@@ -121,7 +121,7 @@ async function handleJoinEvent(sock, id, participants) {
       console.error('Error sending welcome message:', error);
       const participantString = typeof participant === 'string' ? participant : (participant.id || participant.toString());
       const user = participantString.split('@')[0];
-      
+
       let fallbackMessage;
       if (customMessage) {
         fallbackMessage = customMessage
@@ -131,7 +131,7 @@ async function handleJoinEvent(sock, id, participants) {
       } else {
         fallbackMessage = `Welcome @${user} to ${groupName}! 🎉`;
       }
-      
+
       await sock.sendMessage(id, {
         text: fallbackMessage,
         mentions: [participantString],

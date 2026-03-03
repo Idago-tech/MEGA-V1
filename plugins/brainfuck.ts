@@ -12,10 +12,10 @@ export default {
 
       const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
       if (quoted) {
-        text = quoted.conversation || 
-               quoted.extendedTextMessage?.text || 
-               quoted.imageMessage?.caption || 
-               quoted.videoMessage?.caption || 
+        text = quoted.conversation ||
+               quoted.extendedTextMessage?.text ||
+               quoted.imageMessage?.caption ||
+               quoted.videoMessage?.caption ||
                text;
       }
 
@@ -39,11 +39,11 @@ export default {
         }
 
         bfCode += ".";
-        lastAscii = ascii; 
+        lastAscii = ascii;
       }
 
       const response = `*❄️ Brainfuck Obfuscated Text:*\n\n${bfCode}`;
-      
+
       await sock.sendMessage(chatId, { text: response }, { quoted: message });
 
     } catch(err: any) {

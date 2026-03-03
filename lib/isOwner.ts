@@ -27,9 +27,9 @@ async function isOwnerOrSudo(senderId, sock = null, chatId = null) {
         try {
             const metadata = await sock.groupMetadata(chatId);
             const participants = metadata.participants || [];
-            
+
             const participant = participants.find(p => p.lid === senderId || p.id === senderId);
-            
+
             if (participant) {
                 const pRealIdClean = cleanJid(participant.id);
                 if (pRealIdClean === ownerNumberClean || await isSudo(participant.id)) {
@@ -39,7 +39,7 @@ async function isOwnerOrSudo(senderId, sock = null, chatId = null) {
         } catch(e: any) {
         }
     }
-    
+
     return false;
 }
 
@@ -59,7 +59,7 @@ function isOwnerOnly(senderId) {
 async function getCleanName(jid, sock) {
     if (!jid) return 'Unknown';
     const cleanNumber = cleanJid(jid);
-    
+
     try {
         if (sock) {
             const contact = await sock.onWhatsApp(jid);

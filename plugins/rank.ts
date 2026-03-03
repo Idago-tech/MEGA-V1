@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import store from '../lib/lightweight_store.js';
 
 /**
@@ -35,7 +30,7 @@ async function loadMessageCounts() {
  * Save message counts (backward compatible, but now a no-op)
  * Data is auto-saved by the store system
  */
-function saveMessageCounts(messageCounts) {
+function saveMessageCounts(_messageCounts) {
     console.log('[RANK] saveMessageCounts called (no-op - auto-saved by store)')
 }
 
@@ -49,7 +44,7 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid
-        
+
         try {
             const messageCounts = await loadMessageCounts()
             const groupCounts = messageCounts[chatId] || {}
@@ -85,14 +80,13 @@ export default {
 
             const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣']
             let messageText = '🏆 *TOP MEMBERS LEADERBOARD*\n\n'
-            
+
             for (let index = 0; index < sortedMembers.length; index++) {
                 const [userId, count] = sortedMembers[index];
-                let username: string;
                 // Try all sources for name
                 const c = sock.store?.contacts?.[userId];
                 const participant = meta?.participants?.find((p: any) => p.id === userId || p.lid === userId);
-                username = c?.name || c?.notify
+                const username = c?.name || c?.notify
                     || participant?.notify || participant?.name
                     || await sock.getName(userId)
                     || (userId.includes('@s.whatsapp.net') ? '+' + userId.replace('@s.whatsapp.net', '') : 'Unknown');
@@ -105,7 +99,7 @@ export default {
                 text: messageText,
                 mentions: sortedMembers.map(([userId]) => userId)
             }, { quoted: message })
-            
+
         } catch(error: any) {
             console.error('Rank Command Error:', error)
             await sock.sendMessage(chatId, {
@@ -165,7 +159,7 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
-        
+
         const messageCounts = loadMessageCounts();
         const groupCounts = messageCounts[chatId] || {};
 
@@ -182,7 +176,7 @@ export default {
 
         const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
         let messageText = '🏆 *TOP MEMBERS LEADERBOARD*\n\n';
-        
+
         for (let index = 0; index < sortedMembers.length; index++) {
             const [userId, count] = sortedMembers[index];
             let username: string;

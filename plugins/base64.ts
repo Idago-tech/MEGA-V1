@@ -12,10 +12,10 @@ export default {
 
       const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
       if (quoted) {
-        txt = quoted.conversation || 
-              quoted.extendedTextMessage?.text || 
-              quoted.imageMessage?.caption || 
-              quoted.videoMessage?.caption || 
+        txt = quoted.conversation ||
+              quoted.extendedTextMessage?.text ||
+              quoted.imageMessage?.caption ||
+              quoted.videoMessage?.caption ||
               txt;
       }
 
@@ -26,7 +26,7 @@ export default {
       }
 
       const encoded = Buffer.from(txt, 'utf-8').toString('base64');
-      
+
       const response = `*🔗 Base64 Encoded:*\n\n${encoded}`;
       await sock.sendMessage(chatId, { text: response }, { quoted: message });
 

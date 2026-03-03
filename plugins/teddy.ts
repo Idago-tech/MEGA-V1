@@ -1,4 +1,4 @@
-let teddyUsers = {};
+const teddyUsers = {};
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

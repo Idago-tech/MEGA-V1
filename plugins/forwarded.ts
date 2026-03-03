@@ -23,35 +23,35 @@ export default {
 
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
-    
+
     try {
       let txt = "";
       const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-      
+
       if (quoted) {
-        txt = quoted.conversation || 
-              quoted.extendedTextMessage?.text || 
-              quoted.imageMessage?.caption || 
-              quoted.videoMessage?.caption || 
+        txt = quoted.conversation ||
+              quoted.extendedTextMessage?.text ||
+              quoted.imageMessage?.caption ||
+              quoted.videoMessage?.caption ||
               "";
-      } 
-      
+      }
+
       if (!txt || txt.trim() === "") {
         txt = args?.join(' ') || "";
       }
 
       if (!txt || txt.trim() === "") {
-        return await sock.sendMessage(chatId, { 
-          text: 'Please provide text or reply to a message to forward.' 
+        return await sock.sendMessage(chatId, {
+          text: 'Please provide text or reply to a message to forward.'
         }, { quoted: message });
       }
 
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: txt,
-        contextInfo: { 
-          isForwarded: true, 
-          forwardingScore: 999 
-        } 
+        contextInfo: {
+          isForwarded: true,
+          forwardingScore: 999
+        }
       });
 
     } catch(err: any) {

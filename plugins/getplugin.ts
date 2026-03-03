@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 /*****************************************************************************
  *                                                                           *
  *                     Developed By Qasim Ali                                *
@@ -30,7 +25,7 @@ export default {
   usage: '.inspect [plugin_name]',
   ownerOnly: 'true',
 
-  async handler(sock: any, message: any, args: any, context: any = {}) {
+  async handler(sock: any, message: any, args: any, _context: any = {}) {
     const chatId = message.key.remoteJid;
 
     const pluginName = args[0];
@@ -95,4 +90,4 @@ export default {
  *                 Unauthorized copying or distribution is prohibited.       *
  *                                                                           *
  *****************************************************************************/
- 
+

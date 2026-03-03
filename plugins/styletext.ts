@@ -12,8 +12,8 @@ export default {
     const text = args.join(' ');
     try {
       if (!text || text.trim() === '') {
-        await sock.sendMessage(chatId, { 
-          text: "*Please provide a text to style.*\nExample: .stext Hello" 
+        await sock.sendMessage(chatId, {
+          text: "*Please provide a text to style.*\nExample: .stext Hello"
         }, { quoted: message });
         return;
       }
@@ -44,13 +44,13 @@ export default {
         if (m.message.extendedTextMessage &&
             m.message.extendedTextMessage.contextInfo &&
             m.message.extendedTextMessage.contextInfo.quotedMessage) {
-          const quotedId = m.message.extendedTextMessage.contextInfo.stanzaId 
+          const quotedId = m.message.extendedTextMessage.contextInfo.stanzaId
             || m.message.extendedTextMessage.contextInfo.quotedMessageKey?.id;
           if (quotedId === sentMsg.key.id) isQuoted = true;
         }
 
         let userReply = m.message.conversation || '';
-        if (m.message.extendedTextMessage && m.message.extendedTextMessage.text) 
+        if (m.message.extendedTextMessage && m.message.extendedTextMessage.text)
           userReply = m.message.extendedTextMessage.text;
 
         if (!userReply) return;
@@ -63,8 +63,8 @@ export default {
           delete sock.styletext[sentMsg.key.id];
           sock.ev.off('messages.upsert', listener);
         } else {
-          await sock.sendMessage(m.key.remoteJid, { 
-            text: `Invalid selection. Please choose a number between 1 and ${styledResult.length}.` 
+          await sock.sendMessage(m.key.remoteJid, {
+            text: `Invalid selection. Please choose a number between 1 and ${styledResult.length}.`
           }, { quoted: m });
         }
       };
@@ -73,8 +73,8 @@ export default {
 
     } catch(error: any) {
       console.error('Error in styleTextCommand:', error);
-      await sock.sendMessage(chatId, { 
-        text: '❌ Failed to style the text. Please try again later.' 
+      await sock.sendMessage(chatId, {
+        text: '❌ Failed to style the text. Please try again later.'
       }, { quoted: message });
     }
   }

@@ -23,7 +23,7 @@ export default {
   category: 'games',
   description: 'Solve math problems',
   usage: '.math',
-  
+
   async handler(sock, message, args) {
     const chatId = message.key.remoteJid;
 
@@ -31,17 +31,17 @@ export default {
       return sock.sendMessage(chatId, { text: '⚠️ Solve the current problem first!' }, { quoted: mathGames[chatId].msg });
     }
 
-    let mode = args[0]?.toLowerCase();
+    const mode = args[0]?.toLowerCase();
     if (!mode || !(mode in modes)) {
-      return sock.sendMessage(chatId, { 
-        text: `🧮 *Available Difficulties:*\n\n${Object.keys(modes).join(' | ')}\n\n_Example: .math normal_` 
+      return sock.sendMessage(chatId, {
+        text: `🧮 *Available Difficulties:*\n\n${Object.keys(modes).join(' | ')}\n\n_Example: .math normal_`
       }, { quoted: message });
     }
 
-    let math = genMath(mode);
-    let text = `▢ HOW MUCH IS IT *${math.str}*=\n\n_Time:_ ${(math.time / 1000).toFixed(2)} seconds`;
-    
-    let sentMsg = await sock.sendMessage(chatId, { text }, { quoted: message });
+    const math = genMath(mode);
+    const text = `▢ HOW MUCH IS IT *${math.str}*=\n\n_Time:_ ${(math.time / 1000).toFixed(2)} seconds`;
+
+    const sentMsg = await sock.sendMessage(chatId, { text }, { quoted: message });
 
     mathGames[chatId] = {
       msg: sentMsg,
@@ -72,7 +72,7 @@ export default {
         if (!/^▢ HOW MUCH IS IT/i.test(quotedText)) return;
 
         const game = mathGames[chat];
-        if (body == game.math.result) {
+        if (body === game.math.result) {
           clearTimeout(game.timeout);
           delete mathGames[chat];
           await sock.sendMessage(chat, { text: `✅ *Correct answer!*\n\nYou won the game.` }, { quoted: m });
@@ -92,12 +92,12 @@ export default {
 };
 
 function genMath(mode) {
-  let [a1, a2, b1, b2, ops, time] = modes[mode];
+  const [a1, a2, b1, b2, ops, time] = modes[mode];
   let a = randomInt(a1, a2);
-  let b = randomInt(b1, b2);
-  let op = pickRandom([...ops]);
+  const b = randomInt(b1, b2);
+  const op = pickRandom([...ops]);
   let result = new Function(`return ${a} ${op.replace('/', '*')} ${b < 0 ? `(${b})` : b}`)();
-  if (op == '/') [a, result] = [result, a];
+  if (op === '/') [a, result] = [result, a];
   return { str: `${a} ${operators[op]} ${b}`, mode, time, result };
 }
 

@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 /*****************************************************************************
  *                                                                           *
  *                     Developed By Qasim Ali                                *
@@ -21,7 +16,6 @@ const __dirname = dirname(__filename);
 
 import store from '../lib/lightweight_store.js';
 import fs from 'fs';
-import path from 'path';
 import { dataFile } from '../lib/paths.js';
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -58,18 +52,18 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const { chatId } = context;
-        
+
         const stickers = await getStickerCommands();
         const entries = Object.entries(stickers);
 
         if (entries.length === 0) {
-            return await sock.sendMessage(chatId, { 
-                text: '✳️ No sticker commands found' 
+            return await sock.sendMessage(chatId, {
+                text: '✳️ No sticker commands found'
             }, { quoted: message });
         }
 
         const stickerList = entries
-            .map(([key, value], index) => 
+            .map(([key, value], index) =>
                 `${index + 1}. ${(value as any).locked ? `*(blocked)* ${key}` : key} : ${(value as any).text}`
             )
             .join('\n');

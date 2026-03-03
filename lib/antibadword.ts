@@ -1,11 +1,9 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath} from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import store from './lightweight_store.js';
 import fs from 'fs';
-import path from 'path';
 import { dataFile } from './paths.js';
 
 const MONGO_URL = process.env.MONGO_URL;
@@ -46,7 +44,7 @@ async function setAntiBadword(chatId, type, action) {
     }
 }
 
-async function getAntiBadword(chatId, type) {
+async function getAntiBadword(chatId, _type) {
     try {
         const settings = await store.getSetting(chatId, 'antibadword');
         return settings || null;
@@ -73,13 +71,13 @@ async function removeAntiBadword(chatId) {
 async function incrementWarningCount(chatId, userId) {
     try {
         const warningsKey = `antibadword_warnings`;
-        let warnings = await store.getSetting(chatId, warningsKey) || {};
-        
+        const warnings = await store.getSetting(chatId, warningsKey) || {};
+
         if (!warnings[userId]) {
             warnings[userId] = 0;
         }
         warnings[userId]++;
-        
+
         await store.saveSetting(chatId, warningsKey, warnings);
         return warnings[userId];
     } catch(error: any) {
@@ -91,8 +89,8 @@ async function incrementWarningCount(chatId, userId) {
 async function resetWarningCount(chatId, userId) {
     try {
         const warningsKey = `antibadword_warnings`;
-        let warnings = await store.getSetting(chatId, warningsKey) || {};
-        
+        const warnings = await store.getSetting(chatId, warningsKey) || {};
+
         if (warnings[userId]) {
             delete warnings[userId];
             await store.saveSetting(chatId, warningsKey, warnings);
@@ -160,30 +158,30 @@ async function handleBadwordDetection(sock, chatId, message, userMessage, sender
         .trim();
 
     const badWords = [
-        'gandu', 'madarchod', 'bhosdike', 'bsdk', 'fucker', 'bhosda', 
-        'lauda', 'laude', 'betichod', 'chutiya', 'maa ki chut', 'behenchod', 
-        'behen ki chut', 'tatto ke saudagar', 'machar ki jhant', 'jhant ka baal', 
-        'randi', 'chuchi', 'boobs', 'boobies', 'tits', 'idiot', 'nigga', 'fuck', 
-        'dick', 'bitch', 'bastard', 'asshole', 'asu', 'awyu', 'teri ma ki chut', 
+        'gandu', 'madarchod', 'bhosdike', 'bsdk', 'fucker', 'bhosda',
+        'lauda', 'laude', 'betichod', 'chutiya', 'maa ki chut', 'behenchod',
+        'behen ki chut', 'tatto ke saudagar', 'machar ki jhant', 'jhant ka baal',
+        'randi', 'chuchi', 'boobs', 'boobies', 'tits', 'idiot', 'nigga', 'fuck',
+        'dick', 'bitch', 'bastard', 'asshole', 'asu', 'awyu', 'teri ma ki chut',
         'teri maa ki', 'lund', 'lund ke baal', 'mc', 'lodu', 'benchod',
         'shit', 'damn', 'hell', 'piss', 'crap', 'bastard', 'slut', 'whore', 'prick',
-        'motherfucker', 'cock', 'cunt', 'pussy', 'twat', 'wanker', 'douchebag', 'jackass', 
+        'motherfucker', 'cock', 'cunt', 'pussy', 'twat', 'wanker', 'douchebag', 'jackass',
         'moron', 'retard', 'scumbag', 'skank', 'slutty', 'arse', 'bugger', 'sod off',
         'chut', 'laude ka baal', 'madar', 'behen ke lode', 'chodne', 'sala kutta',
         'harami', 'randi ki aulad', 'gaand mara', 'chodu', 'lund le', 'gandu saala',
         'kameena', 'haramzada', 'chamiya', 'chodne wala', 'chudai', 'chutiye ke baap',
         'fck', 'fckr', 'fcker', 'fuk', 'fukk', 'fcuk', 'btch', 'bch', 'bsdk', 'f*ck','assclown',
         'a**hole', 'f@ck', 'b!tch', 'd!ck', 'n!gga', 'f***er', 's***head', 'a$$', 'l0du', 'lund69',
-        'spic', 'chink', 'cracker', 'towelhead', 'gook', 'kike', 'paki', 'honky', 
+        'spic', 'chink', 'cracker', 'towelhead', 'gook', 'kike', 'paki', 'honky',
         'wetback', 'raghead', 'jungle bunny', 'sand nigger', 'beaner',
-        'blowjob', 'handjob', 'cum', 'cumshot', 'jizz', 'deepthroat', 'fap', 
-        'hentai', 'MILF', 'anal', 'orgasm', 'dildo', 'vibrator', 'gangbang', 
+        'blowjob', 'handjob', 'cum', 'cumshot', 'jizz', 'deepthroat', 'fap',
+        'hentai', 'MILF', 'anal', 'orgasm', 'dildo', 'vibrator', 'gangbang',
         'threesome', 'porn', 'sex', 'xxx',
         'fag', 'faggot', 'dyke', 'tranny', 'homo', 'sissy', 'fairy', 'lesbo',
-        'weed', 'pot', 'coke', 'heroin', 'meth', 'crack', 'dope', 'bong', 'kush', 
+        'weed', 'pot', 'coke', 'heroin', 'meth', 'crack', 'dope', 'bong', 'kush',
         'hash', 'trip', 'rolling'
     ];
-    
+
     const messageWords = cleanMessage.split(' ');
     let containsBadWord = false;
 
@@ -221,7 +219,7 @@ async function handleBadwordDetection(sock, chatId, message, userMessage, sender
     }
 
     try {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             delete: message.key
         });
     } catch(err: any) {

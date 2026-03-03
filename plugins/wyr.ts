@@ -19,7 +19,7 @@ export default {
 
       const opt1 = res.data.question?.option1 || 'Option 1 not found';
       const opt2 = res.data.question?.option2 || 'Option 2 not found';
-      const creator = res.data.creator || 'Unknown';
+      const _creator = res.data.creator || 'Unknown';
 
       const replyText = `🤔 *Would You Rather*\n\n◍ ${opt1}\n◍ ${opt2}`;
 

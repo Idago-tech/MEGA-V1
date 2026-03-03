@@ -48,7 +48,7 @@ export default {
         userToInsult = message.message.extendedTextMessage.contextInfo.participant;
       }
       if (!userToInsult) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ Please mention someone or reply to their message to insult them!',
           quoted: message
         });
@@ -57,7 +57,7 @@ export default {
       const insult = insults[Math.floor(Math.random() * insults.length)];
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `Hey @${userToInsult.split('@')[0]}, ${insult}`,
         mentions: [userToInsult],
         quoted: message
@@ -68,7 +68,7 @@ export default {
       if (error.data === 429) {
         await new Promise(resolve => setTimeout(resolve, 2000));
         try {
-          await sock.sendMessage(chatId, { 
+          await sock.sendMessage(chatId, {
             text: '⚠️ Too many requests. Please try again in a few seconds.',
             quoted: message
           });
@@ -77,7 +77,7 @@ export default {
         }
       } else {
         try {
-          await sock.sendMessage(chatId, { 
+          await sock.sendMessage(chatId, {
             text: '❌ An error occurred while sending the insult.',
             quoted: message
           });

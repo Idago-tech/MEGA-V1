@@ -21,7 +21,7 @@ export default {
 
             const type = Object.keys(quotedMsg)[0];
             const supportedTypes = ['imageMessage', 'videoMessage', 'stickerMessage', 'documentMessage'];
-            
+
             if (!supportedTypes.includes(type)) {
                 await sock.sendMessage(chatId, { text: '⚠️ Unsupported type!' }, { quoted: message });
                 return;
@@ -52,7 +52,7 @@ export default {
 
             const result = await uploadToPomf2(tempPath);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `✅ *Pomf Upload Success!*\n\n🔗 ${result.url}`
             }, { quoted: message });
 

@@ -15,8 +15,8 @@ export default {
       const link = args[0];
 
       if (!link) {
-        return await sock.sendMessage(chatId, { 
-          text: `❌ *Missing Link!*\n\nExample: .gitclone2 https://github.com/GlobalTechInfo/MEGA-MD` 
+        return await sock.sendMessage(chatId, {
+          text: `❌ *Missing Link!*\n\nExample: .gitclone2 https://github.com/GlobalTechInfo/MEGA-MD`
         }, { quoted: message });
       }
 
@@ -24,16 +24,17 @@ export default {
         return await sock.sendMessage(chatId, { text: '⚠️ *Invalid GitHub link!*' }, { quoted: message });
       }
 
+      // eslint-disable-next-line prefer-const
       let [_, user, repo] = link.match(regex) || [];
       repo = repo.replace(/.git$/, '');
-      
+
       const url = `https://api.github.com/repos/${user}/${repo}/zipball`;
 
       const { default: _axios } = await import('axios');
-      const response = _axios.head;
+      const _response = _axios.head;
       const headRes = await axios.head(url);
       const contentDisposition = headRes.headers['content-disposition'];
-      
+
       let filename = `${repo}.zip`;
       if (contentDisposition) {
         const match = contentDisposition.match(/attachment; filename=(.*)/);

@@ -5,7 +5,7 @@ export default {
   description: 'Get user profile picture',
   usage: '.getpp @user or reply or number',
 
-  async handler(sock: any, message: any, args: any, context: any = {}) {
+  async handler(sock: any, message: any, args: any, _context: any = {}) {
     const chatId = message.key.remoteJid;
     const isGroup = chatId.endsWith('@g.us');
 
@@ -14,7 +14,7 @@ export default {
     let displayNumber = '';
 
     const quoted = message.message?.extendedTextMessage?.contextInfo;
-    
+
     if (quoted?.mentionedJid?.[0]) {
       target = quoted.mentionedJid[0];
     } else if (quoted?.participant) {
@@ -26,8 +26,8 @@ export default {
         target = input + '@s.whatsapp.net';
         displayName = '';  // Will be resolved later, don't show Unknown
       } else {
-        return await sock.sendMessage(chatId, { 
-          text: '❌ Invalid number. Use format: 923051234567 or +923051234567' 
+        return await sock.sendMessage(chatId, {
+          text: '❌ Invalid number. Use format: 923051234567 or +923051234567'
         }, { quoted: message });
       }
     } else {
@@ -62,13 +62,13 @@ export default {
       try {
         ppUrl = await sock.profilePictureUrl(realJid, 'image');
       } catch(e: any) {
-        return await sock.sendMessage(chatId, { 
-          text: `❌ No profile picture found for *${displayName}* (${displayNumber})` 
+        return await sock.sendMessage(chatId, {
+          text: `❌ No profile picture found for *${displayName}* (${displayNumber})`
         }, { quoted: message });
       }
 
       if (ppUrl) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           image: { url: ppUrl },
           caption: `📸 *Profile Picture*${displayName && displayName !== 'Unknown' ? '\n\n👤 *Name:* ' + displayName : ''}${displayNumber ? '\n📱 *Number:* ' + displayNumber : ''}`
         }, { quoted: message });
@@ -76,8 +76,8 @@ export default {
 
     } catch(error: any) {
       console.error('GetPP Error:', error);
-      await sock.sendMessage(chatId, { 
-        text: '❌ Failed to fetch profile picture.' 
+      await sock.sendMessage(chatId, {
+        text: '❌ Failed to fetch profile picture.'
       }, { quoted: message });
     }
   }

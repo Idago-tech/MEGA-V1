@@ -11,9 +11,9 @@ export default {
     const text = args.join(' ').trim();
 
     if (!text) {
-      await sock.sendMessage(chatId, { 
-        text: '*Please provide a movie or series title.*\nExample: `.imdb Inception`', 
-        quoted: message 
+      await sock.sendMessage(chatId, {
+        text: '*Please provide a movie or series title.*\nExample: `.imdb Inception`',
+        quoted: message
       });
       return;
     }
@@ -48,19 +48,19 @@ export default {
 ${ratings}
       `.trim();
       if (json.poster) {
-        await sock.sendMessage(chatId, { 
-          image: { url: json.poster }, 
-          caption: movieInfo, 
-          quoted: message 
+        await sock.sendMessage(chatId, {
+          image: { url: json.poster },
+          caption: movieInfo,
+          quoted: message
         });
       } else {
         await sock.sendMessage(chatId, { text: movieInfo, quoted: message });
       }
     } catch(error: any) {
       console.error('IMDB Command Error:', error);
-      await sock.sendMessage(chatId, { 
-        text: '❌ Failed to fetch movie information. Please try again later.', 
-        quoted: message 
+      await sock.sendMessage(chatId, {
+        text: '❌ Failed to fetch movie information. Please try again later.',
+        quoted: message
       });
     }
   }

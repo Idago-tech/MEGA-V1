@@ -45,7 +45,7 @@ export default {
         const suggestion = CommandHandler.findSuggestion(query);
         let failText = `❌ No commands found matching *"${query}"*`;
         if (suggestion) failText += `\n\nDid you mean: *.${suggestion}*?`;
-        
+
         return await sock.sendMessage(chatId, { text: failText }, { quoted: message });
       }
 

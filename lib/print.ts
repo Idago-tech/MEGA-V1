@@ -1,4 +1,3 @@
-import { WAMessageStubType } from '@whiskeysockets/baileys';
 import chalk from 'chalk';
 import PhoneNumber, { parsePhoneNumber } from 'awesome-phonenumber';
 import settings from '../config.js';
@@ -8,17 +7,17 @@ import settings from '../config.js';
  */
 function extractPhoneNumber(jid) {
     if (!jid) return null
-    
-    let number = jid
+
+    const number = jid
         .replace('@s.whatsapp.net', '')
         .replace('@lid', '')
         .replace('@g.us', '')
         .split(':')[0]
-    
+
     if (number.length < 10 && jid.includes('@lid')) {
         return null
     }
-    
+
     return number
 }
 
@@ -46,7 +45,7 @@ async function getNameWithFallback(jid, sock, pushName) {
             }
         }
         return jid.split('@')[0].split(':')[0]
-        
+
     } catch(e: any) {
         return jid.split('@')[0].split(':')[0]
     }
@@ -68,7 +67,7 @@ async function printMessage(message, sock) {
 
         let senderName = ''
         let senderPhone = ''
-        
+
         try {
             if (fromMe) {
                 senderName = sock.user?.name || 'Bot'
@@ -79,7 +78,7 @@ async function printMessage(message, sock) {
                 }
             } else {
                 senderName = await getNameWithFallback(senderId, sock, m.pushName)
-                
+
                 const phone = extractPhoneNumber(senderId)
                 if (phone && phone.length >= 10) {
                     const pn = (PhoneNumber as any)('+' + phone)
@@ -108,7 +107,7 @@ async function printMessage(message, sock) {
         let fileSize = 0
         let shouldSkipLog = false
 
-        if (messageType === 'senderKeyDistributionMessage' || 
+        if (messageType === 'senderKeyDistributionMessage' ||
             messageType === 'protocolMessage' ||
             messageType === 'reactionMessage') {
             shouldSkipLog = true
@@ -165,27 +164,27 @@ async function printMessage(message, sock) {
             fileSizeStr = ` (${(fileSize / Math.pow(1024, i)).toFixed(1)} ${units[i]})`
         }
 
-        const timestamp = m.messageTimestamp 
+        const timestamp = m.messageTimestamp
             ? new Date((m.messageTimestamp.low || m.messageTimestamp) * 1000)
             : new Date()
-        
-        const timeStr = timestamp.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit', 
+
+        const timeStr = timestamp.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
             second: '2-digit',
             hour12: false,
             timeZone: settings.timeZone || 'Asia/Karachi'
         })
 
-        const isCommand = messageText.startsWith('.') || 
-                         messageText.startsWith('!') || 
+        const isCommand = messageText.startsWith('.') ||
+                         messageText.startsWith('!') ||
                          messageText.startsWith('#') ||
                          messageText.startsWith('/')
 
         const displayType = messageTypeLabels[messageType] || messageType.replace('Message', '').toUpperCase()
 
         console.log((chalk as any).hex('#00D9FF').bold('╭─────────────────────────────────'))
-        
+
         console.log(
             (chalk as any).hex('#00D9FF')('│') + ' ' +
             (chalk as any).cyan('🤖 Bot') + ' ' +
@@ -193,11 +192,11 @@ async function printMessage(message, sock) {
             (chalk as any).magenta(displayType) +
             (chalk as any).gray(fileSizeStr)
         )
-        
+
         const senderDisplay = senderName && senderName !== senderPhone
             ? `${senderName} (${senderPhone})`
             : senderPhone
-        
+
         console.log(
             (chalk as any).hex('#00D9FF')('│') + ' ' +
             (fromMe ? (chalk as any).green('📤 ME') : (chalk as any).yellow('📨 FROM')) + ' ' +
@@ -220,23 +219,23 @@ async function printMessage(message, sock) {
 
         if (messageText) {
             const maxLength = 100
-            const displayText = messageText.length > maxLength 
-                ? messageText.substring(0, maxLength) + '...' 
+            const displayText = messageText.length > maxLength
+                ? messageText.substring(0, maxLength) + '...'
                 : messageText
-            
-            const isBotResponse = messageText.includes('MEGA-MD') || 
+
+            const isBotResponse = messageText.includes('MEGA-MD') ||
                                   messageText.includes('Pinging...') ||
                                   messageText.includes('*🤖') ||
                                   (fromMe && messageText.includes('*'))
-            
+
             console.log(
                 (chalk as any).hex('#00D9FF')('│') + ' ' +
                 (chalk as any).hex('#FFD700')('💭 MSG') + ' ' +
-                (isCommand 
-                    ? (chalk as any).greenBright(displayText) 
+                (isCommand
+                    ? (chalk as any).greenBright(displayText)
                     : isBotResponse
                         ? (chalk as any).cyan(displayText)
-                        : fromMe 
+                        : fromMe
                             ? (chalk as any).blueBright(displayText)
                             : (chalk as any).white(displayText)
                 )
@@ -256,9 +255,9 @@ async function printMessage(message, sock) {
  * Simple colored logger for events
  */
 function printLog(type, message) {
-    const timestamp = new Date().toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
+    const timestamp = new Date().toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
         second: '2-digit',
         hour12: false,
         timeZone: settings.timeZone || 'Asia/Karachi'

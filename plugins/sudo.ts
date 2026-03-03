@@ -7,15 +7,15 @@ function extractTargetJid(message, args) {
     if (message.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0]) {
         return message.message.extendedTextMessage.contextInfo.mentionedJid[0];
     }
-    
+
     if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
         return message.message.extendedTextMessage.contextInfo.participant;
     }
-    
+
     const text = args.join(' ');
     const match = text.match(/\b(\d{7,15})\b/);
     if (match) return match[1] + '@s.whatsapp.net';
-    
+
     return null;
 }
 
@@ -26,19 +26,19 @@ export default {
     description: 'Add or remove sudo users or list them',
     usage: '.sudo add|del|list <@user|number>',
     strictOwnerOnly: true,
-    
+
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
-        const senderJid = message.key.participant || message.key.remoteJid;
+        const _senderJid = message.key.participant || message.key.remoteJid;
         const isGroup = chatId.endsWith('@g.us');
-        
+
         const isOwner = message.key.fromMe || isOwnerOrSudo;
 
         const sub = (args[0] || '').toLowerCase();
 
         if (!sub || !['add', 'del', 'remove', 'list'].includes(sub)) {
-            await sock.sendMessage(chatId, { 
-                text: '╭━━━〔 *SUDO MANAGER* 〕━━━┈\n┃\n┃ 📝 *Usage:*\n┃ ▢ .sudo add <@tag/reply/num>\n┃ ▢ .sudo del <@tag/reply/num>\n┃ ▢ .sudo list\n┃\n╰━━━━━━━━━━━━━━━━━━┈' 
+            await sock.sendMessage(chatId, {
+                text: '╭━━━〔 *SUDO MANAGER* 〕━━━┈\n┃\n┃ 📝 *Usage:*\n┃ ▢ .sudo add <@tag/reply/num>\n┃ ▢ .sudo del <@tag/reply/num>\n┃ ▢ .sudo list\n┃\n╰━━━━━━━━━━━━━━━━━━┈'
             }, { quoted: message });
             return;
         }
@@ -50,7 +50,7 @@ export default {
                 return;
             }
             const textList = list.map((j, i) => `┃ ${i + 1}. @${cleanJid(j)}`).join('\n');
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `╭━━〔 *SUDO USERS* 〕━━┈\n┃\n${textList}\n┃\n╰━━━━━━━━━━━━━━━┈`,
                 mentions: list
             }, { quoted: message });
@@ -81,7 +81,7 @@ export default {
 
         if (sub === 'add') {
             const ok = await addSudo(targetJid);
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: ok ? `✅ *Success:* @${displayId} has been granted Sudo privileges.` : `❌ *Error:* Failed to add sudo.`,
                 mentions: [targetJid]
             }, { quoted: message });
@@ -95,7 +95,7 @@ export default {
                 return;
             }
             const ok = await removeSudo(targetJid);
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: ok ? `✅ *Success:* Sudo privileges revoked from @${displayId}.` : `❌ *Error:* Failed to remove sudo.`,
                 mentions: [targetJid]
             }, { quoted: message });

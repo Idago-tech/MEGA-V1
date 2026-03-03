@@ -18,7 +18,7 @@ export default {
       }
 
       const quote = res.data.result?.quote || 'No quote found.';
-      const creator = res.data.creator || 'Unknown';
+      const _creator = res.data.creator || 'Unknown';
 
       const replyText = `💬 *Random Quote*\n\n${quote}`;
 

@@ -33,7 +33,7 @@ export default {
       const hr  = Math.floor(ms / (1000 * 60 * 60)) % 24;
       const day = Math.floor(ms / (1000 * 60 * 60 * 24));
 
-      let parts = [];
+      const parts = [];
       if (day) parts.push(`${day}d`);
       if (hr) parts.push(`${hr}h`);
       if (min) parts.push(`${min}m`);
@@ -41,7 +41,7 @@ export default {
 
       return parts.join(' ');
     };
-    
+
     const startedAt = new Date(Date.now() - uptimeMs).toLocaleString();
     const ramMb = (process.memoryUsage().rss / 1024 / 1024).toFixed(1);
     const commandCount = commandHandler.commands.size;

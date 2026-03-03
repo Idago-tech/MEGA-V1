@@ -12,10 +12,10 @@ export default {
 
         const quotedMsg = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
         const mentionedJid = message.message?.extendedTextMessage?.contextInfo?.mentionedJid;
-        let who = quotedMsg 
-            ? quotedMsg.sender 
-            : mentionedJid && mentionedJid[0] 
-                ? mentionedJid[0] 
+        const who = quotedMsg
+            ? quotedMsg.sender
+            : mentionedJid && mentionedJid[0]
+                ? mentionedJid[0]
                 : sender;
 
         try {
@@ -52,7 +52,7 @@ export default {
 
         } catch(error: any) {
             console.error('Simp Command Error:', error);
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: '❌ Sorry, I couldn\'t generate the simp card. Please try again later!',
                 contextInfo: {
                     forwardingScore: 1,

@@ -18,8 +18,8 @@ export default {
       } else if (message.message?.imageMessage) {
         imageBuffer = await downloadMediaMessage(message, 'buffer', {}, {} as any);
       } else {
-        await sock.sendMessage(chatId, { 
-          text: 'Please reply to an image or send an image with caption `.blur`' 
+        await sock.sendMessage(chatId, {
+          text: 'Please reply to an image or send an image with caption `.blur`'
         }, { quoted: message });
         return;
       }
@@ -50,8 +50,8 @@ export default {
 
     } catch(error: any) {
       console.error('Error in blur command:', error);
-      await sock.sendMessage(chatId, { 
-        text: '❌ Failed to blur image. Please try again later.' 
+      await sock.sendMessage(chatId, {
+        text: '❌ Failed to blur image. Please try again later.'
       }, { quoted: message });
     }
   }

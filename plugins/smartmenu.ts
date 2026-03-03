@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import CommandHandler from '../lib/commandHandler.js';
 import settings from '../config.js';
 import fs from 'fs';
@@ -46,8 +41,8 @@ function getCategoryEmoji(category) {
 
 function formatTime() {
     const now = new Date();
-    const options = { 
-        hour: '2-digit', 
+    const options = {
+        hour: '2-digit',
         minute: '2-digit',
         hour12: false,
         timeZone: settings.timeZone || 'UTC'
@@ -72,9 +67,9 @@ export default {
 
       const categories = Array.from(CommandHandler.categories.keys());
       const stats = CommandHandler.getDiagnostics();
-      
+
       const menuEmoji = getRandomEmoji(menuEmojis);
-      
+
       const activeEmoji = getRandomEmoji(activeEmojis);
       const disabledEmoji = getRandomEmoji(disabledEmojis);
       const fastEmoji = getRandomEmoji(fastEmojis);
@@ -104,25 +99,25 @@ export default {
         const catEmoji = getCategoryEmoji(cat);
         menuText += `${catEmoji} *${cat.toUpperCase()}*\n`;
         menuText += `┌─────────────────\n`;
-        
+
         const catCmds = CommandHandler.getCommandsByCategory(cat);
-        
+
         catCmds.forEach((cmdName, index) => {
           const isLast = index === catCmds.length - 1;
           const prefix = isLast ? '└' : '├';
-          
+
           const isOff = CommandHandler.disabledCommands.has(cmdName.toLowerCase());
           const cmdStats = stats.find(s => s.command === cmdName.toLowerCase());
-          
+
           const statusIcon = isOff ? disabledEmoji : activeEmoji;
-          
+
           let speedTag = '';
           if (cmdStats && !isOff) {
             const ms = parseFloat(cmdStats.average_speed);
             if (ms > 0 && ms < 100) speedTag = ` ${fastEmoji}`;
             else if (ms > 1000) speedTag = ` ${slowEmoji}`;
           }
-          
+
           menuText += `${prefix}─ ${statusIcon} .${cmdName}${speedTag}\n`;
         });
         menuText += `\n`;
@@ -154,7 +149,7 @@ export default {
 
     } catch(error: any) {
       console.error('Menu Error:', error);
-      await (sock as any).sendMessage(chatId, { 
+      await (sock as any).sendMessage(chatId, {
         text: `❌ *Menu Error*\n\n${error.message}`
       }, { quoted: message });
     }

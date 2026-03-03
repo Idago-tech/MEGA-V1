@@ -12,7 +12,7 @@ export default {
   category: 'stickers',
   description: 'Convert image/video to sticker',
   usage: '.sticker2 (reply to image/video or send with caption)',
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
     const messageToQuote = message;
@@ -33,7 +33,7 @@ export default {
     const mediaMessage = targetMessage.message?.imageMessage || targetMessage.message?.videoMessage || targetMessage.message?.documentMessage;
 
     if (!mediaMessage) {
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Please reply to an image/video with .sticker2, or send an image/video with .sticker2 as the caption.',
         ...channelInfo
       }, { quoted: messageToQuote });
@@ -41,13 +41,13 @@ export default {
     }
 
     try {
-      const mediaBuffer = await downloadMediaMessage(targetMessage, 'buffer', {}, { 
-        logger: undefined, 
-        reuploadRequest: sock.updateMediaMessage 
+      const mediaBuffer = await downloadMediaMessage(targetMessage, 'buffer', {}, {
+        logger: undefined,
+        reuploadRequest: sock.updateMediaMessage
       });
 
       if (!mediaBuffer) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: 'Failed to download media. Please try again.',
           ...channelInfo
         }, { quoted: messageToQuote });
@@ -64,8 +64,8 @@ export default {
 
       fs.writeFileSync(tempInput, mediaBuffer);
 
-      const isAnimated = mediaMessage.mimetype?.includes('gif') || 
-                        mediaMessage.mimetype?.includes('video') || 
+      const isAnimated = mediaMessage.mimetype?.includes('gif') ||
+                        mediaMessage.mimetype?.includes('video') ||
                         mediaMessage.seconds > 0;
 
       const ffmpegCommand = isAnimated
@@ -82,7 +82,7 @@ export default {
       });
 
       let webpBuffer = fs.readFileSync(tempOutput);
-      
+
       if (isAnimated && webpBuffer.length > 1000 * 1024) {
         try {
           const tempOutput2 = path.join(tmpDir, `sticker_fallback_${Date.now()}.webp`);
@@ -146,7 +146,7 @@ export default {
         } catch {}
       }
 
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         sticker: finalBuffer,
         ...channelInfo
       }, { quoted: messageToQuote });
@@ -160,7 +160,7 @@ export default {
 
     } catch(error: any) {
       console.error('Error in sticker command:', error);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Failed to create sticker! Try again later.',
         ...channelInfo
       }, { quoted: messageToQuote });

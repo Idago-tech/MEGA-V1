@@ -1,5 +1,4 @@
 import CommandHandler from '../lib/commandHandler.js';
-import settings from '../config.js';
 
 export default {
   command: 'manage',
@@ -29,7 +28,7 @@ export default {
         if (!targetCmd || !newAlias) {
           return await sock.sendMessage(chatId, { text: '❌ Usage: .manage alias [command] [new_alias]' }, { quoted: message });
         }
-        
+
         if (!CommandHandler.commands.has(targetCmd)) {
           return await sock.sendMessage(chatId, { text: `❌ Source command *${targetCmd}* not found.` }, { quoted: message });
         }
@@ -42,7 +41,7 @@ export default {
                        `*⁠• Toggle:* .manage toggle [name]\n` +
                        `*• Alias:* .manage alias [name] [new_alias]\n` +
                        `*• Reload:* Run your reload command to reset changes.`;
-      
+
       await sock.sendMessage(chatId, { text: helpText }, { quoted: message });
 
     } catch(error: any) {

@@ -35,7 +35,7 @@ export default {
 
             const result = await uploadToFreeimage(tempPath);
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: `✅ *Freeimage Upload Success!*\n\n` +
                       `🔗 *URL:* ${result.url}\n` +
                       `🖼️ *Display:* ${result.display_url}\n` +

@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import { join } from 'path';
 import { unlinkSync, readdirSync } from 'fs';
 
@@ -18,8 +13,8 @@ export default {
 
     try {
       if (!args || !args[0]) {
-        return await sock.sendMessage(chatId, { 
-          text: `*🌟Example usage:*\n.delplugin main-menu` 
+        return await sock.sendMessage(chatId, {
+          text: `*🌟Example usage:*\n.delplugin main-menu`
         }, { quoted: message });
       }
 
@@ -40,7 +35,7 @@ export default {
 
     } catch(err: any) {
       console.error('rmplugin error:', err);
-      await sock.sendMessage(chatId, {  text: `❌ Failed to delete plugin: ${err.message}` 
+      await sock.sendMessage(chatId, {  text: `❌ Failed to delete plugin: ${err.message}`
       }, { quoted: message });
     }
   }

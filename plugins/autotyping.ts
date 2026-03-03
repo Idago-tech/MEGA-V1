@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import { dataFile } from '../lib/paths.js';
@@ -72,15 +67,15 @@ export async function handleAutotypingForMessage(sock, chatId, userMessage) {
             await sock.presenceSubscribe(chatId);
             await sock.sendPresenceUpdate('available', chatId);
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             await sock.sendPresenceUpdate('composing', chatId);
             const typingDelay = Math.max(3000, Math.min(8000, userMessage.length * 150));
             await new Promise(resolve => setTimeout(resolve, typingDelay));
-            
+
             await sock.sendPresenceUpdate('composing', chatId);
             await new Promise(resolve => setTimeout(resolve, 1500));
             await sock.sendPresenceUpdate('paused', chatId);
-            
+
             return true;
         } catch(error: any) {
             console.error('Error sending typing indicator:', error);
@@ -102,15 +97,15 @@ async function handleAutotypingForCommand(sock, chatId) {
             await sock.presenceSubscribe(chatId);
             await sock.sendPresenceUpdate('available', chatId);
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             await sock.sendPresenceUpdate('composing', chatId);
             const commandTypingDelay = 3000;
             await new Promise(resolve => setTimeout(resolve, commandTypingDelay));
-            
+
             await sock.sendPresenceUpdate('composing', chatId);
             await new Promise(resolve => setTimeout(resolve, 1500));
             await sock.sendPresenceUpdate('paused', chatId);
-            
+
             return true;
         } catch(error: any) {
             console.error('Error sending command typing indicator:', error);
@@ -153,11 +148,11 @@ export default {
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
         const channelInfo = context.channelInfo || {};
-        
+
         try {
             const config = await initConfig();
             const action = args[0]?.toLowerCase();
-            
+
             if (!action) {
                 const ghostActive = await isGhostModeActive();
                 await sock.sendMessage(chatId, {
@@ -186,13 +181,13 @@ export default {
                 }
                 config.enabled = true;
                 await saveConfig(config);
-                
+
                 const ghostActive = await isGhostModeActive();
                 await sock.sendMessage(chatId, {
                     text: `✅ *Auto-typing enabled!*\n\nThe bot will now show typing indicator while processing.${ghostActive ? '\n\n⚠️ *Ghost mode is active* - typing indicators are currently blocked.' : ''}`,
                     ...channelInfo
                 }, { quoted: message });
-                
+
             } else if (action === 'off' || action === 'disable') {
                 if (!config.enabled) {
                     await sock.sendMessage(chatId, {
@@ -203,19 +198,19 @@ export default {
                 }
                 config.enabled = false;
                 await saveConfig(config);
-                
+
                 await sock.sendMessage(chatId, {
                     text: '❌ *Auto-typing disabled!*\n\nThe bot will no longer show typing indicator.',
                     ...channelInfo
                 }, { quoted: message });
-                
+
             } else {
                 await sock.sendMessage(chatId, {
                     text: '❌ *Invalid option!*\n\nUse: `.autotyping on/off`',
                     ...channelInfo
                 }, { quoted: message });
             }
-            
+
         } catch(error: any) {
             console.error('Error in autotyping command:', error);
             await sock.sendMessage(chatId, {

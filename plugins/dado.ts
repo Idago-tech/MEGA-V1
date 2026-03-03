@@ -5,7 +5,7 @@ export default {
   description: 'Roll a random dice sticker',
   usage: '.dado',
 
-  async handler(sock: any, message: any, args: any, context: any = {}) {
+  async handler(sock: any, message: any, args: any, _context: any = {}) {
     const chatId = message.key.remoteJid;
 
     const diceLinks = [
@@ -20,15 +20,15 @@ export default {
     const randomDice = diceLinks[Math.floor(Math.random() * diceLinks.length)];
 
     try {
-      await sock.sendMessage(chatId, { 
-        sticker: { url: randomDice } 
+      await sock.sendMessage(chatId, {
+        sticker: { url: randomDice }
       }, { quoted: message });
 
     } catch(e: any) {
       console.error('Dice Plugin Error:', e);
-      await sock.sendMessage(chatId, { 
-        image: { url: randomDice }, 
-        caption: '🎲 The dice rolled!' 
+      await sock.sendMessage(chatId, {
+        image: { url: randomDice },
+        caption: '🎲 The dice rolled!'
       }, { quoted: message });
     }
   }

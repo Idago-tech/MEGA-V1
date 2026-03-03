@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 /*****************************************************************************
  *                                                                           *
  *                     Developed By Qasim Ali                                *
@@ -75,32 +70,32 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const { chatId, senderId } = context;
-        
+
         if (!message.message?.extendedTextMessage?.contextInfo?.quotedMessage) {
-            return await sock.sendMessage(chatId, { 
-                text: '✳️ Please reply to a sticker to set a command' 
+            return await sock.sendMessage(chatId, {
+                text: '✳️ Please reply to a sticker to set a command'
             }, { quoted: message });
         }
 
         const quotedMsg = message.message.extendedTextMessage.contextInfo.quotedMessage;
-        
+
         if (!quotedMsg.stickerMessage) {
-            return await sock.sendMessage(chatId, { 
-                text: '⚠️ Please reply to a sticker, not a regular message' 
+            return await sock.sendMessage(chatId, {
+                text: '⚠️ Please reply to a sticker, not a regular message'
             }, { quoted: message });
         }
 
         const fileSha256 = quotedMsg.stickerMessage.fileSha256;
         if (!fileSha256) {
-            return await sock.sendMessage(chatId, { 
-                text: '⚠️ File SHA256 not found' 
+            return await sock.sendMessage(chatId, {
+                text: '⚠️ File SHA256 not found'
             }, { quoted: message });
         }
 
         const text = args.join(' ');
         if (!text) {
-            return await sock.sendMessage(chatId, { 
-                text: 'Command text is missing' 
+            return await sock.sendMessage(chatId, {
+                text: 'Command text is missing'
             }, { quoted: message });
         }
 
@@ -108,8 +103,8 @@ export default {
         const hash = Buffer.from(fileSha256).toString('base64');
 
         if (stickers[hash] && stickers[hash].locked) {
-            return await sock.sendMessage(chatId, { 
-                text: '⚠️ You do not have permission to change this sticker command' 
+            return await sock.sendMessage(chatId, {
+                text: '⚠️ You do not have permission to change this sticker command'
             }, { quoted: message });
         }
 
@@ -123,8 +118,8 @@ export default {
 
         await saveStickerCommands(stickers);
 
-        await sock.sendMessage(chatId, { 
-            text: '✅ Command saved successfully' 
+        await sock.sendMessage(chatId, {
+            text: '✅ Command saved successfully'
         }, { quoted: message });
     }
 };

@@ -23,7 +23,7 @@ export default {
 
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
-    
+
     let txt = args?.join(' ') || "";
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
     if (quoted) {
@@ -46,7 +46,7 @@ export default {
     };
 
     const flipped = txt.split('').map(char => charMap[char] || char).reverse().join('');
-    
+
     await sock.sendMessage(chatId, { text: flipped }, { quoted: message });
   }
 };
@@ -65,4 +65,4 @@ export default {
  *                 Unauthorized copying or distribution is prohibited.       *
  *                                                                           *
  *****************************************************************************/
-        
+

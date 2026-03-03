@@ -22,7 +22,7 @@ export default {
   category: 'music',
   description: 'Search and download ringtones',
   usage: '.ringtone <search term>',
-  
+
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
     const searchQuery = args.join(' ').trim();
@@ -42,7 +42,7 @@ export default {
 
       const searchUrl = `https://discardapi.dpdns.org/api/dl/ringtone?apikey=guru&title=${encodeURIComponent(searchQuery)}`;
       const response = await axios.get(searchUrl, { timeout: 30000 });
-      
+
       if (!response.data?.result || response.data.result.length === 0) {
         return await sock.sendMessage(chatId, {
           text: "❌ *No ringtones found!*\nTry a different search term."
@@ -56,7 +56,7 @@ export default {
 
       for (let i = 0; i < limit; i++) {
         const audioUrl = ringtones[i].audio;
-        
+
         try {
           await sock.sendMessage(chatId, {
             audio: { url: audioUrl },
@@ -87,9 +87,9 @@ export default {
 
     } catch(error: any) {
       console.error('Ringtone Command Error:', error);
-      
+
       let errorMsg = "❌ *Search failed!*\n\n";
-      
+
       if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
         errorMsg += "*Reason:* Connection timeout\nThe API took too long to respond.";
       } else if (error.response) {
@@ -97,7 +97,7 @@ export default {
       } else {
         errorMsg += `*Error:* ${error.message}`;
       }
-      
+
       errorMsg += "\n\nPlease try again later.";
 
       await sock.sendMessage(chatId, {

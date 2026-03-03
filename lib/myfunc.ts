@@ -1,14 +1,9 @@
-import { proto, delay, getContentType } from '@whiskeysockets/baileys';
-import chalk from 'chalk';
-import fs from 'fs';
-import crypto from 'crypto';
+import { proto, getContentType } from '@whiskeysockets/baileys';
 import axios, { AxiosRequestConfig } from 'axios';
 import moment from 'moment-timezone';
 import { sizeFormatter } from 'human-readable';
 import util from 'util';
 import sharp from 'sharp';
-import path from 'path';
-import { tmpdir } from 'os';
 
 // ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -250,7 +245,7 @@ export const smsg = (QasimDev: any, m: any, store: any): any => {
             || (m.mtype === 'viewOnceMessage' && m.msg?.caption)
             || m.text;
 
-        let quoted = m.quoted = m.msg?.contextInfo ? m.msg.contextInfo.quotedMessage : null;
+        const quoted = m.quoted = m.msg?.contextInfo ? m.msg.contextInfo.quotedMessage : null;
         m.mentionedJid = m.msg?.contextInfo ? m.msg.contextInfo.mentionedJid : [];
 
         if (m.quoted) {

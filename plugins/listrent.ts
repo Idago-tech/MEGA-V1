@@ -27,14 +27,14 @@ async function getAllCloneSessions() {
     if (HAS_DB) {
         const settings = await store.getAllSettings('clones') || {};
         return Object.entries(settings)
-            .filter(([key, value]) => value && (value as any).status)
+            .filter(([_key, value]) => value && (value as any).status)
             .map(([authId, data]) => ({ authId, ...((data) as any) }));
     } else {
         const { default: fs } = await import('fs');
         const { default: path } = await import('path');
         const clonesDir = path.join(process.cwd(), 'session', 'clones');
         if (!fs.existsSync(clonesDir)) return [];
-        
+
         const dirs = fs.readdirSync(clonesDir);
         return dirs.map(authId => {
             const sessionPath = path.join(clonesDir, authId, 'session.json');
@@ -65,8 +65,8 @@ export default {
         const storedClones = await getAllCloneSessions();
 
         if (activeConns.length === 0 && storedClones.length === 0) {
-            return await sock.sendMessage(chatId, { 
-                text: "*❌ No sub-bots are currently active or stored.*" 
+            return await sock.sendMessage(chatId, {
+                text: "*❌ No sub-bots are currently active or stored.*"
             }, { quoted: message });
         }
 
@@ -75,7 +75,7 @@ export default {
 
         if (activeConns.length > 0) {
             msg += `*🟢 ONLINE CLONES:*\n\n`;
-            
+
             activeConns.forEach((conn, i) => {
                 const user = conn.user;
                 msg += `*${i + 1}.* @${user.id.split(':')[0]}\n`;
@@ -94,7 +94,7 @@ export default {
 
             if (offlineClones.length > 0) {
                 msg += `*⚪ STORED CLONES (Offline):*\n\n`;
-                
+
                 offlineClones.forEach((clone, i) => {
                     msg += `*${i + 1}.* ID: ${clone.authId}\n`;
                     msg += `   └ Number: ${(clone as any).userNumber || 'N/A'}\n`;
@@ -115,7 +115,7 @@ export default {
 
         const mentions = activeConns.map(c => c.user.id);
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             text: msg,
             mentions: mentions
         }, { quoted: message });

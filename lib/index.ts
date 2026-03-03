@@ -1,5 +1,4 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath} from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -86,12 +85,12 @@ async function setAntilink(groupId, type, action) {
         const data = await loadUserGroupData();
         if (!data.antilink) data.antilink = {};
         if (!data.antilink[groupId]) data.antilink[groupId] = {};
-        
+
         data.antilink[groupId] = {
             enabled: type === 'on',
             action: action || 'delete'
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {
@@ -104,7 +103,7 @@ async function getAntilink(groupId, type) {
     try {
         const data = await loadUserGroupData();
         if (!data.antilink || !data.antilink[groupId]) return null;
-        
+
         return type === 'on' ? data.antilink[groupId] : null;
     } catch(error: any) {
         console.error('Error getting antilink:', error);
@@ -112,7 +111,7 @@ async function getAntilink(groupId, type) {
     }
 }
 
-async function removeAntilink(groupId, type) {
+async function removeAntilink(groupId, _type) {
     try {
         const data = await loadUserGroupData();
         if (data.antilink && data.antilink[groupId]) {
@@ -131,12 +130,12 @@ async function setAntitag(groupId, type, action) {
         const data = await loadUserGroupData();
         if (!data.antitag) data.antitag = {};
         if (!data.antitag[groupId]) data.antitag[groupId] = {};
-        
+
         data.antitag[groupId] = {
             enabled: type === 'on',
             action: action || 'delete'
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {
@@ -149,7 +148,7 @@ async function getAntitag(groupId, type) {
     try {
         const data = await loadUserGroupData();
         if (!data.antitag || !data.antitag[groupId]) return null;
-        
+
         return type === 'on' ? data.antitag[groupId] : null;
     } catch(error: any) {
         console.error('Error getting antitag:', error);
@@ -157,7 +156,7 @@ async function getAntitag(groupId, type) {
     }
 }
 
-async function removeAntitag(groupId, type) {
+async function removeAntitag(groupId, _type) {
     try {
         const data = await loadUserGroupData();
         if (data.antitag && data.antitag[groupId]) {
@@ -177,7 +176,7 @@ async function incrementWarningCount(groupId, userId) {
         if (!data.warnings) data.warnings = {};
         if (!data.warnings[groupId]) data.warnings[groupId] = {};
         if (!data.warnings[groupId][userId]) data.warnings[groupId][userId] = 0;
-        
+
         data.warnings[groupId][userId]++;
         await saveUserGroupData(data);
         return data.warnings[groupId][userId];
@@ -256,13 +255,13 @@ async function addWelcome(jid, enabled, message) {
     try {
         const data = await loadUserGroupData();
         if (!data.welcome) data.welcome = {};
-        
+
         data.welcome[jid] = {
             enabled: enabled,
             message: message || '╔═⚔️ WELCOME ⚔️═╗\n║ 🛡️ User: {user}\n║ 🏰 Kingdom: {group}\n╠═══════════════╣\n║ 📜 Message:\n║ {description}\n╚═══════════════╝',
             channelId: '120363161513685998@newsletter'
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {
@@ -299,13 +298,13 @@ async function addGoodbye(jid, enabled, message) {
     try {
         const data = await loadUserGroupData();
         if (!data.goodbye) data.goodbye = {};
-        
+
         data.goodbye[jid] = {
             enabled: enabled,
             message: message || '╔═⚔️ GOODBYE ⚔️═╗\n║ 🛡️ User: {user}\n║ 🏰 Kingdom: {group}\n╠═══════════════╣\n║ ⚰️ We will never miss you!\n╚═══════════════╝',
             channelId: '120363161513685998@newsletter'
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {
@@ -363,12 +362,12 @@ async function setAntiBadword(groupId, type, action) {
         const data = await loadUserGroupData();
         if (!data.antibadword) data.antibadword = {};
         if (!data.antibadword[groupId]) data.antibadword[groupId] = {};
-        
+
         data.antibadword[groupId] = {
             enabled: type === 'on',
             action: action || 'delete'
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {
@@ -380,13 +379,13 @@ async function setAntiBadword(groupId, type, action) {
 async function getAntiBadword(groupId, type) {
     try {
         const data = await loadUserGroupData();
-        
+
         if (!data.antibadword || !data.antibadword[groupId]) {
             return null;
         }
-        
+
         const config = data.antibadword[groupId];
-        
+
         return type === 'on' ? config : null;
     } catch(error: any) {
         console.error('Error getting antibadword:', error);
@@ -394,7 +393,7 @@ async function getAntiBadword(groupId, type) {
     }
 }
 
-async function removeAntiBadword(groupId, type) {
+async function removeAntiBadword(groupId, _type) {
     try {
         const data = await loadUserGroupData();
         if (data.antibadword && data.antibadword[groupId]) {
@@ -412,11 +411,11 @@ async function setChatbot(groupId, enabled) {
     try {
         const data = await loadUserGroupData();
         if (!data.chatbot) data.chatbot = {};
-        
+
         data.chatbot[groupId] = {
             enabled: enabled
         };
-        
+
         await saveUserGroupData(data);
         return true;
     } catch(error: any) {

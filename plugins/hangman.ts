@@ -1,5 +1,5 @@
 const words = ['javascript', 'bot', 'hangman', 'whatsapp', 'nodejs', 'python', 'programming', 'developer', 'computer', 'algorithm'];
-let hangmanGames = {};
+const hangmanGames = {};
 
 function guessLetter(sock, chatId, letter) {
     if (!hangmanGames[chatId]) {
@@ -49,7 +49,7 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
-        
+
         const word = words[Math.floor(Math.random() * words.length)];
         const maskedWord = '_ '.repeat(word.length).trim();
 
@@ -61,7 +61,7 @@ export default {
             maxWrongGuesses: 6,
         };
 
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
             text: `🎮 *HANGMAN GAME STARTED!*\n\n` +
                   `The word is: ${maskedWord}\n\n` +
                   `*How to play:*\n` +

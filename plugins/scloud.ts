@@ -6,7 +6,7 @@ export default {
   category: 'music',
   description: 'Search for tracks on SoundCloud',
   usage: '.scloud <song name>',
-  
+
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
     const searchQuery = args.join(' ').trim();
@@ -22,7 +22,7 @@ export default {
 
       const searchUrl = `https://discardapi.dpdns.org/api/search/soundcloud?apikey=guru&query=${encodeURIComponent(searchQuery)}`;
       const response = await axios.get(searchUrl, { timeout: 30000 });
-      
+
       if (!response.data?.result?.result || response.data.result.result.length === 0) {
         return await sock.sendMessage(chatId, {
           text: "❌ *No results found!*\nTry a different search term."
@@ -33,7 +33,7 @@ export default {
       const totalFound = results.length;
 
       const tracks = results.filter(item => item.kind === 'track');
-      
+
       if (tracks.length === 0) {
         return await sock.sendMessage(chatId, {
           text: "❌ *No tracks found!*\nOnly found user profiles. Try searching for specific songs."
@@ -41,7 +41,7 @@ export default {
       }
 
       const limit = Math.min(5, tracks.length);
-      
+
       let resultText = `🎵 *SoundCloud Results*\n`;
       resultText += `📊 Found ${totalFound} results (${tracks.length} tracks)\n\n`;
 
@@ -50,7 +50,7 @@ export default {
         const duration = Math.floor(track.duration / 1000);
         const minutes = Math.floor(duration / 60);
         const seconds = duration % 60;
-        
+
         resultText += `*${i + 1}. ${track.title}*\n`;
         resultText += `👤 Artist: ${track.user_id ? 'Available' : 'Unknown'}\n`;
         resultText += `⏱️ Duration: ${minutes}:${seconds.toString().padStart(2, '0')}\n`;
@@ -68,9 +68,9 @@ export default {
       const firstTrack = tracks[0];
       if (firstTrack.artwork_url) {
         try {
-          const imageBuffer = await axios.get(firstTrack.artwork_url, { 
+          const imageBuffer = await axios.get(firstTrack.artwork_url, {
             responseType: 'arraybuffer',
-            timeout: 15000 
+            timeout: 15000
           }).then(res => Buffer.from(res.data));
 
           await sock.sendMessage(chatId, {
@@ -90,9 +90,9 @@ export default {
 
     } catch(error: any) {
       console.error('SoundCloud Search Error:', error);
-      
+
       let errorMsg = "❌ *Search failed!*\n\n";
-      
+
       if (error.code === 'ETIMEDOUT' || error.code === 'ECONNABORTED') {
         errorMsg += "*Reason:* Connection timeout\nThe API took too long to respond.";
       } else if (error.response) {
@@ -100,7 +100,7 @@ export default {
       } else {
         errorMsg += `*Error:* ${error.message}`;
       }
-      
+
       errorMsg += "\n\nPlease try again later.";
 
       await sock.sendMessage(chatId, {

@@ -22,8 +22,8 @@ export default {
       if (!data?.status) {
         return await sock.sendMessage(chatId, { text: '❌ Failed to analyze text.' }, { quoted: message });
       }
-      
-      const reply = 
+
+      const reply =
         `📝 *Text Analysis*\n\n` +
         `✏️ Text: ${textInput}\n` +
         `🔠 Letters: ${data.letters}\n` +

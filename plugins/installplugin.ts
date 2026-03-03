@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -25,8 +20,8 @@ export default {
 
     const text = args?.[0];
     if (!text) {
-      return await sock.sendMessage(chatId, { 
-        text: 'Please provide a plugin URL.\nExample: .addplugin https://gist.github.com/username/gistid' 
+      return await sock.sendMessage(chatId, {
+        text: 'Please provide a plugin URL.\nExample: .addplugin https://gist.github.com/username/gistid'
       }, { quoted: message });
     }
 

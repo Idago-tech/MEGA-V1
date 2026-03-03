@@ -26,10 +26,10 @@ export default {
   description: 'Toggle auto-react to messages',
   usage: '.autoreact on/off',
   ownerOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     if (!args[0] || !['on', 'off'].includes(args[0])) {
       await sock.sendMessage(chatId, {
         text: '*Usage:*\n.autoreact on/off',

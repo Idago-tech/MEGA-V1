@@ -11,7 +11,7 @@ const extractPhoneNumber = (jid: string): string | null => {
     return number;
 };
 
-const getDisplayName = async (jid: string, sock: any, pushName?: string): Promise<string> => {
+const _getDisplayName = async (jid: string, sock: any, pushName?: string): Promise<string> => {
     try {
         if (pushName?.trim()) return pushName.trim();
 

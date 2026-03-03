@@ -23,19 +23,19 @@ export default {
 
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const chatId = context.chatId || message.key.remoteJid;
-    
+
     try {
       let txt = args?.join(' ') || "";
       const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
       if (quoted) {
         txt = quoted.conversation || quoted.extendedTextMessage?.text || quoted.imageMessage?.caption || txt;
       }
-      
+
       txt = txt.replace(/^\.\w+\s*/, '').trim();
 
       if (!txt) {
-        return await sock.sendMessage(chatId, { 
-          text: 'Please provide text or reply to a message to convert.\nExample: `.smallcaps Hello World`' 
+        return await sock.sendMessage(chatId, {
+          text: 'Please provide text or reply to a message to convert.\nExample: `.smallcaps Hello World`'
         }, { quoted: message });
       }
 

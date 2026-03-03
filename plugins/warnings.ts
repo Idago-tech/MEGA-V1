@@ -1,10 +1,4 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
-import path from 'path';
 import { dataFile } from '../lib/paths.js';
 import store from '../lib/lightweight_store.js';
 
@@ -36,14 +30,14 @@ export default {
   description: 'Check warning count of a user',
   usage: '.warnings [@user]',
   groupOnly: true,
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     const mentionedJidList = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
-    
+
     if (mentionedJidList.length === 0) {
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Please mention a user to check warnings.',
         ...channelInfo
       }, { quoted: message });
@@ -54,7 +48,7 @@ export default {
     const warnings = await loadWarnings();
     const warningCount = (warnings[chatId] && warnings[chatId][userToCheck]) || 0;
 
-    await sock.sendMessage(chatId, { 
+    await sock.sendMessage(chatId, {
       text: `@${userToCheck.split('@')[0]} has ${warningCount} warning(s).\n\nStorage: ${HAS_DB ? 'Database' : 'File System'}`,
       mentions: [userToCheck],
       ...channelInfo

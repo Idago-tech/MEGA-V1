@@ -30,8 +30,8 @@ export default {
     const prefix = settings.prefixes[0];
 
     if (!query) {
-      return sock.sendMessage(chatId, { 
-        text: `Example: *${prefix}yts* Lil Peep` 
+      return sock.sendMessage(chatId, {
+        text: `Example: *${prefix}yts* Lil Peep`
       }, { quoted: message });
     }
 
@@ -46,7 +46,7 @@ export default {
       }
 
       let searchText = `✨ *MUSIC SEARCH* ✨\n\n`;
-      
+
       videos.forEach((v, index) => {
         searchText += `*${index + 1}.🎧 ${v.title}*\n`;
         searchText += `*⌚ Duration:* ${v.timestamp}\n`;

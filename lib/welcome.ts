@@ -1,5 +1,4 @@
 import { addWelcome, delWelcome, isWelcomeOn, addGoodbye, delGoodBye, isGoodByeOn } from '../lib/index.js';
-import { delay } from '@whiskeysockets/baileys';
 
 async function handleWelcome(sock, chatId, message, match) {
     if (!match) {

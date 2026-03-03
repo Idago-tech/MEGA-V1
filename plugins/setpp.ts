@@ -17,22 +17,22 @@ export default {
       const isOwner = await isOwnerOrSudo(senderId, sock, chatId);
 
       if (!message.key.fromMe && !isOwner) {
-        await sock.sendMessage(chatId, { 
-          text: '*This command is only available for the owner!*' 
+        await sock.sendMessage(chatId, {
+          text: '*This command is only available for the owner!*'
         }, { quoted: message });
         return;
       }
       const quotedMessage = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
       if (!quotedMessage) {
-        await sock.sendMessage(chatId, { 
-          text: '⚠️ Please reply to an image with the .setpp command!' 
+        await sock.sendMessage(chatId, {
+          text: '⚠️ Please reply to an image with the .setpp command!'
         }, { quoted: message });
         return;
       }
       const imageMessage = quotedMessage.imageMessage || quotedMessage.stickerMessage;
       if (!imageMessage) {
-        await sock.sendMessage(chatId, { 
-          text: '*The replied message must contain an image!*' 
+        await sock.sendMessage(chatId, {
+          text: '*The replied message must contain an image!*'
         }, { quoted: message });
         return;
       }
@@ -49,14 +49,14 @@ export default {
       await sock.updateProfilePicture(sock.user.id, { url: imagePath });
       fs.unlinkSync(imagePath);
 
-      await sock.sendMessage(chatId, { 
-        text: '✅ Successfully updated bot profile picture!' 
+      await sock.sendMessage(chatId, {
+        text: '✅ Successfully updated bot profile picture!'
       }, { quoted: message });
 
     } catch(error: any) {
       console.error('SetPP Command Error:', error);
-      await sock.sendMessage(chatId, { 
-        text: '❌ Failed to update profile picture!' 
+      await sock.sendMessage(chatId, {
+        text: '❌ Failed to update profile picture!'
       }, { quoted: message });
     }
   }

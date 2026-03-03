@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
 import BodyForm from 'form-data';
-import { fileTypeFromBuffer } from 'file-type';
 import fs from 'fs';
 import { promises as fsPromises } from 'fs';
 import child_process from 'child_process';

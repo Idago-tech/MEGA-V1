@@ -25,7 +25,7 @@ export default {
         return await sock.sendMessage(chatId, { text: '❌ No results found.' }, { quoted: message });
 
       let caption = `📦 *APKPure Results for:* *${query}*\n\n↩️ *Reply with a number to get download link*\n\n`;
-      results.forEach((v, i) => caption += `*${i + 1}.* ${v.name}\n👨‍💻 ${v.developer}\n🔗 ${v.url}\n\n`);
+      results.forEach((v, i) => { caption += `*${i + 1}.* ${v.name}\n👨‍💻 ${v.developer}\n🔗 ${v.url}\n\n`; });
 
       const sentMsg = await sock.sendMessage(chatId, { text: caption }, { quoted: message });
 

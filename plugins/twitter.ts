@@ -32,7 +32,7 @@ export default {
 💬 ${tweet.text}
       `.trim();
 
-      for (let mediaItem of tweet.media) {
+      for (const mediaItem of tweet.media) {
         if (mediaItem.type === 'video') {
           await sock.sendMessage(chatId, { video: { url: mediaItem.url }, caption: caption }, { quoted: message });
         } else if (mediaItem.type === 'image') {

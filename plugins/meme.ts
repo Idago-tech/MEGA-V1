@@ -12,7 +12,7 @@ export default {
     try {
       const res = await fetch('https://shizoapi.onrender.com/api/memes/cheems?apikey=shizo');
 
-      if (!res.ok) throw `API request failed with status ${res.status}`;
+      if (!res.ok) throw new Error(`API request failed with status ${res.status}`);
 
       const contentType = res.headers.get('content-type');
 

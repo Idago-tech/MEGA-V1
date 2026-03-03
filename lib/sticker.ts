@@ -1,6 +1,5 @@
 import { Sticker, StickerTypes } from 'stickers-formatter';
 import fetch from 'node-fetch';
-import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import webp from 'node-webpmux';
@@ -9,7 +8,7 @@ import settings from '../config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const tmp = path.join(__dirname, '../tmp');
+const _tmp = path.join(__dirname, '../tmp');
 
 interface StickerExtra {
     [key: string]: any;
@@ -18,8 +17,8 @@ interface StickerExtra {
 export async function sticker(
     isImage: boolean,
     url: string,
-    packname?: string,
-    author?: string
+    _packname?: string,
+    _author?: string
 ): Promise<Buffer | null> {
     try {
         const response = await fetch(url);

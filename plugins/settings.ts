@@ -18,15 +18,15 @@ export default {
             const isMe = message.key.fromMe;
 
             if (!isMe && !isOwner) {
-                return await sock.sendMessage(chatId, { 
-                    text: '❌ *Access Denied:* Only Owner/Sudo can view settings.' 
+                return await sock.sendMessage(chatId, {
+                    text: '❌ *Access Denied:* Only Owner/Sudo can view settings.'
                 }, { quoted: message });
             }
-            
+
             const isGroup = chatId.endsWith('@g.us');
 
             const botMode = await store.getBotMode();
-            
+
             const autoStatus = await store.getSetting('global', 'autoStatus') as any || { enabled: false };
             const autoread = await store.getSetting('global', 'autoread') as any || { enabled: false };
             const autotyping = await store.getSetting('global', 'autotyping') as any || { enabled: false };
@@ -65,7 +65,7 @@ export default {
 
             if (isGroup) {
                 const groupSettings = await store.getAllSettings(chatId);
-                
+
                 const groupAntilink = groupSettings.antilink || { enabled: false };
                 const groupBadword = groupSettings.antibadword || { enabled: false };
                 const antitag = await getAntitag(chatId, 'on');
@@ -93,7 +93,7 @@ export default {
 
             menuText += `┃\n╰━━━━━━━━━━━━━━━━┈`;
 
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: menuText,
                 mentions: [senderId],
                 contextInfo: {
@@ -109,8 +109,8 @@ export default {
 
         } catch(error: any) {
             console.error('Settings Command Error:', error);
-            await sock.sendMessage(chatId, { 
-                text: '❌ Error: Failed to load settings.' 
+            await sock.sendMessage(chatId, {
+                text: '❌ Error: Failed to load settings.'
             }, { quoted: message });
         }
     }

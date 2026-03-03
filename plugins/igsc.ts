@@ -8,7 +8,7 @@ import crypto from 'crypto';
 import settings from '../config.js';
 import { stickercropFromBuffer } from './stickercrop.js';
 
-async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
+async function _convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
   const tmpDir = path.join(process.cwd(), 'tmp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
@@ -23,7 +23,7 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
       try { fs.unlinkSync(p); } catch {}
     }, 5000);
   };
-  
+
   const vfCropSquareImg = "crop=min(iw\\,ih):min(iw\\,ih),scale=512:512";
   const vfPadSquareImg = "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000";
 
@@ -47,8 +47,8 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
   await new Promise<void>((resolve, reject) => {
     exec(ffmpegCommand, (error) => error ? reject(error) : resolve(undefined));
   });
-  
-  let webpBuffer = fs.readFileSync(tempOutput);
+
+  const webpBuffer = fs.readFileSync(tempOutput);
   scheduleDelete(tempOutput);
   scheduleDelete(tempInput);
 
@@ -93,16 +93,16 @@ export default {
   category: 'stickers',
   description: 'Convert Instagram post/reel to cropped sticker',
   usage: '.igsc <instagram URL>',
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     try {
       const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
       const urlMatch = text.match(/https?:\/\/\S+/);
-      
+
       if (!urlMatch) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: `Send an Instagram post/reel link.\nUsage: .igsc <url>`,
           ...channelInfo
         }, { quoted: message });
@@ -113,13 +113,13 @@ export default {
 
       const downloadData = await igdl(urlMatch[0]).catch(() => null);
       if (!downloadData || !downloadData.data) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ Failed to fetch media from Instagram link.',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       const rawItems = (downloadData?.data || []).filter(m => m && m.url);
       const seenUrls = new Set();
       const items = [];
@@ -129,18 +129,18 @@ export default {
           items.push(m);
         }
       }
-      
+
       if (items.length === 0) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ No media found at the provided link.',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       const maxItems = Math.min(items.length, 10);
       const seenHashes = new Set();
-      
+
       for (let i = 0; i < maxItems; i++) {
         try {
           const media = items[i];
@@ -155,7 +155,7 @@ export default {
 
           const stickerBuffer = await stickercropFromBuffer(buffer, isVideo);
 
-          await sock.sendMessage(chatId, { 
+          await sock.sendMessage(chatId, {
             sticker: stickerBuffer,
             ...channelInfo
           }, { quoted: message });
@@ -170,7 +170,7 @@ export default {
 
     } catch(err: any) {
       console.error('Error in igsc command:', err);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Failed to create cropped sticker from Instagram link.',
         ...channelInfo
       }, { quoted: message });

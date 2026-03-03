@@ -31,14 +31,14 @@ class TicTacToe {
         ];
 
         // Check X's moves
-        for (let pattern of winningPatterns) {
+        for (const pattern of winningPatterns) {
             if ((this._x & pattern) === pattern) {
                 return this.playerX;
             }
         }
 
         // Check O's moves
-        for (let pattern of winningPatterns) {
+        for (const pattern of winningPatterns) {
             if ((this._o & pattern) === pattern) {
                 return this.playerO;
             }
@@ -50,10 +50,10 @@ class TicTacToe {
     turn(player, pos) {
         // If game is over or invalid position
         if (this.winner || pos < 0 || pos > 8) return -1;
-        
+
         // If position is already taken
         if ((this._x | this._o) & (1 << pos)) return 0;
-        
+
         // Make the move
         const value = 1 << pos;
         if (this._currentTurn) {
@@ -61,7 +61,7 @@ class TicTacToe {
         } else {
             this._x |= value;
         }
-        
+
         this._currentTurn = !this._currentTurn;
         this.turns++;
         return 1;
@@ -75,4 +75,4 @@ class TicTacToe {
     }
 }
 
-export default TicTacToe; 
+export default TicTacToe;

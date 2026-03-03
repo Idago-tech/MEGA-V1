@@ -9,12 +9,12 @@ async function handleLeaveEvent(sock, id, participants) {
     const customMessage = await getGoodbye(id);
     const groupMetadata = await sock.groupMetadata(id);
     const groupName = groupMetadata.subject;
-    
+
     for (const participant of participants) {
         try {
             const participantString = typeof participant === 'string' ? participant : (participant.id || participant.toString());
             const user = participantString.split('@')[0];
-            
+
             let displayName = user;
             try {
                 const contact = await sock.getBusinessProfile(participantString);
@@ -30,7 +30,7 @@ async function handleLeaveEvent(sock, id, participants) {
             } catch(nameError: any) {
                 console.log('Could not fetch display name, using phone number');
             }
-            
+
             let finalMessage;
             if (customMessage) {
                 finalMessage = customMessage
@@ -39,7 +39,7 @@ async function handleLeaveEvent(sock, id, participants) {
             } else {
                 finalMessage = `*@${displayName}* we will never miss you!`;
             }
-            
+
             try {
                 let profilePicUrl = `https://img.pyrocdn.com/dbKUgahg.png`;
                 try {
@@ -50,13 +50,13 @@ async function handleLeaveEvent(sock, id, participants) {
                 } catch(profileError: any) {
                     console.log('Could not fetch profile picture, using default');
                 }
-                
+
                 const apiUrl = `https://api.some-random-api.com/welcome/img/2/gaming1?type=leave&textcolor=red&username=${encodeURIComponent(displayName)}&guildName=${encodeURIComponent(groupName)}&memberCount=${groupMetadata.participants.length}&avatar=${encodeURIComponent(profilePicUrl)}`;
-                
+
                 const response = await fetch(apiUrl);
                 if (response.ok) {
                     const imageBuffer = Buffer.from(await response.arrayBuffer());
-                    
+
                     await sock.sendMessage(id, {
                         image: imageBuffer,
                         caption: finalMessage,
@@ -67,7 +67,7 @@ async function handleLeaveEvent(sock, id, participants) {
             } catch(imageError: any) {
                 console.log('Image generation failed, falling back to text');
             }
-            
+
             await sock.sendMessage(id, {
                 text: finalMessage,
                 mentions: [participantString]
@@ -76,7 +76,7 @@ async function handleLeaveEvent(sock, id, participants) {
             console.error('Error sending goodbye message:', error);
             const participantString = typeof participant === 'string' ? participant : (participant.id || participant.toString());
             const user = participantString.split('@')[0];
-            
+
             let fallbackMessage;
             if (customMessage) {
                 fallbackMessage = customMessage
@@ -85,7 +85,7 @@ async function handleLeaveEvent(sock, id, participants) {
             } else {
                 fallbackMessage = `Goodbye @${user}! 👋`;
             }
-            
+
             await sock.sendMessage(id, {
                 text: fallbackMessage,
                 mentions: [participantString]

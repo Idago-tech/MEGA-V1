@@ -24,7 +24,7 @@ export default {
       const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=metric&appid=${apiKey}`);
       const weather = response.data;
 
-      const weatherText = 
+      const weatherText =
         `ʜᴇʀᴇ ɪs ʏᴏᴜʀ ᴘʟᴀᴄᴇ ᴡᴇᴀᴛʜᴇʀ\n\n` +
         `「 🌅 」ᴘʟᴀᴄᴇ: ${weather.name}\n` +
         `「 🗺️ 」ᴄᴏᴜɴᴛʀʏ: ${weather.sys.country}\n` +

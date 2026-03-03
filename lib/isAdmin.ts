@@ -21,7 +21,7 @@ async function isAdmin(sock, chatId, senderId) {
             const pLid = p.lid ? p.lid.split('@')[0] : '';
             const pFullId = p.id || '';
             const pFullLid = p.lid || '';
-            
+
             const pLidNumeric = pLid.includes(':') ? pLid.split(':')[0] : pLid;
 
             const botMatches = (
@@ -36,7 +36,7 @@ async function isAdmin(sock, chatId, senderId) {
                 botIdWithoutSuffix === pId ||
                 (botLid && botLid.split('@')[0].split(':')[0] === pLid)
             );
-            
+
             return botMatches && (p.admin === 'admin' || p.admin === 'superadmin');
         });
 
@@ -56,7 +56,7 @@ async function isAdmin(sock, chatId, senderId) {
                 senderIdWithoutSuffix === pId ||
                 (pLid && senderIdWithoutSuffix === pLid)
             );
-            
+
             return senderMatches && (p.admin === 'admin' || p.admin === 'superadmin');
         });
 

@@ -39,7 +39,7 @@ async function getAllCloneAuthIds() {
     if (HAS_DB) {
         const settings = await store.getAllSettings('clones') || {};
         return Object.entries(settings)
-            .filter(([key, value]) => value && (value as any).status)
+            .filter(([_key, value]) => value && (value as any).status)
             .map(([authId]) => authId);
     } else {
         const clonesDir = path.join(process.cwd(), 'session', 'clones');
@@ -67,21 +67,21 @@ export default {
         const { chatId } = context;
 
         if (!global.conns || global.conns.length === 0) {
-            return await sock.sendMessage(chatId, { 
-                text: "❌ No sub-bots are currently running." 
+            return await sock.sendMessage(chatId, {
+                text: "❌ No sub-bots are currently running."
             }, { quoted: message });
         }
 
         if (!args[0]) {
-            return await sock.sendMessage(chatId, { 
-                text: `❌ Please provide a number from the list or type 'all'.\nExample: \`.stoprent 1\`` 
+            return await sock.sendMessage(chatId, {
+                text: `❌ Please provide a number from the list or type 'all'.\nExample: \`.stoprent 1\``
             }, { quoted: message });
         }
 
         if (args[0].toLowerCase() === 'all') {
             let stoppedCount = 0;
-            
-            for (let conn of global.conns) {
+
+            for (const conn of global.conns) {
                 try {
                     await conn.logout();
                     conn.end();
@@ -90,9 +90,9 @@ export default {
                     console.error('Error stopping clone:', e.message);
                 }
             }
-            
+
             global.conns = [];
-            
+
             if (HAS_DB) {
                 try {
                     await deleteAllCloneSessions();
@@ -106,18 +106,18 @@ export default {
                     fs.mkdirSync(clonesDir, { recursive: true });
                 }
             }
-            
-            return await sock.sendMessage(chatId, { 
+
+            return await sock.sendMessage(chatId, {
                 text: `✅ All sub-bots have been stopped and removed.\n\n` +
                       `Stopped: ${stoppedCount}\n` +
-                      `Storage: ${HAS_DB ? 'Database cleared' : 'Files deleted'}` 
+                      `Storage: ${HAS_DB ? 'Database cleared' : 'Files deleted'}`
             }, { quoted: message });
         }
 
         const index = parseInt(args[0]) - 1;
         if (isNaN(index) || !global.conns[index]) {
-            return await sock.sendMessage(chatId, { 
-                text: "❌ Invalid index number. Check `.listrent` first." 
+            return await sock.sendMessage(chatId, {
+                text: "❌ Invalid index number. Check `.listrent` first."
             }, { quoted: message });
         }
 
@@ -125,10 +125,10 @@ export default {
             const target = global.conns[index];
             const targetJid = target.user.id;
             const targetNumber = targetJid.split(':')[0];
-            
+
             await target.logout();
             global.conns.splice(index, 1);
-            
+
             if (HAS_DB) {
                 const allSettings = await store.getAllSettings('clones') || {};
                 for (const [authId, data] of Object.entries(allSettings)) {
@@ -157,16 +157,16 @@ export default {
                     }
                 }
             }
-            
-            await sock.sendMessage(chatId, { 
+
+            await sock.sendMessage(chatId, {
                 text: `✅ Stopped and removed sub-bot: @${targetNumber}\n\n` +
-                      `Storage: ${HAS_DB ? 'Database cleared' : 'Files deleted'}`, 
-                mentions: [targetJid] 
+                      `Storage: ${HAS_DB ? 'Database cleared' : 'Files deleted'}`,
+                mentions: [targetJid]
             }, { quoted: message });
         } catch(err: any) {
             console.error(err);
-            await sock.sendMessage(chatId, { 
-                text: "❌ Error while stopping the sub-bot." 
+            await sock.sendMessage(chatId, {
+                text: "❌ Error while stopping the sub-bot."
             }, { quoted: message });
         }
     }

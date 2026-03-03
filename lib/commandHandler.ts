@@ -1,5 +1,4 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL, pathToFileURL } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +24,7 @@ class CommandHandler {
     this.prefixlessCommands = new Map();
     this.watchPlugins();
   }
-  
+
   async watchPlugins() {
     const pluginsPath = path.join(__dirname, '../plugins');
     if (!fs.existsSync(pluginsPath)) return;
@@ -38,7 +37,7 @@ class CommandHandler {
                 const plugin = (await import(pathToFileURL(filePath).href)).default || (await import(pathToFileURL(filePath).href));
             if (plugin.command) {
               this.registerCommand(plugin);
-              
+
               if (plugin.isPrefixless === true) {
                 const cmdKey = plugin.command.toLowerCase();
                 this.prefixlessCommands.set(cmdKey, cmdKey);
@@ -66,14 +65,14 @@ class CommandHandler {
       try {
         const filePath = path.join(pluginsPath, file);
         const plugin = (await import(pathToFileURL(filePath).href)).default || (await import(pathToFileURL(filePath).href));
-        
+
         if (plugin.command) {
           this.registerCommand(plugin);
-          
+
           if (plugin.isPrefixless === true) {
             const cmdKey = plugin.command.toLowerCase();
             this.prefixlessCommands.set(cmdKey, cmdKey);
-            
+
             if (plugin.aliases && Array.isArray(plugin.aliases)) {
               plugin.aliases.forEach(alias => {
                 this.prefixlessCommands.set(alias.toLowerCase(), cmdKey);
@@ -89,7 +88,7 @@ class CommandHandler {
 
   registerCommand(plugin) {
     const { command, aliases = [], category = 'misc', handler } = plugin;
-    
+
     // INTEGRITY CHECK
     if (!command || typeof handler !== 'function') {
       console.error(`[SKIP] Plugin at ${command || 'unknown'} is missing a valid command name or handler function.`);
@@ -106,16 +105,16 @@ class CommandHandler {
     this.stats.set(cmdKey, {
       calls: 0,
       errors: 0,
-      totalTime: 0n, 
+      totalTime: 0n,
       avgMs: 0
     });
 
     const monitoredHandler = async (sock, message, ...args) => {
       const s = this.stats.get(cmdKey);
-      
+
       if (this.disabledCommands.has(cmdKey)) {
-        return await sock.sendMessage(message.key.remoteJid, { 
-          text: `🚫 The command *${cmdKey}* is currently disabled.` 
+        return await sock.sendMessage(message.key.remoteJid, {
+          text: `🚫 The command *${cmdKey}* is currently disabled.`
         }, { quoted: message });
       }
 
@@ -127,10 +126,10 @@ class CommandHandler {
         const expirationTime = this.cooldowns.get(cooldownKey) + (plugin.cooldown || 3000);
         if (now < expirationTime) return;
       }
-      
+
       this.cooldowns.set(cooldownKey, now);
       const start = process.hrtime.bigint();
-      
+
       try {
         s.calls++;
         return await handler(sock, message, ...args);
@@ -155,11 +154,11 @@ class CommandHandler {
     for (const alias of aliases) {
       this.aliases.set(alias.toLowerCase(), cmdKey);
     }
-    
+
     if (!this.categories.has(category.toLowerCase())) {
       this.categories.set(category.toLowerCase(), []);
     }
-    
+
     if (!this.categories.get(category.toLowerCase()).includes(command)) {
        this.categories.get(category.toLowerCase()).push(command);
     }
@@ -249,7 +248,7 @@ class CommandHandler {
     }
 
     const fullCommand = text.slice(usedPrefix.length).trim().split(' ')[0].toLowerCase();
-    
+
     if (this.commands.has(fullCommand)) {
       return this.commands.get(fullCommand);
     }
@@ -264,8 +263,8 @@ class CommandHandler {
         command: suggestion,
         handler: async (sock, message) => {
           const chatId = message.key.remoteJid;
-          await sock.sendMessage(chatId, { 
-            text: `❓ Did you mean *${usedPrefix}${suggestion}*?` 
+          await sock.sendMessage(chatId, {
+            text: `❓ Did you mean *${usedPrefix}${suggestion}*?`
           }, { quoted: message });
         }
       };
@@ -280,6 +279,5 @@ class CommandHandler {
 }
 
 export default new CommandHandler();
-        
 
 

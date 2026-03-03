@@ -36,7 +36,7 @@ export default {
         clearTimeout(activeMaintenanceTimer);
         activeMaintenanceTimer = null;
       }
-      
+
       const allCommands = Array.from(CommandHandler.commands.values());
       allCommands.forEach(cmd => {
         if (cmd.category !== 'owner') {
@@ -46,7 +46,7 @@ export default {
 
       return await sock.sendMessage(chatId, { text: '✅ *MAINTENANCE ENDED EARLY*\nAll commands are now active.' }, { quoted: message });
     }
-    
+
     const minutes = parseInt(input);
     if (isNaN(minutes) || minutes <= 0) {
       return await sock.sendMessage(chatId, { text: '❌ Usage: .maintenance [minutes] OR .maintenance stop' }, { quoted: message });
@@ -68,7 +68,7 @@ export default {
         }
       });
 
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: `⚠️ *MAINTENANCE MODE STARTING*\n\n` +
               `Locked: ${affectedCount} commands\n` +
               `Duration: ${minutes}m\n\n` +

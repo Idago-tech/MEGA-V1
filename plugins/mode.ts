@@ -11,8 +11,8 @@ import store from '../lib/lightweight_store.js';
  */
 async function modeCommand(sock, message, args, context) {
     const { chatId, channelInfo } = context
-    
-    const senderId = message.key.participant || message.key.remoteJid
+
+    const _senderId = message.key.participant || message.key.remoteJid
     const isOwnerOrSudoCheck = message.key.fromMe || context.senderIsOwnerOrSudo || context.isOwnerOrSudoCheck
 
     if (!isOwnerOrSudoCheck) {
@@ -47,7 +47,7 @@ async function modeCommand(sock, message, args, context) {
         statusText += `Description: ${modeDescriptions[currentMode]}\n\n`
         statusText += `━━━━━━━━━━━━━━━━━━━━\n\n`
         statusText += `*Available Modes:*\n\n`
-        
+
         Object.entries(modeDescriptions).forEach(([mode, desc]) => {
             const current = mode === currentMode ? '✓ ' : ''
             statusText += `${current}${modeEmojis[mode]} \`${mode}\`\n${desc}\n\n`
@@ -69,7 +69,7 @@ async function modeCommand(sock, message, args, context) {
     }
 
     const validModes = ['public', 'private', 'groups', 'inbox', 'self']
-    
+
     if (!validModes.includes(subCommand)) {
         return await sock.sendMessage(chatId, {
             text: `❌ Invalid mode: *${subCommand}*\n\nValid modes: ${validModes.join(', ')}\n\nUse \`.mode\` to see all available modes.`,

@@ -68,7 +68,7 @@ export default {
         sock.ev.off('messages.upsert', listener);
 
         const selected = results[choice - 1];
-        
+
         await sock.sendMessage(chatId, { text: `⬇️ Downloading *${selected.judul}*...\n⏱ Please wait...` }, { quoted: m });
         const apiUrl =
           `https://discardapi.dpdns.org/api/apk/dl/android1?apikey=guru&url=` +

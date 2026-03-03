@@ -1,11 +1,9 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath} from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import fs from 'fs';
-import path from 'path';
 import { dataFile } from './paths.js';
 import store from './lightweight_store.js';
 
@@ -49,7 +47,7 @@ async function addCommandReaction(sock: any, message: any) {
 
 async function setCommandReactState(state) {
   COMMAND_REACT_ENABLED = state;
-  
+
   try {
     if (HAS_DB) {
       const data = await store.getSetting('global', 'userGroupData') || {};

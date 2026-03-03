@@ -20,7 +20,7 @@ export default {
     try {
       const apiUrl = `https://discardapi.dpdns.org/api/music/lyrics?apikey=qasim&song=${encodeURIComponent(songTitle)}`;
       const res = await fetch(apiUrl);
-      if (!res.ok) throw `API request failed with status ${res.status}`;
+      if (!res.ok) throw new Error(`API request failed with status ${res.status}`);
       const data = await res.json() as any as any;
       const messageData = data?.result?.message;
       if (!messageData?.lyrics) {

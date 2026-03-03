@@ -20,7 +20,7 @@ export default {
     try {
       const url = `https://api.popcat.xyz/itunes?q=${encodeURIComponent(text)}`;
       const res = await fetch(url);
-      if (!res.ok) throw `API request failed with status ${res.status}`;
+      if (!res.ok) throw new Error(`API request failed with status ${res.status}`);
       const json = await res.json() as any as any;
       const songInfo = `
 🎵 *${json.name || 'N/A'}*

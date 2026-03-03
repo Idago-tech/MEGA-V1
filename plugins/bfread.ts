@@ -12,12 +12,12 @@ export default {
       let code = args?.join('') || "";
 
       const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-      
+
       if (quoted) {
-        code = quoted.conversation || 
-               quoted.extendedTextMessage?.text || 
-               quoted.imageMessage?.caption || 
-               quoted.videoMessage?.caption || 
+        code = quoted.conversation ||
+               quoted.extendedTextMessage?.text ||
+               quoted.imageMessage?.caption ||
+               quoted.videoMessage?.caption ||
                "";
       }
 

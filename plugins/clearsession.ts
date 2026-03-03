@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import isOwnerOrSudo from '../lib/isOwner.js';
@@ -43,7 +38,7 @@ export default {
 
       let filesCleared = 0;
       let errors = 0;
-      let errorDetails = [];
+      const errorDetails = [];
 
       await sock.sendMessage(chatId, { text: '🔍 Optimizing session files for better performance...', ...channelInfo });
 

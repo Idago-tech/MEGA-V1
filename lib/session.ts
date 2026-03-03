@@ -1,5 +1,4 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath} from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,12 +21,12 @@ async function SaveCreds(txt) {
     try {
         const response = await axios.get(gistUrl);
         const data = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
-        
+
         const sessionDir = path.join(__dirname, '..', 'session');
         if (!fs.existsSync(sessionDir)) {
             fs.mkdirSync(sessionDir, { recursive: true });
         }
-        
+
         const credsPath = path.join(sessionDir, 'creds.json');
         fs.writeFileSync(credsPath, data);
 

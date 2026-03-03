@@ -6,7 +6,6 @@ import path from 'path';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
 import settings from '../config.js';
-import { stickercropFromBuffer } from './stickercrop.js';
 
 async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
   const tmpDir = path.join(process.cwd(), 'tmp');
@@ -25,7 +24,7 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
       try { fs.unlinkSync(p); } catch {}
     }, 5000);
   };
-  
+
   const vfCropSquareImg = "crop=min(iw\\,ih):min(iw\\,ih),scale=512:512";
   const vfPadSquareImg = "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:(ow-iw)/2:(oh-ih)/2:color=#00000000";
 
@@ -56,10 +55,10 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
       resolve(undefined);
     });
   });
-  
+
   let webpBuffer = fs.readFileSync(tempOutput);
   scheduleDelete(tempOutput);
-  
+
   if (isAnimated && webpBuffer.length > 1000 * 1024) {
     try {
       const tempOutput2 = path.join(tmpDir, `igs_out2_${Date.now()}_${Math.random().toString(36).slice(2)}.webp`);
@@ -91,7 +90,7 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
   img.exif = exif;
 
   let finalBuffer = await img.save(null);
-  
+
   if (finalBuffer.length > 900 * 1024) {
     try {
       const tempOutput3 = path.join(tmpDir, `igs_out3_${Date.now()}_${Math.random().toString(36).slice(2)}.webp`);
@@ -192,7 +191,7 @@ async function forceMiniSticker(inputBuffer, isVideo, cropSquare) {
     try { fs.unlinkSync(tempInput); } catch {}
     return null;
   }
-  
+
   const smallWebp = fs.readFileSync(tempOutput);
 
   const img = new webp.Image();
@@ -221,16 +220,16 @@ export default {
   category: 'stickers',
   description: 'Convert Instagram post/reel to sticker',
   usage: '.igs <instagram URL>',
-  
+
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
-    
+
     try {
       const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
       const urlMatch = text.match(/https?:\/\/\S+/);
-      
+
       if (!urlMatch) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: `Send an Instagram post/reel link.\nUsage: .igs <url>`,
           ...channelInfo
         }, { quoted: message });
@@ -241,13 +240,13 @@ export default {
 
       const downloadData = await igdl(urlMatch[0]).catch(() => null);
       if (!downloadData || !downloadData.data) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ Failed to fetch media from Instagram link.',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       const rawItems = (downloadData?.data || []).filter(m => m && m.url);
       const seenUrls = new Set();
       const items = [];
@@ -257,18 +256,18 @@ export default {
           items.push(m);
         }
       }
-      
+
       if (items.length === 0) {
-        await sock.sendMessage(chatId, { 
+        await sock.sendMessage(chatId, {
           text: '❌ No media found at the provided link.',
           ...channelInfo
         }, { quoted: message });
         return;
       }
-      
+
       const maxItems = Math.min(items.length, 10);
       const seenHashes = new Set();
-      
+
       for (let i = 0; i < maxItems; i++) {
         try {
           const media = items[i];
@@ -287,7 +286,7 @@ export default {
           let finalSticker = await forceMiniSticker(buffer, isVideo, false);
           if (!finalSticker) finalSticker = await convertBufferToStickerWebp(buffer, isVideo, false);
 
-          await sock.sendMessage(chatId, { 
+          await sock.sendMessage(chatId, {
             sticker: finalSticker,
             ...channelInfo
           }, { quoted: message });
@@ -302,7 +301,7 @@ export default {
 
     } catch(err: any) {
       console.error('Error in igs command:', err);
-      await sock.sendMessage(chatId, { 
+      await sock.sendMessage(chatId, {
         text: 'Failed to create sticker from Instagram link.',
         ...channelInfo
       }, { quoted: message });

@@ -6,7 +6,7 @@ export default {
   category: 'general',
   description: 'Get session id for MEGA-MD',
   usage: '.pair 92305395XXXX',
-  
+
   async handler(sock: any, message: any, args: any, context: any = {}) {
     const { chatId } = context;
 
@@ -20,7 +20,7 @@ export default {
       }
     };
 
-    let query = args.join('').trim();
+    const query = args.join('').trim();
     if (!query) {
       return await sock.sendMessage(chatId, {
         text: "❌ *Missing Number*\nExample: .pair 92305395XXXX",
@@ -74,7 +74,7 @@ export default {
 
     } catch(error: any) {
       console.error('Pairing Plugin Error:', error.message);
-      
+
       let errorMsg = "❌ *Pairing Failed*\nReason: ";
       if (error.code === 'ECONNABORTED') {
         errorMsg += "Server timeout. Please try again in 1 minute.";

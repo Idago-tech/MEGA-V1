@@ -11,12 +11,12 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const chatId = context.chatId || message.key.remoteJid;
-        const senderId = context.senderId || message.key.participant || message.key.remoteJid;
+        const _senderId = context.senderId || message.key.participant || message.key.remoteJid;
         const isBotAdmin = context.isBotAdmin;
 
         if (!isBotAdmin) {
-            await sock.sendMessage(chatId, { 
-                text: '❌ *I need to be an admin to delete messages*' 
+            await sock.sendMessage(chatId, {
+                text: '❌ *I need to be an admin to delete messages*'
             }, { quoted: message });
             return;
         }
@@ -24,23 +24,23 @@ export default {
         const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
         const parts = text.trim().split(/\s+/);
         let countArg = null;
-        
+
         if (parts.length > 1) {
             const maybeNum = parseInt(parts[1], 10);
             if (!isNaN(maybeNum) && maybeNum > 0) {
                 countArg = Math.min(maybeNum, 50);
             }
         }
-        
+
         const ctxInfo = message.message?.extendedTextMessage?.contextInfo || {};
         const repliedParticipant = ctxInfo.participant || null;
         const mentioned = Array.isArray(ctxInfo.mentionedJid) && ctxInfo.mentionedJid.length > 0 ? ctxInfo.mentionedJid[0] : null;
-        
+
         if (countArg === null && repliedParticipant) {
             countArg = 1;
         }
         else if (countArg === null && !repliedParticipant && !mentioned) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: '❌ *Please specify the number of messages to delete*\n\n' +
                       '*Usage:*\n' +
                       '• `.del 5` - Delete last 5 messages from group\n' +
@@ -55,7 +55,7 @@ export default {
         let targetUser = null;
         let repliedMsgId = null;
         let deleteGroupMessages = false;
-        
+
         if (repliedParticipant && ctxInfo.stanzaId) {
             targetUser = repliedParticipant;
             repliedMsgId = ctxInfo.stanzaId;
@@ -72,8 +72,8 @@ export default {
             for (let i = chatMessages.length - 1; i >= 0 && toDelete.length < countArg; i--) {
                 const m = chatMessages[i];
                 if (!seenIds.has(m.key.id)) {
-                    if (!m.message?.protocolMessage && 
-                        !m.key.fromMe && 
+                    if (!m.message?.protocolMessage &&
+                        !m.key.fromMe &&
                         m.key.id !== message.key.id) {
                         toDelete.push(m);
                         seenIds.add(m.key.id);
@@ -113,16 +113,16 @@ export default {
         }
 
         if (toDelete.length === 0) {
-            const errorMsg = deleteGroupMessages 
-                ? '❌ *No recent messages found in the group to delete*' 
+            const errorMsg = deleteGroupMessages
+                ? '❌ *No recent messages found in the group to delete*'
                 : '❌ *No recent messages found for the target user*';
             await sock.sendMessage(chatId, { text: errorMsg }, { quoted: message });
             return;
         }
         for (const m of toDelete) {
             try {
-                const msgParticipant = deleteGroupMessages 
-                    ? (m.key.participant || m.key.remoteJid) 
+                const msgParticipant = deleteGroupMessages
+                    ? (m.key.participant || m.key.remoteJid)
                     : (m.key.participant || targetUser);
                 await sock.sendMessage(chatId, {
                     delete: {

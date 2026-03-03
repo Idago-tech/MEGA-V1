@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -76,7 +71,7 @@ export default {
 
     } catch(error: any) {
       console.error('GetFile Error:', error);
-      
+
       await sock.sendMessage(chatId, {
         text: `❌ *Error reading file*\n\n*Error:* ${error.message}\n\n*Possible reasons:*\n• File is corrupted\n• No read permissions\n• Invalid file path`
       }, { quoted: message });

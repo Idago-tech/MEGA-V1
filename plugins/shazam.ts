@@ -1,8 +1,4 @@
 import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 const acrcloud = createRequire(import.meta.url)('acrcloud');
@@ -73,7 +69,7 @@ export default {
             const { code, msg } = res.status;
             if (code !== 0) throw msg;
             const music = res.metadata.music?.[0];
-            if (!music) throw 'No match found';
+            if (!music) throw new Error('No match found');
             const text = `
 𝚁𝙴𝚂𝚄𝙻𝚃
 • 📌 *TITLE*: ${music.title || 'NOT FOUND'}

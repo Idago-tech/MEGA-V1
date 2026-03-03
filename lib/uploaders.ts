@@ -188,7 +188,7 @@ async function uploadToTmpfiles(filePath) {
         if (response.data.status === 'success') {
             const url = response.data.data.url;
             const directUrl = url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-            
+
             return {
                 status: true,
                 url: directUrl,

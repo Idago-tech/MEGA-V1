@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import store from '../lib/lightweight_store.js';
 import fs from 'fs';
 import path from 'path';
@@ -55,7 +50,7 @@ export default {
 
     async handler(sock: any, message: any, args: any, context: any = {}) {
         const { chatId } = context;
-        
+
         let hash = args.join(' ');
 
         if (message.message?.extendedTextMessage?.contextInfo?.quotedMessage?.stickerMessage) {
@@ -66,8 +61,8 @@ export default {
         }
 
         if (!hash) {
-            return await sock.sendMessage(chatId, { 
-                text: '✳️ Please enter the command name or reply to a sticker' 
+            return await sock.sendMessage(chatId, {
+                text: '✳️ Please enter the command name or reply to a sticker'
             }, { quoted: message });
         }
 
@@ -80,22 +75,22 @@ export default {
         }
 
         if (stickers[hash] && stickers[hash].locked) {
-            return await sock.sendMessage(chatId, { 
-                text: '✳️ You cannot delete this command' 
+            return await sock.sendMessage(chatId, {
+                text: '✳️ You cannot delete this command'
             }, { quoted: message });
         }
 
         if (!stickers[hash]) {
-            return await sock.sendMessage(chatId, { 
-                text: '⚠️ Command not found' 
+            return await sock.sendMessage(chatId, {
+                text: '⚠️ Command not found'
             }, { quoted: message });
         }
 
         delete stickers[hash];
         await saveStickerCommands(stickers);
 
-        await sock.sendMessage(chatId, { 
-            text: '✅ Command deleted' 
+        await sock.sendMessage(chatId, {
+            text: '✅ Command deleted'
         }, { quoted: message });
     }
 };

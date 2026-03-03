@@ -10,17 +10,17 @@ export default {
     const input = args.join(' ');
 
     if (!input.includes('|')) {
-      return await sock.sendMessage(chatId, { 
-        text: '*Usage:* .excard Title | Body | ImageURL\n\n*Example:* .excard Google | Search anything | https://google.com/logo.png' 
+      return await sock.sendMessage(chatId, {
+        text: '*Usage:* .excard Title | Body | ImageURL\n\n*Example:* .excard Google | Search anything | https://google.com/logo.png'
       }, { quoted: message });
     }
 
     const [title, body, url] = input.split('|').map(t => t.trim());
 
     const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    const hasQuotedImage = quoted?.imageMessage;
+    const _hasQuotedImage = quoted?.imageMessage;
 
-    await sock.sendMessage(chatId, { 
+    await sock.sendMessage(chatId, {
       text: body || " ",
       contextInfo: {
         externalAdReply: {

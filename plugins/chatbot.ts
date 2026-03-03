@@ -1,8 +1,3 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 import fs from 'fs';
 import path from 'path';
 import { dataFile } from '../lib/paths.js';
@@ -91,18 +86,18 @@ async function showTyping(sock, chatId) {
 
 function extractUserInfo(message) {
     const info: Record<string, any> = {};
-    
+
     if (message.toLowerCase().includes('my name is')) {
         info.name = message.split('my name is')[1].trim().split(' ')[0];
     }
-    
+
     if (message.toLowerCase().includes('i am') && message.toLowerCase().includes('years old')) {
         info.age = message.match(/\d+/)?.[0];
     }
     if (message.toLowerCase().includes('i live in') || message.toLowerCase().includes('i am from')) {
         info.location = message.split(/(?:i live in|i am from)/i)[1].trim().split(/[.,!?]/)[0];
     }
-    
+
     return info;
 }
 
@@ -127,7 +122,7 @@ export async function handleChatbotResponse(sock, chatId, message, userMessage, 
         if (message.message?.extendedTextMessage) {
             const mentionedJid = message.message.extendedTextMessage.contextInfo?.mentionedJid || [];
             const quotedParticipant = message.message.extendedTextMessage.contextInfo?.participant;
-            
+
             isBotMentioned = mentionedJid.some(jid => {
                 const jidNumber = jid.split('@')[0].split(':')[0];
                 return botJids.some(botJid => {
@@ -135,7 +130,7 @@ export async function handleChatbotResponse(sock, chatId, message, userMessage, 
                     return jidNumber === botJidNumber;
                 });
             });
-            
+
             if (quotedParticipant) {
                 const cleanQuoted = quotedParticipant.replace(/[:@].*$/, '');
                 isReplyToBot = botJids.some(botJid => {
@@ -179,7 +174,7 @@ export async function handleChatbotResponse(sock, chatId, message, userMessage, 
         });
 
         if (!response) {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: "Hmm, let me think about that... 🤔\nI'm having trouble processing your request right now.",
                 quoted: message
             });
@@ -194,14 +189,14 @@ export async function handleChatbotResponse(sock, chatId, message, userMessage, 
 
     } catch(error: any) {
         console.error('Error in chatbot response:', error.message);
-        
+
         if (error.message && error.message.includes('No sessions')) {
             console.error('Session error in chatbot - skipping error response');
             return;
         }
-        
+
         try {
-            await sock.sendMessage(chatId, { 
+            await sock.sendMessage(chatId, {
                 text: "Oops! 😅 I got a bit confused there. Could you try asking that again?",
                 quoted: message
             });
@@ -275,7 +270,7 @@ You:
         const api = API_ENDPOINTS[i];
         try {
             console.log(`Trying ${api.name}...`);
-            
+
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 10000);
             const response = await fetch(api.url(prompt), {
@@ -288,19 +283,19 @@ You:
                 console.log(`${api.name} failed with status ${response.status}`);
                 continue;
             }
-            
+
             const data = await response.json() as any as any;
             const result = api.parse(data);
-            
+
             if (!result) {
                 console.log(`${api.name} returned no result`);
                 continue;
             }
-            
+
             console.log(`✅ ${api.name} success`);
-            
+
             // Clean response
-            let cleanedResponse = result.trim()
+            const cleanedResponse = result.trim()
                 .replace(/winks/g, '😉')
                 .replace(/eye roll/g, '🙄')
                 .replace(/shrug/g, '🤷‍♂️')
@@ -339,9 +334,9 @@ You:
                 .replace(/^❌.*$/gm, '')
                 .replace(/\n\s*\n/g, '\n')
                 .trim();
-            
+
             return cleanedResponse;
-            
+
         } catch(error: any) {
             console.log(`${api.name} error: ${error.message}`);
             // Continue to next API
@@ -393,7 +388,7 @@ export default {
         if (match === 'on') {
             await showTyping(sock, chatId);
             if (data.chatbot[chatId]) {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(chatId, {
                     text: '⚠️ *Chatbot is already enabled for this group*',
                     quoted: message
                 });
@@ -401,7 +396,7 @@ export default {
             data.chatbot[chatId] = true;
             await saveUserGroupData(data);
             console.log(`Chatbot enabled for group ${chatId}`);
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(chatId, {
                 text: '✅ *Chatbot enabled!*\n\nMention me or reply to my messages to chat.',
                 quoted: message
             });
@@ -410,7 +405,7 @@ export default {
         if (match === 'off') {
             await showTyping(sock, chatId);
             if (!data.chatbot[chatId]) {
-                return sock.sendMessage(chatId, { 
+                return sock.sendMessage(chatId, {
                     text: '⚠️ *Chatbot is already disabled for this group*',
                     quoted: message
                 });
@@ -418,14 +413,14 @@ export default {
             delete data.chatbot[chatId];
             await saveUserGroupData(data);
             console.log(`Chatbot disabled for group ${chatId}`);
-            return sock.sendMessage(chatId, { 
+            return sock.sendMessage(chatId, {
                 text: '❌ *Chatbot disabled!*\n\nI will no longer respond to mentions.',
                 quoted: message
             });
         }
 
         await showTyping(sock, chatId);
-        return sock.sendMessage(chatId, { 
+        return sock.sendMessage(chatId, {
             text: '❌ *Invalid command*\n\nUse: `.chatbot on/off`',
             quoted: message
         });

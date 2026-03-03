@@ -1,5 +1,4 @@
-import { createRequire } from 'module';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath} from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,8 +10,8 @@ import { spawn } from 'child_process';
 function ffmpeg(buffer, args = [], ext = '', ext2 = '') {
   return new Promise(async (resolve, reject) => {
     try {
-      let tmp = path.join(__dirname, '../database', + new Date + '.' + ext)
-      let out = tmp + '.' + ext2
+      const tmp = path.join(__dirname, '../database', + new Date + '.' + ext)
+      const out = tmp + '.' + ext2
       await fs.promises.writeFile(tmp, buffer)
       spawn('ffmpeg', [
         '-y',
@@ -40,7 +39,7 @@ function ffmpeg(buffer, args = [], ext = '', ext2 = '') {
 /**
  * Convert Audio to Playable WhatsApp Audio
  * @param {Buffer} buffer Audio Buffer
- * @param {String} ext File Extension 
+ * @param {String} ext File Extension
  */
 function toAudio(buffer, ext) {
   return ffmpeg(buffer, [
@@ -55,7 +54,7 @@ function toAudio(buffer, ext) {
 /**
  * Convert Audio to Playable WhatsApp PTT
  * @param {Buffer} buffer Audio Buffer
- * @param {String} ext File Extension 
+ * @param {String} ext File Extension
  */
 function toPTT(buffer, ext) {
   return ffmpeg(buffer, [
@@ -70,7 +69,7 @@ function toPTT(buffer, ext) {
 /**
  * Convert Audio to Playable WhatsApp Video
  * @param {Buffer} buffer Video Buffer
- * @param {String} ext File Extension 
+ * @param {String} ext File Extension
  */
 function toVideo(buffer, ext) {
   return ffmpeg(buffer, [
