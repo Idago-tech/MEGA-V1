@@ -49,7 +49,6 @@ import commandHandler from './lib/commandHandler.js';
 store.readFromFile();
 setInterval(() => store.writeToFile(), settings.storeWriteInterval || 10000);
 
-commandHandler.loadCommands();
 
 setInterval(() => {
     if (global.gc) {
@@ -104,7 +103,7 @@ try {
 global.botname = process.env.BOT_NAME || "MEGA-MD";
 global.themeemoji = "•";
 
-const pairingCode = !!phoneNumber || process.argv.includes("--pairing-code");
+const pairingCode = !process.argv.includes("--qr-code");
 const useMobile = process.argv.includes("--mobile");
 
 let rl = null;
@@ -181,13 +180,11 @@ async function initializeSession() {
     const txt = global.SESSION_ID || process.env.SESSION_ID;
 
     if (!txt) {
-        printLog('warning', 'No SESSION_ID found in environment variables');
-        if (hasValidSession()) {
+                if (hasValidSession()) {
             printLog('success', 'Existing session found. Using saved credentials');
             return true;
         }
-        printLog('warning', 'No existing session found. Pairing code will be required');
-        return false;
+                return false;
     }
 
     if (hasValidSession()) return true;
@@ -222,10 +219,13 @@ async function startQasimDev() {
         await delay(1000);
 
         const { state, saveCreds } = await useMultiFileAuthState(`./session`);
+        const _saveCreds = async () => {
+            ensureSessionDirectory();
+            await saveCreds();
+        };
         const msgRetryCounterCache = new NodeCache();
 
-        printLog('info', `Credentials loaded. Registered: ${state.creds?.registered || false}`);
-
+        
         const ghostMode = await store.getSetting('global', 'stealthMode');
         const isGhostActive = ghostMode && ghostMode.enabled;
 
@@ -235,8 +235,8 @@ async function startQasimDev() {
 
         const QasimDev = makeWASocket({
             version,
-            logger: pino({ level: 'silent' }),
-            printQRInTerminal: !pairingCode,
+            logger: pino({ level: 'silent' }), 
+            // printQRInTerminal: deprecated
             browser: Browsers.macOS('Chrome'),
             auth: {
                 creds: state.creds,
@@ -308,7 +308,7 @@ async function startQasimDev() {
             return ghostMode && ghostMode.enabled;
         };
 
-        QasimDev.ev.on('creds.update', saveCreds);
+        QasimDev.ev.on('creds.update', _saveCreds);
         store.bind(QasimDev.ev);
 
         QasimDev.ev.on('messages.upsert', async (chatUpdate) => {
@@ -401,18 +401,15 @@ async function startQasimDev() {
         if (pairingCode && !isRegistered) {
             if (useMobile) throw new Error('Cannot use pairing code with mobile api');
 
-            printLog('warning', 'Session not registered. Pairing code required');
 
             let phoneNumberInput;
             if (global._pairingNumber) {
                 phoneNumberInput = global._pairingNumber;
-                printLog('info', `Using stored number for retry: ${phoneNumberInput}`);
             } else if (!!global.phoneNumber) {
                 phoneNumberInput = global.phoneNumber;
             } else if (process.env.PAIRING_NUMBER) {
                 phoneNumberInput = process.env.PAIRING_NUMBER;
-                printLog('info', `Using phone number from environment: ${phoneNumberInput}`);
-            } else if (rl && !rl.closed) {
+                            } else if (rl && !rl.closed) {
                 phoneNumberInput = await question(chalk.bgBlack(chalk.greenBright(`Please type your WhatsApp number 😍\nFormat: 6281376552730 (without + or spaces) : `)));
             } else {
                 phoneNumberInput = phoneNumber;
@@ -438,9 +435,7 @@ async function startQasimDev() {
                     printLog('success', `Pairing code generated: ${code}`);
                     if (rl && !rl.closed) { rl.close(); rl = null; }
                 } catch (error) {
-                    printLog('error', `Pairing attempt ${attempt} failed: ${error.message}`);
                     if (attempt < 3) {
-                        printLog('warning', `Clearing session, retry ${attempt + 1}/3 in 3s...`);
                         try { rmSync('./session', { recursive: true, force: true }); } catch (_e) {}
                         await delay(3000);
                         startQasimDev();
@@ -467,7 +462,6 @@ async function startQasimDev() {
             const { connection, lastDisconnect, qr } = s;
 
             if (qr) {
-                printLog('info', 'QR Code generated. Please scan with WhatsApp');
                 if (!pairingCode) {
                     try {
                         const qrcode = (await import('qrcode-terminal' as any)).default;
@@ -475,7 +469,7 @@ async function startQasimDev() {
                     } catch (_e) { console.log('QR:', qr); }
                 }
             }
-            if (connection === 'connecting') printLog('connection', 'Connecting to WhatsApp...');
+
 
             if (connection === "open") {
                 printLog('success', 'Bot connected successfully!');
@@ -523,7 +517,8 @@ async function startQasimDev() {
                 console.log(chalk.cyan(`< ================================================== >`));
                 console.log(chalk.magenta(`\n${global.themeemoji || '•'} YT CHANNEL: GlobalTechInfo`));
                 console.log(chalk.magenta(`${global.themeemoji || '•'} GITHUB: GlobalTechInfo`));
-                console.log(chalk.magenta(`${global.themeemoji || '•'} WA NUMBER: ${owner}`));
+                try { owner = JSON.parse(fs.readFileSync('./data/owner.json', 'utf-8')); } catch (_e) {}
+                console.log(chalk.magenta(`${global.themeemoji || '•'} WA NUMBER: ${owner[0] || settings.ownerNumber || ''}`));
                 console.log(chalk.magenta(`${global.themeemoji || '•'} CREDIT: Qasim Ali`));
                 console.log(chalk.green(`${global.themeemoji || '•'} 🤖 Bot Connected Successfully! ✅`));
                 console.log(chalk.blue(`Bot Version: ${settings.version}`));
@@ -534,18 +529,15 @@ async function startQasimDev() {
             }
 
             if (connection === 'close') {
-                const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
-
-                printLog('error', `Connection closed - Status: ${statusCode}`);
+                const shouldReconnect = statusCode !== DisconnectReason.loggedOut && statusCode !== 401;
 
                 if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
-                    try {
-                        rmSync('./session', { recursive: true, force: true });
-                        printLog('warning', 'Session logged out. Please re-authenticate');
-                    } catch (error) {
-                        printLog('error', `Error deleting session: ${error.message}`);
-                    }
+                    try { rmSync('./session', { recursive: true, force: true }); } catch (_e) {}
+                    global._pairingNumber = null;
+                    await delay(3000);
+                    startQasimDev();
+                    return;
                 }
 
                 if (shouldReconnect) {
@@ -585,15 +577,14 @@ async function startQasimDev() {
 }
 
 async function main() {
+    await commandHandler.loadCommands();
     printLog('info', 'Starting MEGA MD BOT...');
 
     const sessionReady = await initializeSession();
 
     if (sessionReady) {
-        printLog('success', 'Session initialization complete. Starting bot...');
-    } else {
-        printLog('warning', 'Session initialization incomplete. Will attempt pairing...');
-    }
+            } else {
+            }
 
     await delay(3000);
 

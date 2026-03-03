@@ -1630,7 +1630,7 @@ const store = {
         this.chats = chats
         this.botMode = mode
 
-        console.log('[STORE] Loaded data from database')
+        // console.log('[STORE] Loaded data from database')
       } else {
         if (fs.existsSync(filePath)) {
           const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
@@ -1639,7 +1639,7 @@ const store = {
           this.botMode = data.botMode || 'public'
           this.messages = data.messages || {}
           this.cleanupData()
-          console.log('[STORE] Loaded from file (memory mode)')
+          // console.log('[STORE] Loaded from file (memory mode)')
         }
       }
     } catch (e) {
@@ -1677,7 +1677,7 @@ const store = {
           const data = JSON.parse(fs.readFileSync(MESSAGE_COUNT_FILE, 'utf-8'))
           this.messageCount = data.messageCount || data
           this.isPublic = typeof data.isPublic === 'boolean' ? data.isPublic : true
-          console.log('[STORE] Loaded message counts from file')
+          // console.log('[STORE] Loaded message counts from file')
         }
       } catch (e) {
         console.warn('[STORE] Failed to read message count file:', e.message)
@@ -2202,8 +2202,8 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('[STORE] Unhandled rejection at:', promise, 'reason:', reason)
 })
 
-console.log(`[STORE] Initialized with backend: ${backend}`)
-console.log(`[STORE] Message limit per chat: ${messageLimit === Infinity ? 'unlimited' : messageLimit}`)
+// console.log(`[STORE] Initialized with backend: ${backend}`)
+// console.log(`[STORE] Message limit per chat: ${messageLimit === Infinity ? 'unlimited' : messageLimit}`)
 
 export default store;
 
