@@ -3,7 +3,7 @@ import isAdmin from '../lib/isAdmin.js';
 export default {
     command: 'clearchat',
     aliases: ['deletechat'],
-    category: 'group',
+    category: 'owner',
     description: 'Clear/delete the current chat',
     usage: '.clearchat',
 
