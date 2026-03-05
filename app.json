@@ -1,8 +1,8 @@
 {
-  "name": "mega-md",
+  "name": "mega-mdx",
   "description": "High performance multi-device WhatsApp bot",
   "keywords": ["whatsapp-bot", "baileys", "mega-md"],
-  "repository": "https://github.com/GlobalTechInfo/MEGA-MD",
+  "repository": "https://github.com/GlobalTechInfo/MEGA-MDX",
   "stack": "container",
   "env": {
     "SESSION_ID": {
@@ -33,7 +33,7 @@
     "BOT_NAME": {
       "description": "Your bot name",
       "required": false,
-      "value": "MEGA-MD"
+      "value": "MEGA-MDX"
     },
     "BOT_OWNER": {
       "description": "Owner display name",
@@ -62,11 +62,6 @@
     },
     "REMOVEBG_KEY": {
       "description": "Remove.bg API key for background removal",
-      "required": false,
-      "value": ""
-    },
-    "GIPHY_API_KEY": {
-      "description": "Giphy API key for GIF search",
       "required": false,
       "value": ""
     }
