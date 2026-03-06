@@ -3,14 +3,14 @@ import { createServer } from 'http';
 import config from '../config.js';
 const packageInfo = {
     name: config.botName || 'MEGA-MD',
-    version: config.version || '1.0.0',
+    version: config.version || '6.0.0',
     description: config.description || 'WhatsApp Bot',
     author: config.author || 'GlobalTechInfo'
 };
 
 const app = express();
 const server = createServer(app);
-const PORT = process.env.PORT || 5000;
+const PORT = config.port || 5000;
 
 app.get('/', (req, res) => {
     const uptimeSeconds = Math.floor(process.uptime());
