@@ -26,7 +26,7 @@ import makeWASocket, {
 } from '@whiskeysockets/baileys';
 import NodeCache from 'node-cache';
 import pino from 'pino';
-
+import config from './config.js';
 import store from './lib/lightweight_store.js';
 import SaveCreds from './lib/session.js';
 import { server, PORT } from './lib/server.js';
