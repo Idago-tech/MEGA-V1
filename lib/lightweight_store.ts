@@ -30,7 +30,7 @@ try {
   printLog = (type, msg) => console.log(`[${type.toUpperCase()}] ${msg}`)
 }
 
-const STORE_FILE = './baileys_store.json'
+const STORE_FILE = './data/baileys_store.json'
 const MESSAGE_COUNT_FILE = './data/messageCount.json'
 const MONGO_URL = process.env.MONGO_URL
 const POSTGRES_URL = process.env.POSTGRES_URL
@@ -47,12 +47,12 @@ const MESSAGE_LIMITS = {
 
 let MAX_MESSAGES = 20
 try {
-  const settings = require('../settings.js')
-  if (settings.maxStoreMessages && typeof settings.maxStoreMessages === 'number') {
-    MAX_MESSAGES = settings.maxStoreMessages
+  const config = require('../config.js')
+  if (config.maxStoreMessages && typeof config.maxStoreMessages === 'number') {
+    MAX_MESSAGES = config.maxStoreMessages
   }
 } catch (e) {
-  // Use default if settings not available
+  // Use default if config not available
 }
 
 const TTL_MS = 30 * 24 * 60 * 60 * 1000
@@ -396,7 +396,7 @@ if (MONGO_URL) {
 
     backend = 'mongo'
     messageLimit = MESSAGE_LIMITS.mongo
-    printLog('store', 'MongoDB enabled - Unlimited message storage with full data persistence')
+    printLog('store', 'MongoDB enabled - Unlimited storage with persistence')
   } catch (e) {
     printLog('warning', `MongoDB initialization failed: ${e.message}`)
   }
@@ -875,7 +875,7 @@ if (backend === 'memory' && POSTGRES_URL) {
 
     backend = 'postgres'
     messageLimit = MESSAGE_LIMITS.postgres
-    printLog('store', 'PostgreSQL enabled - Unlimited message storage with full data persistence')
+    printLog('store', 'PostgreSQL enabled - Unlimited storage with persistence')
   } catch (e) {
     printLog('warning', `PostgreSQL initialization failed: ${e.message}`)
   }
@@ -1260,7 +1260,7 @@ if (backend === 'memory' && MYSQL_URL) {
 
     backend = 'mysql'
     messageLimit = MESSAGE_LIMITS.mysql
-    printLog('store', 'MySQL enabled - Unlimited message storage with full data persistence')
+    printLog('store', 'MySQL enabled - Unlimited storage with persistence')
   } catch (e) {
     printLog('warning', `MySQL initialization failed: ${e.message}`)
   }
@@ -1594,7 +1594,7 @@ if (backend === 'memory' && SQLITE_URL) {
 
     backend = 'sqlite';
     messageLimit = MESSAGE_LIMITS.sqlite;
-    printLog('store', `SQLite enabled - Max ${MESSAGE_LIMITS.sqlite} messages per chat with full data persistence`);
+    printLog('store', `SQLite enabled - Max ${MESSAGE_LIMITS.sqlite} messages per chat with persistence`);
   } catch (e) {
     printLog('warning', `SQLite initialization failed: ${e.message}`);
     printLog('info', 'Falling back to memory + JSON file storage');
@@ -1603,7 +1603,7 @@ if (backend === 'memory' && SQLITE_URL) {
 
 // Log if still using memory mode
 if (backend === 'memory') {
-  printLog('store', `Using memory + JSON file storage - Max ${MESSAGE_LIMITS.memory} messages per chat`);
+  printLog('store', `Using JSON - Max ${MESSAGE_LIMITS.memory} messages per chat`);
 }
 
 
