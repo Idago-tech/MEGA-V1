@@ -7,7 +7,7 @@ import store from '../lib/lightweight_store.js';
 
 const messageStore = new Map();
 const CONFIG_PATH = dataFile('antidelete.json');
-const TEMP_MEDIA_DIR = path.join(process.cwd(), 'tmp');
+const TEMP_MEDIA_DIR = path.join(process.cwd(), 'temp');
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
@@ -218,7 +218,7 @@ export async function handleMessageRevocation(sock, revocationMessage) {
         const groupName = original.group ? (await sock.groupMetadata(original.group)).subject : '';
 
         const time = new Date().toLocaleString('en-US', {
-            timeZone: 'Asia/Kolkata',
+            timeZone: process.env.TIMEZONE || 'Asia/Karachi',
             hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit',
             day: '2-digit', month: '2-digit', year: 'numeric'
         });
