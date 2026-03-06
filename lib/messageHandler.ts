@@ -27,7 +27,7 @@ import { handleAntiSpam, invalidateGroupCache } from '../plugins/antispam.js';
 import { startSchedulerEngine } from '../plugins/schedule.js';
 import { addCommandReaction } from './reactions.js';
 
-import channelInfo from './messageConfig.js';
+import { channelInfo } from './messageConfig.js';
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
