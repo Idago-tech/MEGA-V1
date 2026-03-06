@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { dataFile } from '../lib/paths.js';
 import store from '../lib/lightweight_store.js';
-
+import { channelInfo } from '../lib/messageConfig.js';
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
 const MYSQL_URL = process.env.MYSQL_URL;
@@ -24,7 +24,6 @@ interface AntiSpamConfig {
 }
 
 // ── In-memory flood tracker ────────────────────────────────────────────────
-// groupId -> userId -> { count, firstMessageTime, warns }
 const tracker: Map<string, Map<string, {
     count: number;
     firstMessageTime: number;
@@ -32,7 +31,6 @@ const tracker: Map<string, Map<string, {
 }>> = new Map();
 
 // ── Group metadata TTL cache (5 minutes) ──────────────────────────────────
-// Avoids calling groupMetadata on every message → prevents 429 rate limit
 interface CachedMetadata {
     participants: any[];
     fetchedAt: number;
@@ -136,18 +134,6 @@ async function saveConfig(config: AntiSpamConfig) {
         fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
     }
 }
-
-const channelInfo = {
-    contextInfo: {
-        forwardingScore: 1,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363319098372999@newsletter',
-            newsletterName: 'MEGA MD',
-            serverMessageId: -1
-        }
-    }
-};
 
 // ── Named export hooked into messageHandler.ts ────────────────────────────
 export async function handleAntiSpam(
