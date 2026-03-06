@@ -5,7 +5,7 @@ const __dirname = dirname(__filename);
 
 import fs from 'fs';
 import { dataFile } from './paths.js';
-import settings from '../config.js';
+import config from '../config.js';
 import store from './lightweight_store.js';
 import commandHandler from './commandHandler.js';
 import { printMessage, printLog } from './print.js';
@@ -24,22 +24,10 @@ import { handleChatbotResponse } from '../plugins/chatbot.js';
 import { handleTicTacToeMove } from '../plugins/tictactoe.js';
 import { handleAutoReply } from '../plugins/autoreply.js';
 import { handleAntiSpam, invalidateGroupCache } from '../plugins/antispam.js';
-
 import { startSchedulerEngine } from '../plugins/schedule.js';
-
 import { addCommandReaction } from './reactions.js';
 
-const channelInfo = {
-    contextInfo: {
-        forwardingScore: 1,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363319098372999@newsletter',
-            newsletterName: 'MEGA MD',
-            serverMessageId: -1
-        }
-    }
-};
+import channelInfo from './messageConfig.js';
 
 const MONGO_URL = process.env.MONGO_URL;
 const POSTGRES_URL = process.env.POSTGRES_URL;
@@ -136,18 +124,15 @@ async function handleMessages(sock, messageUpdate) {
                 const hash = Buffer.from(fileSha256).toString('base64');
                 const stickers = await getStickerCommands();
 
-                if (stickers[hash]) {
-                    printLog('info', `🎨 Sticker command detected: ${stickers[hash].text}`);
-
                     const commandText = stickers[hash].text;
                     const [cmdName, ...cmdArgs] = commandText.split(' ');
 
                     let foundCommand = null;
                     let usedPrefix = '';
 
-                    for (const prefix of settings.prefixes) {
+                    for (const prefix of config.prefixes) {
                         const testCmd = (prefix + cmdName).toLowerCase();
-                        foundCommand = commandHandler.getCommand(testCmd, settings.prefixes);
+                        foundCommand = commandHandler.getCommand(testCmd, config.prefixes);
                         if (foundCommand) {
                             usedPrefix = prefix;
                             break;
@@ -187,7 +172,7 @@ async function handleMessages(sock, messageUpdate) {
                             const { isOwnerOnly } = await import('./isOwner.js');
                             if (!message.key.fromMe && !isOwnerOnly(senderId)) {
                                 return await sock.sendMessage(chatId, {
-                                    text: '❌ This command is only available for the bot owner!',
+                                    text: 'ℹ️ *This command is only available for the bot owner!*',
                                     ...channelInfo
                                 }, { quoted: message });
                             }
@@ -195,14 +180,14 @@ async function handleMessages(sock, messageUpdate) {
 
                         if (foundCommand.ownerOnly && !message.key.fromMe && !senderIsOwnerOrSudo) {
                             return await sock.sendMessage(chatId, {
-                                text: '❌ This command is only available for the owner or sudo users!',
+                                text: 'ℹ️ *This command is only available for the owner or sudo users!*',
                                 ...channelInfo
                             }, { quoted: message });
                         }
 
                         if (foundCommand.groupOnly && !isGroup) {
                             return await sock.sendMessage(chatId, {
-                                text: 'This command can only be used in groups!',
+                                text: 'ℹ️ *This command can only be used in groups!*',
                                 ...channelInfo
                             }, { quoted: message });
                         }
@@ -217,14 +202,14 @@ async function handleMessages(sock, messageUpdate) {
 
                             if (!isBotAdmin) {
                                 return await sock.sendMessage(chatId, {
-                                    text: '❌ Please make the bot an admin to use this command.',
+                                    text: 'ℹ️ *Please make the bot an admin to use this command.*',
                                     ...channelInfo
                                 }, { quoted: message });
                             }
 
                             if (!isSenderAdmin && !message.key.fromMe && !senderIsOwnerOrSudo) {
                                 return await sock.sendMessage(chatId, {
-                                    text: '❌ Sorry, only group admins can use this command.',
+                                    text: 'ℹ️ *Sorry, only group admins can use this command.*',
                                     ...channelInfo
                                 }, { quoted: message });
                             }
@@ -292,10 +277,8 @@ async function handleMessages(sock, messageUpdate) {
         const userMessage = messageText.toLowerCase();
 
         const senderIsSudo = await isSudo(senderId);
-        // Start scheduler engine (safe - only starts once)
         startSchedulerEngine(sock);
 
-        // Auto-reply check — runs before commands
         if (!message.key.fromMe) {
             const replied = await handleAutoReply(sock, chatId, message, userMessage);
             if (replied) return;
@@ -305,9 +288,6 @@ async function handleMessages(sock, messageUpdate) {
 
         const isOwnerOrSudoCheck = message.key.fromMe || senderIsOwnerOrSudo;
 
-        if (senderIsOwnerOrSudo) {
-            printLog('info', `Owner/Sudo detected: ${senderId.split('@')[0]}`);
-        }
 
         if (message.message?.buttonsResponseMessage) {
             const buttonId = message.message.buttonsResponseMessage.selectedButtonId;
@@ -393,9 +373,9 @@ async function handleMessages(sock, messageUpdate) {
             }
         }
 
-        const usedPrefix = settings.prefixes.find(p => userMessage.startsWith(p));
+        const usedPrefix = config.prefixes.find(p => userMessage.startsWith(p));
 
-        const command = commandHandler.getCommand(userMessage, settings.prefixes);
+        const command = commandHandler.getCommand(userMessage, config.prefixes);
 
         if (!usedPrefix && !command) {
             await handleAutotypingForMessage(sock, chatId, userMessage);
@@ -469,7 +449,7 @@ async function handleMessages(sock, messageUpdate) {
             const { isOwnerOnly } = await import('./isOwner.js');
             if (!message.key.fromMe && !isOwnerOnly(senderId)) {
                 return await sock.sendMessage(chatId, {
-                    text: '❌ This command is only available for the bot owner!\n\n_Sudo users cannot manage other sudo users._',
+                    text: 'ℹ️ *This command is only available for the bot owner!*\n\n_Sudo users cannot manage other sudo users._',
                     ...channelInfo
                 }, { quoted: message });
             }
@@ -477,14 +457,14 @@ async function handleMessages(sock, messageUpdate) {
 
         if (command.ownerOnly && !message.key.fromMe && !senderIsOwnerOrSudo) {
             return await sock.sendMessage(chatId, {
-                text: '❌ This command is only available for the owner or sudo users!',
+                text: 'ℹ️ *This command is only available for the owner or sudo users!*',
                 ...channelInfo
             }, { quoted: message });
         }
 
         if (command.groupOnly && !isGroup) {
             return await sock.sendMessage(chatId, {
-                text: 'This command can only be used in groups!',
+                text: 'ℹ️ *This command can only be used in groups!*',
                 ...channelInfo
             }, { quoted: message });
         }
@@ -499,14 +479,14 @@ async function handleMessages(sock, messageUpdate) {
 
             if (!isBotAdmin) {
                 return await sock.sendMessage(chatId, {
-                    text: '❌ Please make the bot an admin to use this command.',
+                    text: 'ℹ️ *Please make the bot an admin to use this command.*',
                     ...channelInfo
                 }, { quoted: message });
             }
 
             if (!isSenderAdmin && !message.key.fromMe && !senderIsOwnerOrSudo) {
                 return await sock.sendMessage(chatId, {
-                    text: '❌ Sorry, only group admins can use this command.',
+                    text: 'ℹ️ *Sorry, only group admins can use this command.*',
                     ...channelInfo
                 }, { quoted: message });
             }
@@ -549,7 +529,7 @@ async function handleMessages(sock, messageUpdate) {
             };
 
             try {
-                fs.appendFileSync('./error.log', JSON.stringify(errorLog) + '\n');
+                fs.appendFileSync('.error.log', JSON.stringify(errorLog) + '\n');
                 printLog('info', 'Error logged to file');
             } catch(e: any) {
                 printLog('error', `Failed to write error log: ${e.message}`);
@@ -564,7 +544,7 @@ async function handleMessages(sock, messageUpdate) {
         if (chatId) {
             try {
                 await sock.sendMessage(chatId, {
-                    text: '❌ Failed to process message!',
+                    text: 'ℹ️ *Failed to process message!*',
                     ...channelInfo
                 });
             } catch(e: any) {
@@ -592,7 +572,6 @@ async function handleGroupParticipantUpdate(sock, update) {
                 if (!isPublicMode) return;
                 if (participants && participants.length > 0) {
                     const participant = Array.isArray(participants) ? participants[0] : participants;
-                    printLog('success', `User promoted: ${typeof participant === 'string' ? participant.split('@')[0] : 'unknown'}`);
                 }
                 const handlePromotionEvent = (await import('../plugins/promote.js')).default?.handlePromotionEvent;
                 await handlePromotionEvent(sock, id, participants, author);
@@ -602,7 +581,6 @@ async function handleGroupParticipantUpdate(sock, update) {
                 if (!isPublicMode) return;
                 if (participants && participants.length > 0) {
                     const participant = Array.isArray(participants) ? participants[0] : participants;
-                    printLog('warning', `User demoted: ${typeof participant === 'string' ? participant.split('@')[0] : 'unknown'}`);
                 }
                 const handleDemotionEvent = (await import('../plugins/demote.js')).default?.handleDemotionEvent;
                 await handleDemotionEvent(sock, id, participants, author);
@@ -611,7 +589,6 @@ async function handleGroupParticipantUpdate(sock, update) {
             case 'add':
                 if (participants && participants.length > 0) {
                     const participant = Array.isArray(participants) ? participants[0] : participants;
-                    printLog('success', `User joined: ${typeof participant === 'string' ? participant.split('@')[0] : 'unknown'}`);
                 }
                 const { handleJoinEvent } = await import('../plugins/welcome.js');
                 await handleJoinEvent(sock, id, participants);
@@ -620,7 +597,6 @@ async function handleGroupParticipantUpdate(sock, update) {
             case 'remove':
                 if (participants && participants.length > 0) {
                     const participant = Array.isArray(participants) ? participants[0] : participants;
-                    printLog('info', `User left: ${typeof participant === 'string' ? participant.split('@')[0] : 'unknown'}`);
                 }
                 const handleLeaveEvent = (await import('../plugins/goodbye.js')).default?.handleLeaveEvent;
                 await handleLeaveEvent(sock, id, participants);
@@ -658,16 +634,12 @@ async function handleCall(sock, calls) {
             const callerJid = call.from || call.peerJid || call.chatId;
             if (!callerJid) continue;
 
-            printLog('warning', `Incoming call from: ${callerJid.split('@')[0]}`);
-
             try {
                 try {
                     if (typeof sock.rejectCall === 'function' && call.id) {
                         await sock.rejectCall(call.id, callerJid);
-                        printLog('success', `Call rejected: ${callerJid.split('@')[0]}`);
                     } else if (typeof sock.sendCallOfferAck === 'function' && call.id) {
                         await sock.sendCallOfferAck(call.id, callerJid, 'reject');
-                        printLog('success', `Call rejected: ${callerJid.split('@')[0]}`);
                     }
                 } catch(e: any) {
                     printLog('error', `Error rejecting call: ${e.message}`);
