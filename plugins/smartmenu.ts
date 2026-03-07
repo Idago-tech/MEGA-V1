@@ -1,5 +1,5 @@
 import CommandHandler from '../lib/commandHandler.js';
-import settings from '../config.js';
+import config from '../config.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -45,14 +45,14 @@ function formatTime() {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
-        timeZone: settings.timeZone || 'UTC'
+        timeZone: config.timeZone || 'UTC'
     };
     return now.toLocaleTimeString('en-US', options as any);
 }
 
 export default {
   command: 'smenu',
-  aliases: ['shelp', 'smart', 'menu', 'help'],
+  aliases: ['shelp', 'smart', 'help2'],
   category: 'general',
   description: 'Interactive smart menu with live status',
   usage: '.smenu',
@@ -75,13 +75,13 @@ export default {
       const fastEmoji = getRandomEmoji(fastEmojis);
       const slowEmoji = getRandomEmoji(slowEmojis);
 
-      let menuText = `${menuEmoji} *${settings.botName || 'MEGA-MD'}* ${menuEmoji}\n\n`;
+      let menuText = `${menuEmoji} *${config.botName || 'MEGA-MD'}* ${menuEmoji}\n\n`;
       menuText += `┏━━━━━━━━━━━━━━━━┓\n`;
-      menuText += `┃ 📱 *Bot:* ${settings.botName || 'MEGA-MD'}\n`;
-      menuText += `┃ 🔖 *Version:* ${settings.version || '1.0.0'}\n`;
-      menuText += `┃ 👤 *Owner:* ${settings.botOwner || 'Unknown'}\n`;
+      menuText += `┃ 📱 *Bot:* ${config.botName || 'MEGA-MD'}\n`;
+      menuText += `┃ 🔖 *Version:* ${config.version || '6.0.0'}\n`;
+      menuText += `┃ 👤 *Owner:* ${config.botOwner || 'Unknown'}\n`;
       menuText += `┃ ⏰ *Time:* ${formatTime()}\n`;
-      menuText += `┃ ℹ️ *Prefix:* ${settings.prefixes ? settings.prefixes.join(', ') : '.'}\n`;
+      menuText += `┃ ℹ️ *Prefix:* ${config.prefixes ? config.prefixes.join(', ') : '.'}\n`;
       menuText += `┃ 📊 *Plugins:* ${CommandHandler.commands.size}\n`;
       menuText += `┗━━━━━━━━━━━━━━━━┛\n\n`;
 
@@ -136,7 +136,7 @@ export default {
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363319098372999@newsletter',
-          newsletterName: settings.botName || 'MEGA MD',
+          newsletterName: 'GlobalTechInc',
           serverMessageId: -1
         }
       };
