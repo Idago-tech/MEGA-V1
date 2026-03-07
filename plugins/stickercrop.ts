@@ -2,12 +2,12 @@ import { downloadMediaMessage } from '@whiskeysockets/baileys';
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import settings from '../config.js';
+import config from '../config.js';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
 
 export async function stickercropFromBuffer(inputBuffer, isAnimated) {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
   const tempInput = path.join(tmpDir, `cropbuf_${Date.now()}`);
@@ -41,7 +41,7 @@ export async function stickercropFromBuffer(inputBuffer, isAnimated) {
   await img.load(webpBuffer);
   const json = {
     'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-    'sticker-pack-name': settings.packname || 'KnightBot',
+    'sticker-pack-name': config.packname || 'MEGA-MD',
     'emojis': ['✂️']
   };
   const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
@@ -50,8 +50,6 @@ export async function stickercropFromBuffer(inputBuffer, isAnimated) {
   exif.writeUIntLE(jsonBuffer.length, 14, 4);
   img.exif = exif;
   const finalBuffer = await img.save(null);
-  console.log('[STICKER DEBUG] final size:', finalBuffer.length, 'bytes', (finalBuffer.length/1024).toFixed(1), 'KB');
-
 
   try {
     fs.unlinkSync(tempInput);
@@ -109,7 +107,7 @@ export default {
         return;
       }
 
-      const tmpDir = path.join(process.cwd(), 'tmp');
+      const tmpDir = path.join(process.cwd(), 'temp');
       if (!fs.existsSync(tmpDir)) {
         fs.mkdirSync(tmpDir, { recursive: true });
       }
@@ -173,7 +171,7 @@ export default {
 
       const json = {
         'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-        'sticker-pack-name': settings.packname || 'KnightBot',
+        'sticker-pack-name': config.packname || 'MegaBot',
         'emojis': ['✂️']
       };
 
@@ -184,8 +182,6 @@ export default {
 
       img.exif = exif;
       const finalBuffer = await img.save(null);
-  console.log('[STICKER DEBUG] final size:', finalBuffer.length, 'bytes', (finalBuffer.length/1024).toFixed(1), 'KB');
-
 
       await sock.sendMessage(chatId, {
         sticker: finalBuffer,
