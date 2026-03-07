@@ -5,11 +5,11 @@ import fs from 'fs';
 import path from 'path';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
-import settings from '../config.js';
+import config from '../config.js';
 import { stickercropFromBuffer } from './stickercrop.js';
 
 async function _convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
   const tempInputBase = path.join(tmpDir, `igs_${Date.now()}_${Math.random().toString(36).slice(2)}`);
@@ -57,7 +57,7 @@ async function _convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) 
 
   const json = {
     'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-    'sticker-pack-name': settings.packname || 'MegaBot',
+    'sticker-pack-name': config.packname || 'MegaBot',
     'emojis': ['📸']
   };
   const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
