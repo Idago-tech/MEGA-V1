@@ -4,7 +4,7 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import https from 'https';
-import settings from '../config.js';
+import config from '../config.js';
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
@@ -125,11 +125,11 @@ function copyRecursive(src, dest, ignore = [], relative = '', outList = []) {
 }
 
 async function updateViaZip(sock, chatId, message, zipOverride) {
-  const zipUrl = (zipOverride || settings.updateZipUrl || process.env.UPDATE_ZIP_URL || '').trim();
+  const zipUrl = (zipOverride || config.updateZipUrl || process.env.UPDATE_ZIP_URL || '').trim();
   if (!zipUrl) {
-    throw new Error('No ZIP URL configured. Set settings.updateZipUrl or UPDATE_ZIP_URL env.');
+    throw new Error('No ZIP URL configured. Set config.updateZipUrl or UPDATE_ZIP_URL env.');
   }
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
   const zipPath = path.join(tmpDir, 'update.zip');
   await downloadFile(zipUrl, zipPath);
@@ -261,7 +261,7 @@ export default {
       }
 
       try {
-        delete require.cache[require.resolve('../settings')];
+        delete require.cache[require.resolve('../config')];
         const newSettings = (await import('../config.js')).default;
         const v = newSettings.version || 'unknown';
         changesSummary += `\n\n🔖 Version: ${v}`;
