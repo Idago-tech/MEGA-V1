@@ -18,8 +18,6 @@ export default {
                 ...channelInfo
             }, { quoted: message });
         }
-
-        // Get all DM contacts from store
         let contacts: string[] = [];
         try {
             const allContacts = Object.keys((sock as any).store?.contacts || {});
@@ -56,7 +54,7 @@ export default {
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
                             newsletterJid: '120363319098372999@newsletter',
-                            newsletterName: 'MEGA MD',
+                            newsletterName: 'GlobalTechInc',
                             serverMessageId: -1
                         }
                     }
