@@ -5,10 +5,10 @@ import fs from 'fs';
 import path from 'path';
 import webp from 'node-webpmux';
 import crypto from 'crypto';
-import settings from '../config.js';
+import config from '../config.js';
 
 async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
   const tempInputBase = path.join(tmpDir, `igs_${Date.now()}_${Math.random().toString(36).slice(2)}`);
@@ -80,7 +80,7 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
 
   const json = {
     'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-    'sticker-pack-name': settings.packname || 'MegaBot',
+    'sticker-pack-name': config.packname || 'MegaBot',
     'emojis': ['📸']
   };
   const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
@@ -107,7 +107,7 @@ async function convertBufferToStickerWebp(inputBuffer, isAnimated, cropSquare) {
         await img2.load(smallWebp);
         const json2 = {
           'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-          'sticker-pack-name': settings.packname || 'MegaBot',
+          'sticker-pack-name': config.packname || 'MegaBot',
           'emojis': ['📸']
         };
         const exifAttr2 = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
@@ -170,7 +170,7 @@ async function fetchBufferFromUrl(url) {
 }
 
 async function forceMiniSticker(inputBuffer, isVideo, cropSquare) {
-  const tmpDir = path.join(process.cwd(), 'tmp');
+  const tmpDir = path.join(process.cwd(), 'temp');
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
   const tempInput = path.join(tmpDir, `mini_${Date.now()}.${isVideo ? 'mp4' : 'jpg'}`);
@@ -198,7 +198,7 @@ async function forceMiniSticker(inputBuffer, isVideo, cropSquare) {
   await img.load(smallWebp);
   const json = {
     'sticker-pack-id': crypto.randomBytes(32).toString('hex'),
-    'sticker-pack-name': settings.packname || 'MegaBot',
+    'sticker-pack-name': config.packname || 'MegaBot',
     'emojis': ['📸']
   };
   const exifAttr = Buffer.from([0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00, 0x01, 0x00, 0x41, 0x57, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16, 0x00, 0x00, 0x00]);
@@ -282,7 +282,6 @@ export default {
           }
           seenHashes.add(hash);
 
-          // Always use mini sticker for Instagram (images are too high-res)
           let finalSticker = await forceMiniSticker(buffer, isVideo, false);
           if (!finalSticker) finalSticker = await convertBufferToStickerWebp(buffer, isVideo, false);
 
