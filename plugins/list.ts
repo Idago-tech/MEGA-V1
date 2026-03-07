@@ -174,7 +174,7 @@ export default {
   async handler(sock: any, message: any, args: any, context: any) {
     const { chatId, channelInfo } = context;
     const prefix = config.prefixes[0];
-    const imagePath = path.join(process.cwd(), 'assets/bot_image.jpg');
+    const imagePath = path.join(process.cwd(), 'assets/thumb.png');
 
     if (args.length) {
       const searchTerm = args[0].toLowerCase();
