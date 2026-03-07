@@ -20,7 +20,6 @@ export default {
             }, { quoted: message });
         }
 
-        // Confirm first
         let groups: any[] = [];
         try {
             const allChats = Object.keys((sock as any).store?.chats || {});
@@ -54,7 +53,7 @@ export default {
                         isForwarded: true,
                         forwardedNewsletterMessageInfo: {
                             newsletterJid: '120363319098372999@newsletter',
-                            newsletterName: 'MEGA MD',
+                            newsletterName: 'GlobalTechInc',
                             serverMessageId: -1
                         }
                     }
