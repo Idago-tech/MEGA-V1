@@ -31,6 +31,7 @@ const defaults = {
     'autoreplies.json': { enabled: true, replies: [] },
     'schedules.json':   [],
     'polls.json':       { polls: [] },
+    'baileys_store.json':    {},
 };
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
