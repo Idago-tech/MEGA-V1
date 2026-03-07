@@ -225,7 +225,7 @@ async function startQasimDev() {
         const QasimDev = makeWASocket({
             version,
             logger: pino({ level: 'silent' }),
-            printQRInTerminal: !pairingCode,
+            // printQRInTerminal: !pairingCode,
             browser: Browsers.macOS('Chrome'),
             auth: {
                 creds: state.creds,
