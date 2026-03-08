@@ -13,7 +13,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-import { smsg} from './lib/myfunc.js';
+import { smsg } from './lib/myfunc.js';
 import makeWASocket, {
     useMultiFileAuthState,
     DisconnectReason,
@@ -58,7 +58,7 @@ setInterval(() => {
     }
 }, 30_000);
 
-const phoneNumber = global.PAIRING_NUMBER || config.pairingNumber || "923051391005";
+const phoneNumber: string = (config.pairingNumber || "923051391005") as string;
 
 // Auto-create data directory and default files on startup
 const DATA_DEFAULTS: Record<string, any> = {
@@ -99,32 +99,34 @@ global.themeemoji = "•";
 const pairingCode = !process.argv.includes("--qr-code");
 const useMobile = process.argv.includes("--mobile");
 
-let rl = null;
+let rl: readline.Interface | null = null;
+let rlClosed = false;
 if (process.stdin.isTTY && !config.pairingNumber) {
     rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
+    rl.on('close', () => { rlClosed = true; });
 }
 
-const question = (text: string) => {
-    if (rl && !rl.closed) {
-        return new Promise((resolve) => rl.question(text, resolve));
+const question = (text: string): Promise<string> => {
+    if (rl && !rlClosed) {
+        return new Promise((resolve) => rl!.question(text, resolve as any));
     } else {
         return Promise.resolve(config.ownerNumber || phoneNumber);
     }
 };
 
 process.on('exit', () => {
-    if (rl && !rl.closed) rl.close();
+    if (rl && !rlClosed) rl.close();
 });
 
 process.on('SIGINT', () => {
-    if (rl && !rl.closed) rl.close();
+    if (rl && !rlClosed) rl.close();
     process.exit(0);
 });
 
-function ensureSessionDirectory() {
+function ensureSessionDirectory(): string {
     const sessionPath = path.join(__dirname, 'session');
     if (!existsSync(sessionPath)) {
         mkdirSync(sessionPath, { recursive: true });
@@ -132,7 +134,7 @@ function ensureSessionDirectory() {
     return sessionPath;
 }
 
-function hasValidSession() {
+function hasValidSession(): boolean {
     try {
         const credsPath = path.join(__dirname, 'session', 'creds.json');
 
@@ -152,32 +154,32 @@ function hasValidSession() {
             }
             if (creds.registered === false) {
                 printLog('warning', 'Session not registered. Clearing for fresh pairing...');
-                try { rmSync(path.join(__dirname, 'session'), { recursive: true, force: true }); } catch (_e) { /* ignore */ }
+                try { rmSync(path.join(__dirname, 'session'), { recursive: true, force: true }); } catch (_e: any) { /* ignore */ }
                 return false;
             }
             printLog('success', 'Valid and registered session credentials found');
             return true;
-        } catch (parseError) {
+        } catch (_parseError: any) {
             printLog('warning', 'creds.json contains invalid JSON');
             return false;
         }
-    } catch (error) {
+    } catch (error: any) {
         printLog('error', `Error checking session validity: ${error.message}`);
         return false;
     }
 }
 
-async function initializeSession() {
+async function initializeSession(): Promise<boolean> {
     ensureSessionDirectory();
 
-    const txt = global.SESSION_ID || config.sessionId;
+    const txt = config.sessionId;
 
     if (!txt) {
-                if (hasValidSession()) {
+        if (hasValidSession()) {
             printLog('success', 'Existing session found. Using saved credentials');
             return true;
         }
-                return false;
+        return false;
     }
 
     if (hasValidSession()) return true;
@@ -194,7 +196,7 @@ async function initializeSession() {
             printLog('error', 'Session file not valid after download');
             return false;
         }
-    } catch (error) {
+    } catch (error: any) {
         printLog('error', `Error downloading session: ${error.message}`);
         return false;
     }
@@ -204,7 +206,7 @@ server.listen(PORT, () => {
     printLog('success', `Server listening on port ${PORT}`);
 });
 
-async function startQasimDev() {
+async function startQasimDev(): Promise<any> {
     try {
         const { version } = await fetchLatestBaileysVersion();
 
@@ -218,14 +220,12 @@ async function startQasimDev() {
         };
         const msgRetryCounterCache = new NodeCache();
 
-
         const ghostMode = await store.getSetting('global', 'stealthMode');
         const isGhostActive = ghostMode && ghostMode.enabled;
 
         const QasimDev = makeWASocket({
             version,
             logger: pino({ level: 'silent' }),
-            // printQRInTerminal: !pairingCode,
             browser: Browsers.macOS('Chrome'),
             auth: {
                 creds: state.creds,
@@ -234,7 +234,7 @@ async function startQasimDev() {
             markOnlineOnConnect: !isGhostActive,
             generateHighQualityLinkPreview: true,
             syncFullHistory: false,
-            getMessage: async (key) => {
+            getMessage: async (key: any) => {
                 const jid = jidNormalizedUser(key.remoteJid);
                 const msg = await store.loadMessage(jid, key.id);
                 return msg?.message || "";
@@ -250,7 +250,7 @@ async function startQasimDev() {
         const originalReadMessages = QasimDev.readMessages;
         const originalSendReceipt = QasimDev.sendReceipt;
 
-        QasimDev.sendPresenceUpdate = async function (...args) {
+        QasimDev.sendPresenceUpdate = async function (...args: any[]) {
             const ghostMode = await store.getSetting('global', 'stealthMode');
             if (ghostMode && ghostMode.enabled) {
                 printLog('info', '👻 Blocked presence update (stealth mode)');
@@ -259,23 +259,22 @@ async function startQasimDev() {
             return originalSendPresenceUpdate.apply(this, args);
         };
 
-        QasimDev.readMessages = async function (...args) {
+        QasimDev.readMessages = async function (...args: any[]) {
             const ghostMode = await store.getSetting('global', 'stealthMode');
             if (ghostMode && ghostMode.enabled) return;
             return originalReadMessages.apply(this, args);
         };
 
         if (originalSendReceipt) {
-            QasimDev.sendReceipt = async function (...args) {
+            QasimDev.sendReceipt = async function (...args: any[]) {
                 const ghostMode = await store.getSetting('global', 'stealthMode');
                 if (ghostMode && ghostMode.enabled) return;
                 return originalSendReceipt.apply(this, args);
             };
         }
 
-
         const originalQuery = QasimDev.query;
-        QasimDev.query = async function (node, ...args) {
+        QasimDev.query = async function (node: any, ...args: any[]) {
             const ghostMode = await store.getSetting('global', 'stealthMode');
             if (ghostMode && ghostMode.enabled) {
                 if (node && node.tag === 'receipt') return;
@@ -292,7 +291,7 @@ async function startQasimDev() {
         QasimDev.ev.on('creds.update', _saveCreds);
         store.bind(QasimDev.ev);
 
-        QasimDev.ev.on('messages.upsert', async (chatUpdate) => {
+        QasimDev.ev.on('messages.upsert', async (chatUpdate: any) => {
             try {
                 const mek = chatUpdate.messages[0];
                 if (!mek.message) return;
@@ -319,8 +318,8 @@ async function startQasimDev() {
 
                 try {
                     await handleMessages(QasimDev, chatUpdate);
-                } catch (err) {
-                    printLog('error', `Error in handleMessages: ${(err as any).message}`);
+                } catch (err: any) {
+                    printLog('error', `Error in handleMessages: ${err.message}`);
                     if (mek.key && mek.key.remoteJid) {
                         await QasimDev.sendMessage(mek.key.remoteJid, {
                             text: '❌ An error occurred while processing your message.',
@@ -336,12 +335,12 @@ async function startQasimDev() {
                         }).catch(console.error);
                     }
                 }
-            } catch (err) {
-                printLog('error', `Error in messages.upsert: ${(err as any).message}`);
+            } catch (err: any) {
+                printLog('error', `Error in messages.upsert: ${err.message}`);
             }
         });
 
-        QasimDev.decodeJid = (jid) => {
+        QasimDev.decodeJid = (jid: any) => {
             if (!jid) return jid;
             if (/:\d+@/gi.test(jid)) {
                 const decode = jidDecode(jid) || {};
@@ -349,21 +348,21 @@ async function startQasimDev() {
             } else return jid;
         };
 
-        QasimDev.ev.on('contacts.update', update => {
+        QasimDev.ev.on('contacts.update', (update: any[]) => {
             for (const contact of update) {
                 const id = QasimDev.decodeJid(contact.id);
                 if (store && store.contacts) store.contacts[id] = { id, name: contact.notify };
             }
         });
 
-        QasimDev.getName = (jid, withoutContact = false) => {
+        QasimDev.getName = (jid: any, withoutContact = false) => {
             const id = QasimDev.decodeJid(jid);
             withoutContact = QasimDev.withoutContact || withoutContact;
-            let v;
+            let v: any;
             if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
                 v = store.contacts[id] || {};
                 if (!(v.name || v.subject)) v = QasimDev.groupMetadata(id) || {};
-                resolve(v.name || v.subject || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).number.international);
+                resolve(v.name || v.subject || PhoneNumber('+' + id.replace('@s.whatsapp.net', '')).number?.international);
             });
             else v = id === '0@s.whatsapp.net' ? {
                 id,
@@ -371,26 +370,25 @@ async function startQasimDev() {
             } : id === QasimDev.decodeJid(QasimDev.user.id) ?
                 QasimDev.user :
                 (store.contacts[id] || {});
-            return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).number.international;
+            return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).number?.international;
         };
 
         QasimDev.public = true;
-        QasimDev.serializeM = (m) => smsg(QasimDev, m, store);
+        QasimDev.serializeM = (m: any) => smsg(QasimDev, m, store);
 
         const isRegistered = state.creds?.registered === true;
 
         if (pairingCode && !isRegistered) {
             if (useMobile) throw new Error('Cannot use pairing code with mobile api');
 
-
-            let phoneNumberInput;
-            if (global._pairingNumber) {
-                phoneNumberInput = global._pairingNumber;
-            } else if (!!global.phoneNumber) {
-                phoneNumberInput = global.phoneNumber;
+            let phoneNumberInput: string;
+            if (config._pairingNumber) {
+                phoneNumberInput = config._pairingNumber;
+            } else if (global.phoneNumber) {
+                phoneNumberInput = config.phoneNumber as string;
             } else if (process.env.PAIRING_NUMBER) {
                 phoneNumberInput = process.env.PAIRING_NUMBER;
-                            } else if (rl && !rl.closed) {
+            } else if (rl && !rlClosed) {
                 phoneNumberInput = await question(chalk.bgBlack(chalk.greenBright(`Please type your WhatsApp number 😍\nFormat: 923001234567 (without + or spaces) : `)));
             } else {
                 phoneNumberInput = phoneNumber;
@@ -402,21 +400,21 @@ async function startQasimDev() {
             const pn = PhoneNumber('+' + phoneNumberInput);
             if (!pn.valid) {
                 printLog('error', 'Invalid phone number format');
-                if (rl && !rl.closed) rl.close();
+                if (rl && !rlClosed) rl.close();
                 process.exit(1);
             }
 
-            global._pairingNumber = phoneNumberInput;
+            config._pairingNumber = phoneNumberInput;
             const doPairing = async (num: string, attempt: number = 1): Promise<void> => {
                 try {
                     let code = await QasimDev.requestPairingCode(num);
                     code = code?.match(/.{1,4}/g)?.join("-") || code;
                     console.log(chalk.black(chalk.bgGreen(`Your Pairing Code : `)), chalk.black(chalk.white(code)));
                     printLog('success', `Pairing code generated: ${code}`);
-                    if (rl && !rl.closed) { rl.close(); rl = null; }
-                } catch (error) {
+                    if (rl && !rlClosed) { rl.close(); rl = null; }
+                } catch (error: any) {
                     if (attempt < 3) {
-                        try { rmSync('./session', { recursive: true, force: true }); } catch (_e) { /* ignore */ }
+                        try { rmSync('./session', { recursive: true, force: true }); } catch (_e: any) { /* ignore */ }
                         await delay(3000);
                         startQasimDev();
                     } else {
@@ -426,39 +424,37 @@ async function startQasimDev() {
             };
             setTimeout(() => doPairing(phoneNumberInput), 3000);
         } else if (isRegistered) {
-            if (rl && !rl.closed) {
+            if (rl && !rlClosed) {
                 rl.close();
                 rl = null;
             }
         } else {
             printLog('warning', 'Waiting for connection to establish...');
-            if (rl && !rl.closed) {
+            if (rl && !rlClosed) {
                 rl.close();
                 rl = null;
             }
         }
 
-        QasimDev.ev.on('connection.update', async (s) => {
+        QasimDev.ev.on('connection.update', async (s: any) => {
             const { connection, lastDisconnect, qr } = s;
 
             if (qr) {
                 if (!pairingCode) {
                     try {
                         console.log(await QRCode.toString(qr, { type: 'terminal', small: true }));
-                    } catch (_e) { console.log('QR:', qr); }
+                    } catch (_e: any) { console.log('QR:', qr); }
                 }
             }
 
             if (connection === "open") {
                 printLog('success', 'Bot connected successfully!');
 
-
-                // Dynamic import for setbio (avoids circular dependency issues)
                 try {
                     const setbioModule = await import('./plugins/setbio.js');
-                    const startAutoBio = setbioModule.startAutoBio || setbioModule.default?.startAutoBio;
+                    const startAutoBio = setbioModule.startAutoBio || (setbioModule.default as any)?.startAutoBio;
                     if (typeof startAutoBio === 'function') startAutoBio(QasimDev);
-                } catch (e) {
+                } catch (e: any) {
                     printLog('error', `Failed to start auto bio: ${e.message}`);
                 }
 
@@ -485,18 +481,18 @@ async function startQasimDev() {
                             }
                         }
                     });
-                } catch (error) {
+                } catch (error: any) {
                     printLog('error', `Failed to send connection message: ${error.message}`);
                 }
 
                 await delay(1999);
-                      try { owner = JSON.parse(fs.readFileSync('./data/owner.json', 'utf-8')); } catch (_e) {}
-                      printLog('info',       `[ ${global.botname || 'MEGA-MD'} ]`);
-                      printLog('info',       `WA NUMBER  : ${owner[0] || config.ownerNumber || ''}`);
-                      printLog('success',    `Bot Connected Successfully!`);
-                      printLog('info',       `Plugins   : ${commandHandler.commands.size}`);
-                      printLog('info',       `Prefixes   : ${config.prefixes.join(', ')}`);
-                      printLog('store',      `Backend    : ${store.getStats().backend}`);
+                try { owner = JSON.parse(fs.readFileSync('./data/owner.json', 'utf-8')); } catch (_e: any) {}
+                printLog('info',    `[ ${global.botname || 'MEGA-MD'} ]`);
+                printLog('info',    `WA NUMBER  : ${owner[0] || config.ownerNumber || ''}`);
+                printLog('success', `Bot Connected Successfully!`);
+                printLog('info',    `Plugins   : ${commandHandler.commands.size}`);
+                printLog('info',    `Prefixes   : ${config.prefixes.join(', ')}`);
+                printLog('store',   `Backend    : ${store.getStats().backend}`);
                 console.log();
             }
 
@@ -505,7 +501,7 @@ async function startQasimDev() {
                 const shouldReconnect = statusCode !== DisconnectReason.loggedOut && statusCode !== 401;
 
                 if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
-                    try { rmSync('./session', { recursive: true, force: true }); } catch (_e) { /* ignore */ }
+                    try { rmSync('./session', { recursive: true, force: true }); } catch (_e: any) { /* ignore */ }
                     global._pairingNumber = null;
                     await delay(3000);
                     startQasimDev();
@@ -520,26 +516,26 @@ async function startQasimDev() {
             }
         });
 
-        QasimDev.ev.on('call', async (calls) => {
+        QasimDev.ev.on('call', async (calls: any) => {
             await handleCall(QasimDev, calls);
         });
 
-        QasimDev.ev.on('group-participants.update', async (update) => {
+        QasimDev.ev.on('group-participants.update', async (update: any) => {
             await handleGroupParticipantUpdate(QasimDev, update);
         });
 
-        QasimDev.ev.on('status.update', async (status) => {
+        QasimDev.ev.on('status.update', async (status: any) => {
             await handleStatus(QasimDev, status);
         });
 
-        QasimDev.ev.on('messages.reaction', async (reaction) => {
+        QasimDev.ev.on('messages.reaction', async (reaction: any) => {
             await handleStatus(QasimDev, reaction);
         });
 
         return QasimDev;
-    } catch (error) {
+    } catch (error: any) {
         printLog('error', `Error in startQasimDev: ${error.message}`);
-        if (rl && !rl.closed) {
+        if (rl && !rlClosed) {
             rl.close();
             rl = null;
         }
@@ -551,15 +547,11 @@ async function startQasimDev() {
 async function main() {
     await commandHandler.loadCommands();
     printLog('info', 'Starting MEGA MD BOT...');
-
-    const _sessionReady = await initializeSession();
-
-
+    await initializeSession();
     await delay(3000);
-
-    startQasimDev().catch(error => {
+    startQasimDev().catch((error: any) => {
         printLog('error', `Fatal error: ${error.message}`);
-        if (rl && !rl.closed) rl.close();
+        if (rl && !rlClosed) rl.close();
         process.exit(1);
     });
 }
@@ -623,7 +615,7 @@ folders.forEach(folder => {
                 if (err) {
                     console.error(chalk.red(`❌ Syntax error in ${filePath}:\n${err}`));
                 }
-            } catch (e) {
+            } catch (e: any) {
                 console.error(chalk.yellow(`⚠️ Cannot read file ${filePath}:\n${e}`));
             }
         });
@@ -671,3 +663,4 @@ server.on('error', (error) => {
         });
     }
 });
+
