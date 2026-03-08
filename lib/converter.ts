@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 
-function ffmpeg(buffer, args = [], ext = '', ext2 = '') {
+function ffmpeg(buffer: Buffer, args: string[] = [], ext: string = '', ext2: string = '') {
   return new Promise(async (resolve, reject) => {
     try {
       const tmp = path.join(process.cwd(), 'tmp', + new Date + '.' + ext)
@@ -36,12 +36,7 @@ function ffmpeg(buffer, args = [], ext = '', ext2 = '') {
   })
 }
 
-/**
- * Convert Audio to Playable WhatsApp Audio
- * @param {Buffer} buffer Audio Buffer
- * @param {String} ext File Extension
- */
-function toAudio(buffer, ext) {
+function toAudio(buffer: Buffer, ext: string) {
   return ffmpeg(buffer, [
     '-vn',
     '-ac', '2',
@@ -51,12 +46,7 @@ function toAudio(buffer, ext) {
   ], ext, 'mp3')
 }
 
-/**
- * Convert Audio to Playable WhatsApp PTT
- * @param {Buffer} buffer Audio Buffer
- * @param {String} ext File Extension
- */
-function toPTT(buffer, ext) {
+function toPTT(buffer: Buffer, ext: string) {
   return ffmpeg(buffer, [
     '-vn',
     '-c:a', 'libopus',
@@ -66,12 +56,7 @@ function toPTT(buffer, ext) {
   ], ext, 'opus')
 }
 
-/**
- * Convert Audio to Playable WhatsApp Video
- * @param {Buffer} buffer Video Buffer
- * @param {String} ext File Extension
- */
-function toVideo(buffer, ext) {
+function toVideo(buffer: Buffer, ext: string) {
   return ffmpeg(buffer, [
     '-c:v', 'libx264',
     '-c:a', 'aac',
