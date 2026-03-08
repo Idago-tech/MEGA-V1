@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 
-const LOG_FILE = path.join(process.cwd(), '.error.log');
+const LOG_DIR = path.join(process.cwd(), 'logs');
+if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
+const LOG_FILE = path.join(LOG_DIR, 'error.log');
 const MAX_SIZE_BYTES = 1 * 1024 * 1024; // 1MB
 const MAX_BACKUPS = 3;
 

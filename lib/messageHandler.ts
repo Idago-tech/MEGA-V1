@@ -534,7 +534,7 @@ async function handleMessages(sock, messageUpdate) {
 
             try {
                 writeErrorLog(errorLog);
-                
+
             } catch(e: any) {
                 printLog('error', `Failed to write error log: ${e.message}`);
             }

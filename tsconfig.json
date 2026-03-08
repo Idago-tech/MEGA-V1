@@ -6,6 +6,7 @@
     "lib": ["ES2020"],
     "outDir": "./dist",
     "strict": false,
+    "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,

@@ -552,7 +552,7 @@ async function main() {
     await commandHandler.loadCommands();
     printLog('info', 'Starting MEGA MD BOT...');
 
-    const sessionReady = await initializeSession();
+    const _sessionReady = await initializeSession();
 
 
     await delay(3000);
@@ -671,7 +671,3 @@ server.on('error', (error) => {
         });
     }
 });
-
-
-
-
