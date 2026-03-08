@@ -1,4 +1,3 @@
-import type { BotContext } from '../types.js';
 import simpleGit from 'simple-git';
 
 export default {

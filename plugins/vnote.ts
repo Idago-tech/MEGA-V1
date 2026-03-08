@@ -26,7 +26,7 @@ export default {
     description: 'Convert any audio message into a voice note',
     usage: 'Reply to an audio file with .vnote',
 
-    async handler(sock: any, message: any, args: any, _context: BotContext) {
+    async handler(sock: any, message: any, _args: any, _context: BotContext) {
         const chatId = message.key.remoteJid;
 
         const quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;

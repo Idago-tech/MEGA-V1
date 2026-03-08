@@ -1,4 +1,3 @@
-import type { BotContext } from '../types.js';
 export default {
   command: 'gitclone',
   aliases: ['githubdl', 'clone'],

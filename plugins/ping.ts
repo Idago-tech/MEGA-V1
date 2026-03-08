@@ -1,4 +1,3 @@
-import type { BotContext } from '../types.js';
 export default {
   command: 'ping',
   aliases: ['p', 'pong'],

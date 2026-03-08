@@ -1,4 +1,3 @@
-import type { BotContext } from '../types.js';
 const mathGames = {};
 
 const modes = {

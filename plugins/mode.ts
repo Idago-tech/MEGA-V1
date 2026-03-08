@@ -1,4 +1,3 @@
-import type { BotContext } from '../types.js';
 import store from '../lib/lightweight_store.js';
 
 /**
