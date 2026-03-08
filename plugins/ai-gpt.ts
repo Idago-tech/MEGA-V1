@@ -37,7 +37,7 @@ export default {
         if (!query) {
             return sock.sendMessage(
                 chatId,
-                { text: '🤖 *AI Assistant*\n\nUsage: `${config.prefix}gpt <your question>`\nExample: `${config.prefix}gpt explain quantum physics`' },
+                { text: `🤖 *AI Assistant*\n\nUsage: \`${config.prefix}gpt <your question>\`\nExample: \`${config.prefix}gpt explain quantum physics\`` },
                 { quoted: message }
             );
         }
