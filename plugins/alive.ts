@@ -7,11 +7,12 @@ export default {
   aliases: ['status', 'bot'],
   category: 'general',
   description: 'Check bot status and system info',
-  usage: '.alive',
+  usage: '${prefix}alive',
   isPrefixless: true,
 
   async handler(sock: any, message: any, args: any, context: BotContext) {
     const { chatId, config } = context;
+    const prefix = config.prefix
 
     try {
       let uptime = Math.floor(process.uptime());
