@@ -22,14 +22,15 @@ export default {
   aliases: ['alamydl', 'alamydownload'],
   category: 'download',
   description: 'Download image or video from Alamy URL',
-  usage: '.alamy <Alamy URL>',
+  usage: '${prefix}alamy <Alamy URL>',
 
   async handler(sock: any, message: any, args: any, context: BotContext) {
-    const chatId = context.chatId || message.key.remoteJid;
+    const { chatId, config } = context
+    const prefix = config.prefix
     const url = args?.[0]?.trim();
 
     if (!url) {
-      return await sock.sendMessage(chatId, { text: '❌ Please provide an Alamy URL.\nExample: .alamy https://www.alamy.com/video/beautiful-lake...' }, { quoted: message });
+      return await sock.sendMessage(chatId, { text: 'Please provide an Alamy URL.\nExample: `${prefix}alamy https://www.alamy.com/video/beautiful-lake...`' }, { quoted: message });
     }
 
     try {
