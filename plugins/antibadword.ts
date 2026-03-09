@@ -1,5 +1,6 @@
 import type { BotContext } from '../types.js';
 import store from '../lib/lightweight_store.js';
+import config from '../config.js';
 
 async function getAntibadwordSettings(chatId: string) {
     const settings = await store.getSetting(chatId, 'antibadword');
@@ -25,11 +26,11 @@ async function handleAntiBadwordCommand(sock: any, chatId: string, message: any,
                   `Status: ${status}\n` +
                   `Blocked Words: ${wordCount}\n\n` +
                   `Use:\n` +
-                  `• \`.antibadword on\` - Enable\n` +
-                  `• \`.antibadword off\` - Disable\n` +
-                  `• \`.antibadword add <word>\` - Add word\n` +
-                  `• \`.antibadword remove <word>\` - Remove word\n` +
-                  `• \`.antibadword list\` - Show all words`
+                  `• \`${config.prefix}antibadword on\` - Enable\n` +
+                  `• \`${config.prefix}antibadword off\` - Disable\n` +
+                  `• \`${config.prefix}antibadword add <word>\` - Add word\n` +
+                  `• \`${config.prefix}antibadword remove <word>\` - Remove word\n` +
+                  `• \`${config.prefix}antibadword list\` - Show all words`
         }, { quoted: message });
         return;
     }
@@ -59,7 +60,7 @@ async function handleAntiBadwordCommand(sock: any, chatId: string, message: any,
 
         if (!word) {
             await sock.sendMessage(chatId, {
-                text: '❌ *Please specify a word to add*\n\nExample: `.antibadword add badword`'
+                text: `*Please specify a word to add*\n\nExample: ${config.prefix}antibadword add badword`
             }, { quoted: message });
             return;
         }
@@ -87,7 +88,7 @@ async function handleAntiBadwordCommand(sock: any, chatId: string, message: any,
 
         if (!word) {
             await sock.sendMessage(chatId, {
-                text: '❌ *Please specify a word to remove*\n\nExample: `.antibadword remove badword`'
+                text: `*Please specify a word to remove*\n\nExample: ${config.prefix}antibadword remove badword`
             }, { quoted: message });
             return;
         }
@@ -111,7 +112,7 @@ async function handleAntiBadwordCommand(sock: any, chatId: string, message: any,
     if (action === 'list') {
         if (!settings.words || settings.words.length === 0) {
             await sock.sendMessage(chatId, {
-                text: '📝 *Blocked Words List*\n\nNo words are currently blocked.\n\nUse `.antibadword add <word>` to add words.'
+                text: `📝 *Blocked Words List*\n\nNo words are currently blocked.\n\nUse ${config.prefix}antibadword add <word> to add words.`
             }, { quoted: message });
             return;
         }
@@ -123,13 +124,14 @@ async function handleAntiBadwordCommand(sock: any, chatId: string, message: any,
         }, { quoted: message });
         return;
     }
-
     await sock.sendMessage(chatId, {
-        text: '❌ *Invalid action*\n\nUse:\n' +
-              '• `.antibadword on/off`\n' +
-              '• `.antibadword add <word>`\n' +
-              '• `.antibadword remove <word>`\n' +
-              '• `.antibadword list`'
+        text: `❌ *Invalid action*
+        
+        Use:
+        • ${config.prefix}antibadword on/off
+        • ${config.prefix}antibadword add <word>
+        • ${config.prefix}antibadword remove <word>
+        • ${config.prefix}antibadword list`
     }, { quoted: message });
 }
 
@@ -175,7 +177,7 @@ export default {
     aliases: ['abw', 'badword', 'antibad'],
     category: 'admin',
     description: 'Configure anti-badword filter to delete messages containing inappropriate words',
-    usage: '.antibadword <on|off|add|remove|list>',
+    usage: `${config.prefix}antibadword <on|off|add|remove|list>`,
     groupOnly: true,
     adminOnly: true,
 
