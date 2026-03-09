@@ -5,6 +5,7 @@ import { dataFile } from '../lib/paths.js';
 import { downloadContentFromMessage } from '@whiskeysockets/baileys';
 import { writeFile } from 'fs/promises';
 import store from '../lib/lightweight_store.js';
+import config from '../config.js';
 
 const messageStore = new Map();
 const CONFIG_PATH = dataFile('antidelete.json');
@@ -219,7 +220,7 @@ export async function handleMessageRevocation(sock: any, revocationMessage: any)
         const groupName = original.group ? (await sock.groupMetadata(original.group)).subject : '';
 
         const time = new Date().toLocaleString('en-US', {
-            timeZone: process.env.TIMEZONE || 'Asia/Karachi',
+            timeZone: config.timeZone || 'Asia/Karachi',
             hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit',
             day: '2-digit', month: '2-digit', year: 'numeric'
         });
@@ -301,7 +302,7 @@ export default {
     aliases: ['antidel', 'adel'],
     category: 'owner',
     description: 'Enable or disable antidelete feature to track deleted messages',
-    usage: '.antidelete <on|off>',
+    usage: `${config.prefix}antidelete <on|off>`,
     ownerOnly: true,
 
     async handler(sock: any, message: any, args: any, context: BotContext) {
@@ -311,17 +312,20 @@ export default {
 
         if (!action) {
             await sock.sendMessage(chatId, {
-                text: `*🔰 ANTIDELETE SETUP 🔰*\n\n` +
-                      `*Current Status:* ${config.enabled ? '✅ Enabled' : '❌ Disabled'}\n` +
-                      `*Storage:* ${HAS_DB ? 'Database' : 'File System'}\n\n` +
-                      `*Commands:*\n` +
-                      `• \`.antidelete on\` - Enable\n` +
-                      `• \`.antidelete off\` - Disable\n\n` +
-                      `*Features:*\n` +
-                      `• Track deleted messages\n` +
-                      `• Save deleted media\n` +
-                      `• Auto-save ViewOnce media\n` +
-                      `• Send reports to owner`
+                text: `*🔰 ANTIDELETE SETUP 🔰*
+                
+                *Current Status:* ${config.enabled ? '✅ Enabled' : '❌ Disabled'}
+                *Storage:* ${HAS_DB ? 'Database' : 'File System'}
+                
+                *Commands:*
+                • ${config.prefix}antidelete on - Enable
+                • ${config.prefix}antidelete off - Disable
+                
+                *Features:*
+                • Track deleted messages
+                • Save deleted media
+                • Auto-save ViewOnce media
+                • Send reports to owner`
             }, { quoted: message });
             return;
         }
@@ -347,7 +351,7 @@ export default {
             }, { quoted: message });
         } else {
             await sock.sendMessage(chatId, {
-                text: '❌ *Invalid command*\n\nUse: `.antidelete on/off`'
+                text: `❌ *Invalid command*\n\nUse: \`${config.prefix}antidelete on/off\``
             }, { quoted: message });
         }
     },
