@@ -4,11 +4,11 @@ const _prefixes = process.env.PREFIXES ? process.env.PREFIXES.split(',') : ['.',
 
 const config = {
     // Bot Identity
-    botName:     process.env.BOT_NAME      || 'MEGA-MD',
-    botOwner:    process.env.BOT_OWNER     || 'Qasim Ali',
-    ownerNumber: process.env.OWNER_NUMBER  || '923051391007',
-    author:      process.env.AUTHOR        || 'GlobalTechInfo',
-    packname:    process.env.PACKNAME      || 'MEGA-MD',
+    botName:     process.env.BOT_NAME      || 'ROCKY',
+    botOwner:    process.env.BOT_OWNER     || 'TRC ESPORT',
+    ownerNumber: process.env.OWNER_NUMBER  || '+584121275155',
+    author:      process.env.AUTHOR        || 'TRC CORP',
+    packname:    process.env.PACKNAME      || 'TRC CORPO',
     description: process.env.DESCRIPTION  || 'High performance multi-device WhatsApp bot',
     version:     '6.0.0',
 
@@ -19,9 +19,9 @@ const config = {
     timeZone:    process.env.TIMEZONE      || 'Asia/Karachi',
 
     // Links
-    channelLink:   process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07',
-    updateZipUrl:  process.env.UPDATE_URL   || 'https://github.com/GlobalTechInfo/MEGA-MD/archive/refs/heads/main.zip',
-    ytChannel:     process.env.YT_CHANNEL   || 'GlobalTechInfo',
+    channelLink:   process.env.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VbChHvEHbFV6RIovu71L',
+    updateZipUrl:  process.env.UPDATE_URL   || 'https://github.com/Idago-tech/MEGA-V1/archive/refs/heads/main.zip',
+    ytChannel:     process.env.YT_CHANNEL   || 'TRC-ESPORT',
 
     // Session
     sessionId:     process.env.SESSION_ID      || '',
