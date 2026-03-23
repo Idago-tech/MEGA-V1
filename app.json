@@ -1,8 +1,8 @@
 {
-  "name": "mega-mdx",
+  "name": "ROCKY",
   "description": "High performance multi-device WhatsApp bot",
   "keywords": ["whatsapp-bot", "baileys", "mega-md"],
-  "repository": "https://github.com/GlobalTechInfo/MEGA-MDX",
+  "repository": "https://github.com//Idago-tech/MEGA-V1",
   "stack": "container",
   "env": {
     "SESSION_ID": {
@@ -33,12 +33,12 @@
     "BOT_NAME": {
       "description": "Your bot name",
       "required": false,
-      "value": "MEGA-MDX"
+      "value": "ROCKY"
     },
     "BOT_OWNER": {
       "description": "Owner display name",
       "required": false,
-      "value": "GlobalTech"
+      "value": "TRC-ESPORT"
     },
     "PREFIXES": {
       "description": "Command prefixes separated by comma (e.g. .,!,/)",
@@ -48,7 +48,7 @@
     "PACKNAME": {
       "description": "Sticker pack name",
       "required": false,
-      "value": "MEGA-MD"
+      "value": "TRC CORP"
     },
     "COMMAND_MODE": {
       "description": "Bot mode: public or private",
