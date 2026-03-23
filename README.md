@@ -1,777 +1,376 @@
 <div align="center">
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=TRC-ESPORT&fontSize=72&fontColor=fff&animation=twinkling&fontAlignY=32&desc=High%20Performance%20WhatsApp%20Bot&descAlignY=55&descSize=20" width="100%"/>
-
-<br/>
-
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=22&pause=1000&color=25D366&center=true&vCenter=true&width=600&lines=Multi-Device+WhatsApp+Bot;250%2B+Commands+%26+Counting;Plugin+Architecture+%7C+Auto-Loading;Deploy+Anywhere+in+Minutes)](https://git.io/typing-svg)
-
-<br/>
-
-[![Version](https://img.shields.io/badge/Version-6.0.0-blue?style=for-the-badge&logo=github)](https://github.com/GlobalTechInfo/MEGA-MDX)
-[![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![WhatsApp](https://img.shields.io/badge/Baileys-7.x-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://github.com/WhiskeySockets/Baileys)
-[![License](https://img.shields.io/badge/License-MIT-F7DF1E?style=for-the-badge&logo=open-source-initiative&logoColor=black)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/GlobalTechInfo/MEGA-MDX?style=for-the-badge&logo=starship&color=gold)](https://github.com/GlobalTechInfo/MEGA-MDX/stargazers)
-[![Forks](https://img.shields.io/github/forks/GlobalTechInfo/MEGA-MDX?style=for-the-badge&logo=git&color=orange)](https://github.com/GlobalTechInfo/MEGA-MDX/network/members)
-
-<br/>
-
-**250+ Commands · Multi-Platform · Multi-Database · Plugin Architecture**
-
-<br/>
-
-[📦 Installation](#-installation) · [🔐 Session Setup](#-getting-your-session-id) · [⚙️ Configuration](#️-configuration) · [🚀 Deployment](#-deployment) · [🔌 Plugins](#-plugin-system)
-
-<br/>
-
----
-
-### 🌍 Deploy on your favourite platform
-
-[![Heroku](https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white)](https://heroku.com)
-[![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=black)](https://render.com)
-[![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app)
-[![Koyeb](https://img.shields.io/badge/Koyeb-121212?style=for-the-badge&logo=koyeb&logoColor=white)](https://koyeb.com)
-[![Fly.io](https://img.shields.io/badge/Fly.io-7B3FE4?style=for-the-badge&logo=flydotio&logoColor=white)](https://fly.io)
-[![Replit](https://img.shields.io/badge/Replit-F26207?style=for-the-badge&logo=replit&logoColor=white)](https://replit.com)
-[![VPS](https://img.shields.io/badge/Linux_VPS-FCC624?style=for-the-badge&logo=linux&logoColor=black)](#-vps--linux-server)
-[![Termux](https://img.shields.io/badge/Termux-000000?style=for-the-badge&logo=android&logoColor=white)](#-termux-android)
-[![Windows](https://img.shields.io/badge/Windows_WSL-0078D4?style=for-the-badge&logo=windows&logoColor=white)](#-windows-wsl)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](#-dockerfile)
-
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=TRC-ESPORT&fontSize=72&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Bot%20de%20WhatsApp%20de%20alto%20rendimiento&descAlignY=55&descSize=20" width="100%"/>
+Más de 250 comandos. Multiplataforma. Multibase de datos. Arquitectura de plugins.
+Instalación · Configuración de sesión · Configuración · Despliegue · Plugins
+Despliega en tu plataforma preferida
 </div>
-
----
-
-## 📋 Table of Contents
-
-- [✨ Features](#-features)
-- [📌 Requirements](#-requirements)
-- [⚡ Quick Start](#-quick-start)
-- [🔐 Getting Your Session ID](#-getting-your-session-id)
-- [⚙️ Configuration](#️-configuration)
-- [📦 Installation](#-installation)
-- [🚀 Deployment](#-deployment)
-  - [📱 Termux](#-termux-android)
-  - [🖥️ VPS / Linux](#-vps--linux-server)
-  - [🪟 Windows WSL](#-windows-wsl)
-  - [🔁 Replit](#-replit)
-  - [🟣 Heroku](#-heroku)
-  - [🎨 Render](#-render)
-  - [🚂 Railway](#-railway)
-  - [☁️ Koyeb](#-koyeb)
-  - [🪂 Fly.io](#-flyio)
-  - [🐳 Dockerfile](#-dockerfile)
-  - [🎮 Discord Panels](#-discord-panels-pterodactyl)
-- [🗄️ Storage Backends](#️-storage-backends)
-- [🛠️ Environment Variables](#️-environment-variables)
-- [📜 npm Scripts](#-npm-scripts)
-- [🔌 Plugin System](#-plugin-system)
-- [🔧 Troubleshooting](#-troubleshooting)
-- [🤝 Contributing](#-contributing)
-
----
-
-## ✨ Features
-
-| | Feature | Description |
+Índice
+ * Características
+ * Requisitos
+ * Inicio rápido
+ * Obtener tu ID de sesión
+ * Configuración
+ * Instalación
+ * Despliegue
+   * Termux
+   * VPS / Linux
+   * Windows WSL
+   * Replit
+   * Heroku
+   * Render
+   * Railway
+   * Koyeb
+   * Fly.io
+   * Dockerfile
+   * Paneles de Discord
+ * Sistemas de almacenamiento
+ * Variables de entorno
+ * Scripts de npm
+ * Sistema de plugins
+ * Solución de problemas
+ * Contribución
+Características
+| Característica | Descripción |
+|---|---|
+| Plugins automáticos | Coloca un archivo .ts en plugins/. Se carga automáticamente sin registro. |
+| Más de 250 comandos | Gestión de grupos, privacidad, moderación, diversión, IA, multimedia, utilidades. |
+| 5 bases de datos | MongoDB, PostgreSQL, MySQL, SQLite o archivos JSON. |
+| Protección de grupos | Anti-spam, filtro de malas palabras, detección de enlaces, anti-abuso de etiquetas. |
+| Sistema de roles | Niveles de permiso: Propietario, Sudo, Administrador y Usuario. |
+| Mensajes programados | Programa mensajes con entrada de tiempo natural. |
+| Chatbot de IA | Modo de conversación de IA independiente por chat. |
+| Controles de privacidad | Gestión completa de la privacidad de WhatsApp mediante comandos. |
+| Encuestas y votaciones | Crea encuestas con seguimiento de votos en vivo en los grupos. |
+| Difusión | Envía mensajes masivos a todos los grupos o contactos directos a la vez. |
+| Respuesta automática | Respuestas automáticas configurables con soporte para variables como {name}. |
+| Juegos | TicTacToe y otros juegos integrados. |
+| Mensajes temporales | Establece temporizadores por chat o predeterminados mediante comandos. |
+| Multiplataforma | Funciona en Termux, VPS, Railway, Render, Heroku, Koyeb, Fly.io, Replit. |
+Requisitos
+| Requisito | Versión | Notas |
 |---|---|---|
-| 🔌 | **Auto-loading Plugins** | Drop a `.ts` file in `plugins/` — it loads automatically, zero registration |
-| 💬 | **250+ Commands** | Group management, privacy, moderation, fun, AI, media, utilities |
-| 🗄️ | **5 Storage Backends** | MongoDB, PostgreSQL, MySQL, SQLite, or JSON files |
-| 🛡️ | **Group Protection** | Anti-spam, bad word filter, link detection, anti-tag abuse |
-| 👑 | **Role System** | Owner, Sudo, Admin, and User permission levels |
-| ⏰ | **Scheduled Messages** | Schedule messages with natural time input |
-| 🤖 | **AI Chatbot** | Per-chat AI conversation mode |
-| 🔒 | **Privacy Controls** | Full WhatsApp privacy management via commands |
-| 📊 | **Polls & Voting** | Create polls with live vote tracking in groups |
-| 📡 | **Broadcast** | Bulk message all groups or all DM contacts at once |
-| 🔁 | **Auto-Reply** | Configurable trigger-based auto responses with `{name}` support |
-| 🎮 | **Games** | TicTacToe and more built in |
-| ⏳ | **Disappearing Messages** | Set per-chat or default timers via commands |
-| 📱 | **Multi-Platform** | Runs on Termux, VPS, Railway, Render, Heroku, Koyeb, Fly.io, Replit |
-
----
-
-## 📌 Requirements
-
-| Requirement | Version | Notes |
-|---|---|---|
-| ![Node.js](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white) | **20.x or higher** | Required |
-| ![npm](https://img.shields.io/badge/npm-8%2B-CB3837?logo=npm&logoColor=white) | 8.x or higher | Included with Node.js |
-| ![Git](https://img.shields.io/badge/Git-latest-F05032?logo=git&logoColor=white) | Any recent | For cloning |
-| ![ffmpeg](https://img.shields.io/badge/ffmpeg-latest-007808?logo=ffmpeg&logoColor=white) | Latest | Media processing |
-| ![libvips](https://img.shields.io/badge/libvips-latest-blueviolet) | Latest | Sharp image processing |
-| ![libwebp](https://img.shields.io/badge/libwebp-latest-blue) | Latest | Sticker creation |
-
-> [!WARNING]
-> **Never use your personal WhatsApp number for the bot.** Always use a dedicated number.
-
----
-
-## ⚡ Quick Start
-
-```bash
-git clone https://github.com/GlobalTechInfo/MEGA-MDX.git
-cd MEGA-MDX
+| Node.js | 20.x o superior | Requerido |
+| npm | 8.x o superior | Incluido con Node.js |
+| Git | Reciente | Para clonar el repositorio |
+| ffmpeg | Última | Procesamiento multimedia |
+| libvips | Última | Procesamiento de imágenes |
+| libwebp | Última | Creación de stickers |
+> Usa siempre un número dedicado. Nunca uses tu número personal de WhatsApp para el bot.
+> 
+Inicio rápido
+git clone https://github.com/TRC-ESPORT/ROCKY.git
+cd ROCKY
 npm install
 cp sample.env .env
-# Edit .env → add SESSION_ID and OWNER_NUMBER
+# Edita .env y añade SESSION_ID y OWNER_NUMBER
 npm run build
 npm start
-```
 
----
+Obtener tu ID de sesión
+El bot usa un ID de sesión para conectar a WhatsApp sin escanear un código QR en cada inicio. Genéralo una vez y pégalo en el archivo .env.
+Paso 1: Abre el generador de sesiones
+> https://mega-pairing.onrender.com
+> 
+Paso 2: Genera tu sesión
+Opción A: Código de emparejamiento (Recomendado)
+ * Ingresa el número de WhatsApp de tu bot con código de país.
+ * Haz clic en Generar código de emparejamiento.
+ * Aparece un código de 8 caracteres.
+ * En tu teléfono abre WhatsApp, ve al menú, selecciona Dispositivos vinculados, luego Vincular un dispositivo y elige Vincular con el número de teléfono.
+ * Ingresa el código para crear la sesión.
+ * Copia el ID de sesión que muestra la página.
+Opción B: Código QR
+ * Haz clic en la pestaña Código QR.
+ * Escanea el código QR con tu WhatsApp.
+ * Copia el ID de sesión que aparece.
+Paso 3: Añade el ID a .env
+SESSION_ID=TRC-ESPORT/ROCKY_xxxxxxxxxxxxxxxxxxxxxxxx
 
-## 🔐 Getting Your Session ID
-> [!IMPORTANT]
-> The bot uses a **Session ID** to connect to WhatsApp without scanning QR every time. Generate it once and paste it in `.env`.
+Alternativa: Emparejamiento por terminal
+Deja SESSION_ID vacío y configura:
+PAIRING_NUMBER=584120000000
 
-### Step 1 — Open the session generator
-
-> 🌐 **https://mega-pairing.onrender.com**
-
-### Step 2 — Generate your session
-
-**Option A — Pair Code** *(Recommended)*
-
-1. Enter your bot's WhatsApp number with country code (e.g. `923001234567`)
-2. Click **Generate Pair Code**
-3. An 8-character code appears (e.g. `J38K-4PNS`)
-4. On your phone: **WhatsApp → ⋮ Menu → Linked Devices → Link a Device → Link with phone number**
-5. Enter the code — session is created
-6. Copy the **Session ID** shown on the page
-
-**Option B — QR Code**
-
-1. Click the **QR Code** tab
-2. Scan the QR code with your WhatsApp
-3. Copy the **Session ID** shown after scanning
-
-### Step 3 — Add to `.env`
-
-```env
-SESSION_ID=GlobalTechInfo/MEGA-MD_xxxxxxxxxxxxxxxxxxxxxxxx
-```
-
-### Alternative — Pairing via terminal
-
-Leave `SESSION_ID` empty and set:
-
-```env
-PAIRING_NUMBER=923001234567
-```
-
-> [!NOTE]
-> The bot will print an 8-character pairing code in the terminal on startup. Link it via **WhatsApp → Linked Devices → Link with phone number** within 60 seconds.
-
----
-
-## ⚙️ Configuration
-
-Copy `sample.env` to `.env`:
-
-```bash
+> El bot imprime un código de 8 caracteres en la terminal al iniciar. Vincúlalo en WhatsApp en menos de 60 segundos.
+> 
+Configuración
+Copia sample.env a .env:
 cp sample.env .env
-```
 
-```env
-# ── REQUIRED (choose one) ────────────────────────────────────
-SESSION_ID=GlobalTechInfo/MEGA-MD_your_gist_id_here
-# OR
-PAIRING_NUMBER=923001234567
+# REQUERIDO (elige uno)
+SESSION_ID=TRC-ESPORT/ROCKY_tu_id_aqui
+# O
+PAIRING_NUMBER=584120000000
 
-# ── REQUIRED ─────────────────────────────────────────────────
-OWNER_NUMBER=923000000000        # No + sign
+# REQUERIDO
+OWNER_NUMBER=584120000000        # Sin el signo +
 
-# ── BOT IDENTITY ─────────────────────────────────────────────
-BOT_NAME=MEGA-MD-PRO
-BOT_OWNER=GlobalTechInfo
-PACKNAME=MEGA-MD
+# IDENTIDAD DEL BOT
+BOT_NAME=ROCKY
+BOT_OWNER=TRC-ESPORT
+PACKNAME=ROCKY
 
-# ── BEHAVIOUR ────────────────────────────────────────────────
-PREFIXES=.,!,/                   # Comma-separated
-COMMAND_MODE=public              # public or private
-TIMEZONE=Asia/Karachi
+# COMPORTAMIENTO
+PREFIXES=.,!,/                   # Separados por comas
+COMMAND_MODE=public              # public o private
+TIMEZONE=America/Caracas
 
-# ── OPTIONAL API KEYS ────────────────────────────────────────
+# CLAVES API OPCIONALES
 REMOVEBG_KEY=                    # https://remove.bg/api
 GIPHY_API_KEY=                   # https://developers.giphy.com
 
-# ── PERFORMANCE ──────────────────────────────────────────────
+# RENDIMIENTO
 PORT=5000
 MAX_STORE_MESSAGES=50
 
-# ── DATABASE (all empty = JSON files) ────────────────────────
+# BASE DE DATOS (vacío = archivos JSON)
 MONGO_URL=
 POSTGRES_URL=
 MYSQL_URL=
 DB_URL=                          # SQLite: ./data/baileys.db
-```
 
----
+Instalación
+Instalación manual
+# 1. Clonar
+git clone https://github.com/TRC-ESPORT/ROCKY.git
+cd ROCKY
 
-## 📦 Installation
-
-### Manual Install
-
-```bash
-# 1. Clone
-git clone https://github.com/GlobalTechInfo/MEGA-MDX.git
-cd MEGA-MDX
-
-# 2. Install dependencies
+# 2. Instalar dependencias
 npm install
 
-# 3. Configure
+# 3. Configurar
 cp sample.env .env
 nano .env
 
-# 4. Build TypeScript
+# 4. Construir TypeScript
 npm run build
 
-# 5. Start
+# 5. Iniciar
 npm start
-```
 
-### One-Line VPS Installer
+Instalador de una línea para VPS
+sudo bash <(curl -fsSL https://raw.githubusercontent.com/TRC-ESPORT/ROCKY/main/lib/install.sh)
 
-```bash
-sudo bash <(curl -fsSL https://raw.githubusercontent.com/GlobalTechInfo/MEGA-MDX/main/lib/install.sh)
-```
-> [!IMPORTANT]
-> This automatically installs Node.js 20, ffmpeg, libvips, libwebp, PM2, clones the repo, builds it, and sets up data files.
-
-```bash
-# After install:
-nano /root/MEGA-MDX/.env
-cd /root/MEGA-MDX && pm2 start dist/index.js --name mega-mdx
+> Esto instala Node.js 20, ffmpeg, libvips, libwebp, PM2, clona el repositorio, lo compila y configura los archivos de datos.
+> 
+# Después de instalar:
+nano /root/ROCKY/.env
+cd /root/ROCKY && pm2 start dist/index.js --name rocky
 pm2 save && pm2 startup
-```
 
----
-
-## 🚀 Deployment
-
-### 📱 Termux (Android)
-
-```bash
-# Update packages
+Despliegue
+Termux (Android)
+# Actualizar paquetes
 pkg update && pkg upgrade -y
 
-# Install proot-distro (recommended for full Linux environment)
+# Instalar proot-distro
 pkg install proot-distro -y
 proot-distro install ubuntu
 proot-distro login ubuntu
 
-# Inside Ubuntu — install dependencies
+# Dentro de Ubuntu, instalar dependencias
 apt update && apt upgrade -y
 apt install -y git ffmpeg build-essential libvips-dev webp nodejs npm curl
 
-# Clone and setup
-git clone https://github.com/GlobalTechInfo/MEGA-MDX.git
-cd MEGA-MDX
+# Clonar y configurar
+git clone https://github.com/TRC-ESPORT/ROCKY.git
+cd ROCKY
 npm install
 cp sample.env .env && nano .env
 npm run build && npm start
-```
 
-**Keep running after closing Termux:**
-
-```bash
+Mantener activo al cerrar Termux:
 apt install tmux -y
 
-tmux new -s mega-mdx    # Start new session
+tmux new -s rocky
 npm start
 
-# Detach:     Ctrl+B → D
-# Re-attach:  tmux attach -t mega-mdx
-# List:       tmux ls
-# Kill:       tmux kill-session -t mega-mdx
-```
+# Desconectar:     Ctrl+B y luego D
+# Reconectar:      tmux attach -t rocky
+# Listar:          tmux ls
+# Matar sesión:    tmux kill-session -t rocky
 
----
+VPS / Servidor Linux
+Instalación de una línea:
+sudo bash <(curl -fsSL https://raw.githubusercontent.com/TRC-ESPORT/ROCKY/main/lib/install.sh)
 
-### 🖥️ VPS / Linux Server
-
-[![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white)](https://ubuntu.com)
-[![Debian](https://img.shields.io/badge/Debian-A81D33?style=flat-square&logo=debian&logoColor=white)](https://debian.org)
-
-**One-line install (recommended):**
-```bash
-sudo bash <(curl -fsSL https://raw.githubusercontent.com/GlobalTechInfo/MEGA-MDX/main/lib/install.sh)
-```
-
-**Manual:**
-```bash
+Manual:
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs git ffmpeg libvips-dev libwebp-dev build-essential
 
-git clone https://github.com/GlobalTechInfo/MEGA-MDX.git
-cd MEGA-MDX
+git clone https://github.com/TRC-ESPORT/ROCKY.git
+cd ROCKY
 npm install
 cp sample.env .env && nano .env
 npm run build
 
-# Keep alive with PM2
+# Mantener activo con PM2
 npm install -g pm2
-pm2 start dist/index.js --name mega-mdx
+pm2 start dist/index.js --name rocky
 pm2 save && pm2 startup
-```
 
-**PM2 commands:**
-
-| Command | Description |
+Comandos de PM2:
+| Comando | Descripción |
 |---|---|
-| `pm2 logs mega-mdx` | Live logs |
-| `pm2 restart mega-mdx` | Restart |
-| `pm2 stop mega-mdx` | Stop |
-| `pm2 status` | Status overview |
-
----
-
-### 🪟 Windows (WSL)
-
-[![Windows](https://img.shields.io/badge/Windows_11-0078D4?style=flat-square&logo=windows11&logoColor=white)](https://microsoft.com/windows)
-
-```bash
-# In WSL Ubuntu terminal
+| pm2 logs rocky | Ver registros en vivo |
+| pm2 restart rocky | Reiniciar bot |
+| pm2 stop rocky | Detener bot |
+| pm2 status | Ver estado |
+Windows (WSL)
+# En la terminal de Ubuntu WSL
 sudo apt update
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs git ffmpeg libvips-dev libwebp-dev build-essential
 
-git clone https://github.com/GlobalTechInfo/MEGA-MDX.git
-cd MEGA-MDX
+git clone https://github.com/TRC-ESPORT/ROCKY.git
+cd ROCKY
 npm install
 cp sample.env .env && nano .env
 npm run build && npm start
-```
 
----
-
-### 🔁 Replit
-
-[![Replit](https://img.shields.io/badge/Replit-F26207?style=flat-square&logo=replit&logoColor=white)](https://replit.com)
-> [!NOTE]
-> The repo includes pre-configured `.replit` and `replit.nix`.
-
-1. Go to [replit.com](https://replit.com) → **Create Repl** → **Import from GitHub**
-2. Paste: `https://github.com/GlobalTechInfo/MEGA-MDX`
-3. Open **Secrets** tab (🔒) and add:
-
-   | Key | Value |
+Replit
+El repositorio incluye .replit y replit.nix preconfigurados.
+ * Ve a replit.com. Crea un Repl e importa desde GitHub.
+ * Pega: https://github.com/TRC-ESPORT/ROCKY
+ * Abre la pestaña Secrets y añade:
+   | Clave | Valor |
    |---|---|
-   | `SESSION_ID` | `GlobalTechInfo/MEGA-MD_your_gist_id` |
-   | `OWNER_NUMBER` | `923001234567` |
-
-4. Click **Run**
-
-`replit.nix` automatically installs: Node.js 20, ffmpeg, imagemagick, libwebp, SQLite, pm2 etc.
-
-> [!TIP]
-> Free Replit instances sleep after inactivity. Use [UptimeRobot](https://uptimerobot.com) to ping your Replit URL every 5 minutes to keep it alive.
-> [!NOTE]
-> Production deployment uses `npm run start:optimized` (512MB memory limit) — configured in `.replit`'s `[deployment]` section.
-
----
-
-### 🟣 Heroku
-
-[![Heroku](https://img.shields.io/badge/Heroku-430098?style=flat-square&logo=heroku&logoColor=white)](https://heroku.com)
-> [!NOTE]
-> The repo includes `heroku.yml` and `app.json` for Docker-based deployment.
+   | SESSION_ID | TRC-ESPORT/ROCKY_tu_id |
+   | OWNER_NUMBER | 584120000000 |
+ * Haz clic en Run.
+> Las instancias gratuitas de Replit se suspenden por inactividad. Usa UptimeRobot para hacer ping a la URL de tu Replit cada 5 minutos y mantenerlo activo. El despliegue en producción usa npm run start:optimized.
 > 
-> Either you can deploy via dashboard or using heroku cli
+Heroku
+El repositorio incluye heroku.yml y app.json para despliegue con Docker.
+Despliegue de una línea:
+bash <(curl -s https://raw.githubusercontent.com/TRC-ESPORT/ROCKY/main/lib/heroku.sh)
 
-**One-line Deployer:**
-```bash
-bash <(curl -s https://raw.githubusercontent.com/GlobalTechInfo/MEGA-MDX/main/lib/heroku.sh)
-```
-**Manual:**
-```bash
+Manual:
 heroku login
-heroku create your-bot-name
+heroku create nombre-de-tu-bot
 heroku stack:set container
 
-heroku config:set SESSION_ID=GlobalTechInfo/MEGA-MD_your_gist_id
-heroku config:set OWNER_NUMBER=923001234567
-heroku config:set MONGO_URL=your_mongodb_url   # Recommended
+heroku config:set SESSION_ID=TRC-ESPORT/ROCKY_tu_id
+heroku config:set OWNER_NUMBER=584120000000
+heroku config:set MONGO_URL=tu_url_de_mongodb
 
 git push heroku main
 heroku ps:scale web=1
 heroku logs --tail
-```
 
-> [!IMPORTANT]
-> Heroku's filesystem is **ephemeral** — data is lost on restart. Use MongoDB or PostgreSQL for persistent storage.
-> [!NOTE]
-> Heroku uses `heroku.yml` → Docker build → runs `npm run start:optimized`.
-
----
-
-### 🎨 Render
-
-[![Render](https://img.shields.io/badge/Render-46E3B7?style=flat-square&logo=render&logoColor=black)](https://render.com)
-> [!NOTE]
-> The repo includes `render.yaml` for one-click Blueprint deployment.
-
-1. Fork this repo
-2. [render.com](https://render.com) → **New** → **Blueprint** → connect your fork
-3. Render reads `render.yaml` automatically
-4. Set environment variables in the dashboard:
-   - `SESSION_ID`
-   - `OWNER_NUMBER`
-5. Deploy
-
-> [!IMPORTANT]
-> Render uses Docker (`Dockerfile`) and runs `npm run start:optimized`. Use a database for persistent storage on Render's free tier.
-
----
-
-### 🚂 Railway
-
-[![Railway](https://img.shields.io/badge/Railway-0B0D0E?style=flat-square&logo=railway&logoColor=white)](https://railway.app)
-
-1. Fork this repo
-2. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub Repo**
-3. Select your fork
-4. **Variables** tab → add:
-
-   | Key | Value |
-   |---|---|
-   | `SESSION_ID` | `GlobalTechInfo/MEGA-MD_your_gist_id` |
-   | `OWNER_NUMBER` | `923001234567` |
-
-5. Railway auto-builds via `Dockerfile` and deploys
-
----
-
-### ☁️ Koyeb
-
-[![Koyeb](https://img.shields.io/badge/Koyeb-121212?style=flat-square&logo=koyeb&logoColor=white)](https://app.koyeb.com)
-> [!NOTE]
-> The repo includes `koyeb.json` with port `5000` pre-configured.
-
-1. Fork this repo
-2. [app.koyeb.com](https://app.koyeb.com) → **Create App** → **GitHub**
-3. Select your fork — Koyeb reads `koyeb.json`
-4. Set `SESSION_ID` and `OWNER_NUMBER` in env vars
-5. Deploy
-
----
-
-### 🪂 Fly.io
-
-[![Fly.io](https://img.shields.io/badge/Fly.io-7B3FE4?style=flat-square&logo=flydotio&logoColor=white)](https://fly.io)
-> [!NOTE]
-> The repo includes `fly.toml` pre-configured (512MB RAM, port 5000, region: US East).
+> El sistema de archivos de Heroku es temporal. Pierdes los datos locales al reiniciar. Usa MongoDB o PostgreSQL para almacenamiento persistente.
 > 
-> Either deploy via dashboard or using cli
+Render
+El repositorio incluye render.yaml para un despliegue rápido.
+ * Haz un fork de este repositorio.
+ * Ve a render.com. Selecciona New, luego Blueprint y conecta tu fork.
+ * Render lee render.yaml automáticamente.
+ * Configura las variables de entorno en el panel:
+   * SESSION_ID
+   * OWNER_NUMBER
+ * Despliega.
+> Render usa Docker y ejecuta npm run start:optimized. Usa una base de datos externa para almacenamiento persistente en el plan gratuito.
+> 
+Railway
+ * Haz un fork de este repositorio.
+ * Ve a railway.app. Selecciona New Project y luego Deploy from GitHub Repo.
+ * Elige tu fork.
+ * En la pestaña Variables, añade:
+   | Clave | Valor |
+   |---|---|
+   | SESSION_ID | TRC-ESPORT/ROCKY_tu_id |
+   | OWNER_NUMBER | 584120000000 |
+ * Railway compila a través de Dockerfile y despliega de inmediato.
+Koyeb
+El repositorio incluye koyeb.json con el puerto 5000 preconfigurado.
+ * Haz un fork de este repositorio.
+ * Ve a app.koyeb.com. Selecciona Create App y luego GitHub.
+ * Elige tu fork. Koyeb lee koyeb.json.
+ * Configura SESSION_ID y OWNER_NUMBER en las variables de entorno.
+ * Despliega.
+Fly.io
+El repositorio incluye fly.toml preconfigurado.
+Despliegue de una línea:
+bash <(curl -s https://raw.githubusercontent.com/TRC-ESPORT/ROCKY/main/lib/fly.sh)
 
-**One-line Deployer:**
-```bash
-bash <(curl -s https://raw.githubusercontent.com/GlobalTechInfo/MEGA-MDX/main/lib/fly.sh)
-```
-**Manual:**
-```bash
+Manual:
 curl -L https://fly.io/install.sh | sh
 fly auth login
 
 fly launch --no-deploy
-fly secrets set SESSION_ID=GlobalTechInfo/MEGA-MD_your_gist_id
-fly secrets set OWNER_NUMBER=923001234567
+fly secrets set SESSION_ID=TRC-ESPORT/ROCKY_tu_id
+fly secrets set OWNER_NUMBER=584120000000
 fly deploy
 
-fly logs   # View logs
-```
+fly logs
 
-`fly.toml` settings: auto-start enabled, auto-stop **disabled** so the bot stays running 24/7.
+Dockerfile
+El repositorio incluye un Dockerfile.
+# Construir imagen
+docker build -t rocky .
 
----
-
-### 🐳 Dockerfile
-
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
-> [!NOTE]
-> The repo includes a `Dockerfile` for any Docker-compatible platform.
-
-```bash
-# Build image
-docker build -t mega-mdx .
-
-# Run
+# Ejecutar
 docker run -d \
-  -e SESSION_ID=GlobalTechInfo/MEGA-MD_your_gist_id \
-  -e OWNER_NUMBER=923001234567 \
+  -e SESSION_ID=TRC-ESPORT/ROCKY_tu_id \
+  -e OWNER_NUMBER=584120000000 \
   -p 5000:5000 \
-  --name mega-mdx \
-  mega-mdx
+  --name rocky \
+  rocky
 
-# Logs
-docker logs -f mega-mdx
-```
+# Ver registros
+docker logs -f rocky
 
----
-
-### 🎮 Discord Panels (Pterodactyl)
-> [!IMPORTANT]
-> For Pterodactyl-based hosting panels (Fosshost, Skynode, Optiklink etc.):
-> Use brave browser or any adguard to avoid ads from hosting panels
-
-1. Create server with a **Node.js 20+ egg**
-2. Set startup command:
-   ```
+Paneles de Discord (Pterodactyl)
+ * Crea un servidor con un egg de Node.js 20 o superior.
+ * Configura el comando de inicio:
    npm install && npm run build && npm start
-   ```
-3. Upload files via SFTP or file manager
-4. Add env vars in the **Startup** tab: `SESSION_ID`, `OWNER_NUMBER`
-5. Start the server
 
-> [!IMPORTANT]
-> Ensure the egg uses **Node.js 20 or newer**. If your panel supports Docker, use the included `Dockerfile` instead for best compatibility.
-
----
-
-## 🗄️ Storage Backends
-
-> [!NOTE]
-> Set one database URL in `.env`. If all are empty, JSON file storage is used automatically — no setup needed.
-
-| Backend | Badge | Best For |
-|---|---|---|
-| **JSON Files** | ![JSON](https://img.shields.io/badge/JSON-000000?style=flat-square&logo=json&logoColor=white) | Local, Termux |
-| **MongoDB** | ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white) | Cloud (recommended) |
-| **PostgreSQL** | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white) | Cloud / VPS |
-| **MySQL** | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) | Cloud / VPS |
-| **SQLite** | ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white) | VPS (no external DB) |
-
-```env
+ * Sube los archivos por SFTP o el administrador de archivos.
+ * Añade las variables de entorno en la pestaña de inicio: SESSION_ID, OWNER_NUMBER.
+ * Inicia el servidor.
+Sistemas de almacenamiento
+Configura una URL de base de datos en .env. Si dejas todas vacías, el bot usa almacenamiento en archivos JSON por defecto.
+| Sistema | Uso ideal |
+|---|---|
+| Archivos JSON | Local, Termux |
+| MongoDB | Nube |
+| PostgreSQL | Nube / VPS |
+| MySQL | Nube / VPS |
+| SQLite | VPS sin base de datos externa |
 # MongoDB
-MONGO_URL=mongodb+srv://user:password@cluster.mongodb.net/megamd
+MONGO_URL=mongodb+srv://usuario:contraseña@cluster.mongodb.net/rocky
 
 # PostgreSQL
-POSTGRES_URL=postgresql://user:password@host:5432/megamd
+POSTGRES_URL=postgresql://usuario:contraseña@host:5432/rocky
 
 # MySQL
-MYSQL_URL=mysql://user:password@host:3306/megamd
+MYSQL_URL=mysql://usuario:contraseña@host:3306/rocky
 
 # SQLite
 DB_URL=./data/baileys.db
-```
 
-> [!TIP]
-> Get a free MongoDB cluster at [MongoDB Atlas](https://cloud.mongodb.com) — best choice for cloud deployments where the filesystem resets.
-
----
-
-## 🛠️ Environment Variables
-
-| Variable | Required | Default | Description |
+Variables de entorno
+| Variable | Requerido | Por defecto | Descripción |
 |---|---|---|---|
-| `SESSION_ID` | ✅ *one of* | — | From mega-pairing.onrender.com |
-| `PAIRING_NUMBER` | ✅ *one of* | — | Phone number for terminal pairing |
-| `OWNER_NUMBER` | ✅ | `923051391007` | Your number, no `+` |
-| `BOT_NAME` | ❌ | `MEGA-MD` | Bot display name |
-| `BOT_OWNER` | ❌ | `Qasim Ali` | Owner display name |
-| `PACKNAME` | ❌ | `MEGA-MD` | Sticker pack name |
-| `PREFIXES` | ❌ | `.,!,/,#` | Comma-separated prefixes |
-| `COMMAND_MODE` | ❌ | `public` | `public` or `private` |
-| `TIMEZONE` | ❌ | `Asia/Karachi` | Your timezone |
-| `PORT` | ❌ | `5000` | HTTP server port |
-| `MAX_STORE_MESSAGES` | ❌ | `20` | Messages stored per chat |
-| `REMOVEBG_KEY` | ❌ | — | [remove.bg](https://remove.bg) API key |
-| `GIPHY_API_KEY` | ❌ | — | [Giphy](https://developers.giphy.com) API key |
-| `MONGO_URL` | ❌ | — | MongoDB connection string |
-| `POSTGRES_URL` | ❌ | — | PostgreSQL connection string |
-| `MYSQL_URL` | ❌ | — | MySQL connection string |
-| `DB_URL` | ❌ | — | SQLite file path |
-| `CLEANUP_INTERVAL` | ❌ | `3600000` | Temp cleanup interval (ms) |
-| `STORE_WRITE_INTERVAL` | ❌ | `10000` | Store write interval (ms) |
-
----
-
-## 📜 npm Scripts
-
-| Script | Description |
+| SESSION_ID | Sí (elige uno) | — | Desde mega-pairing.onrender.com |
+| PAIRING_NUMBER | Sí (elige uno) | — | Número para emparejar por terminal |
+| OWNER_NUMBER | Sí | 584120000000 | Tu número, sin el + |
+| BOT_NAME | No | ROCKY | Nombre del bot |
+| BOT_OWNER | No | TRC-ESPORT | Nombre del creador |
+| PACKNAME | No | ROCKY | Nombre del paquete de stickers |
+| PREFIXES | No | .,!,/,# | Prefijos separados por comas |
+| COMMAND_MODE | No | public | public o private |
+| TIMEZONE | No | America/Caracas | Tu zona horaria |
+| PORT | No | 5000 | Puerto HTTP |
+| MAX_STORE_MESSAGES | No | 20 | Mensajes guardados por chat |
+| CLEANUP_INTERVAL | No | 3600000 | Limpieza temporal en ms |
+Scripts de npm
+| Script | Descripción |
 |---|---|
-| `npm start` | Start the bot |
-| `npm run start:optimized` | Start with 512MB memory cap *(cloud use)* |
-| `npm run start:fresh` | Reset data files then start |
-| `npm run build` | Compile TypeScript → `dist/` |
-| `npm run rebuild` | Clean + rebuild |
-| `npm run clean` | Delete `dist/` |
-| `npm run dev` | Watch mode with auto-restart |
-| `npm run setup` | Build + init data files |
-| `npm run reset-data` | Re-initialize all JSON data files |
-| `npm run reset-session` | Delete `session/` folder |
-| `npm run typecheck` | Type check without compiling |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run all tests |
-
----
-
-## 🔌 Plugin System
-
-> [!IMPORTANT]
-> Plugins live in `plugins/` and are auto-loaded on startup — no registration needed. Each file must export a `default` object.
-
-### Plugin Template
-
-```typescript
-export default {
-    command: 'mycommand',
-    aliases: ['mc', 'mycmd'],
-    category: 'utility',
-    description: 'Does something cool',
-    usage: '.mycommand <input>',
-
-    // Optional permission flags
-    ownerOnly: false,      // Owner/sudo only
-    groupOnly: false,      // Groups only
-    adminOnly: false,      // Group admins only
-    isPrefixless: true,    // Works without prefix too
-    cooldown: 5,           // Cooldown in seconds
-
-    async handler(sock: any, message: any, args: any[], context: any = {}) {
-        const {
-            chatId,           // Chat JID
-            senderId,         // Sender JID
-            isGroup,          // boolean
-            isSenderAdmin,    // boolean
-            isBotAdmin,       // boolean
-            senderIsOwnerOrSudo, // boolean
-            rawText,          // Full message text
-            userMessage,      // Lowercase message
-            config,           // Bot configuration 
-            channelInfo       // MEGA-MD branding spread
-        } = context;
-
-        await sock.sendMessage(chatId, {
-            text: `You said: ${args.join(' ')}`,
-            ...channelInfo
-        }, { quoted: message });
-    }
-};
-```
-
----
-
-## 🔧 Troubleshooting
-
-### Bot not connecting
-
-> [!IMPORTANT]
-> - Verify `SESSION_ID` starts with `GlobalTechInfo/MEGA-MD_`
-> - If using `PAIRING_NUMBER`, link within 60 seconds of the code appearing
-> - Reset session and reconnect: `npm run reset-session && npm start`
-
-### `myAppStateKey not present` (pin/star broken)
-
-Session lost its app state keys. Fix:
-
-```bash
-node -e "
-const fs = require('fs');
-const c = JSON.parse(fs.readFileSync('session/creds.json','utf8'));
-delete c.myAppStateKeyId;
-fs.writeFileSync('session/creds.json', JSON.stringify(c, null, 2));
-console.log('Done');
-"
-npm start
-```
-
-Send any message to the bot — WhatsApp re-syncs keys automatically. They are now preserved across restarts.
-
-### Commands not responding
-
-- Check you're using the right prefix (default `.`)
-- `COMMAND_MODE=private` → only owner can use commands
-- `OWNER_NUMBER` must have no `+` sign
-
-### Build errors
-
-```bash
-rm -rf dist && npm run build
-```
-
-### Data lost after restart
-
-> [!CAUTION]
-> Cloud platforms reset the filesystem on redeploy. Add `MONGO_URL` to use MongoDB — [MongoDB Atlas](https://cloud.mongodb.com) has a free tier.
-
-### Port conflict
-
-```bash
-PORT=3000 npm start
-```
-
----
-
-## 🧪 Testing
-
-The codebase has a comprehensive test suite covering all core systems:
-
-```bash
-npm test                # Run all 178 tests
-npm run test:coverage   # Run with coverage report
-npm run test:watch      # Watch mode during development
-```
-
-| Test Suite | What's Covered |
-|---|---|
-| Unit — `myfunc` | 21 utility function tests with real input/output assertions |
-| Unit — `commandHandler` | Command registration, alias routing, toggle, suggestions |
-| Unit — `isOwner` | JID matching, device suffix stripping, sudo checks |
-| Unit — `isBanned` | File-based ban list read/write |
-| Unit — `paths` | Data directory resolution |
-| Integration — plugins | ALL plugins load, no duplicate commands/aliases, correct field types |
-| Integration — `messageHandler` | Full message flow, banned users, error handling |
-| Integration — group events | add/remove/promote/demote without crashing |
-| Integration — call handling | Anticall reject, warn, empty call safety |
-
-> Uses [Vitest](https://vitest.dev) with a custom Baileys socket mock that simulates real WhatsApp message flows without requiring a live connection.
-
----
-
-## 🤝 Contributing
-
-1. Fork the repo
-2. Create your plugin in `plugins/yourfeature.ts`
-3. Follow the plugin template above
-4. Test thoroughly
-5. Open a Pull Request
-
----
-
-## 📞 Support
-
-<div align="center">
-
-[![Telegram](https://img.shields.io/badge/Telegram-FF0000?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/Global_TechInfo)
-[![WhatsApp](https://img.shields.io/badge/WhatsApp_Channel-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07)
-[![GitHub Issues](https://img.shields.io/badge/GitHub_Issues-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/GlobalTechInfo/MEGA-MD/issues)
-
-</div>
-
----
-
-## ⚠️ Disclaimer
-
-> [!CAUTION]
-> This project is **not affiliated with WhatsApp Inc.** Use responsibly and within [WhatsApp's Terms of Service](https://www.whatsapp.com/legal/terms-of-service). The developers are not responsible for account bans or misuse.
-
----
-
-## 📄 License
-
-[MIT License](LICENSE) · Made with ❤️ by **Qasim Ali** · [GlobalTechInfo](https://github.com/GlobalTechInfo)
-
-<div align="center">
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" width="100%"/>
-
-⭐ **If this project helped you, please give it a star!** ⭐
-
-</div>
+| npm start | Inicia el bot |
+| npm run start:optimized | Inicia con límite de 512MB de memoria |
+| npm run start:fresh | Borra archivos de datos y luego inicia |
+| npm run build | Compila TypeScript a dist/ |
+| npm run rebuild | Limpia y recompila |
+| npm run clean | Elimina la carpeta dist/ |
+| npm run dev | Modo desarrollo con reinicio automático |
+| npm run setup | Compila e inicializa archivos de datos |
